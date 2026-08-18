@@ -1,0 +1,1860 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF7F5">
+<meta name="description" content="임신 주수에 맞춰 집에서 하루 15~30분. 통증 완화 운동까지.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="맘핏">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%236D4FA8'/%3E%3Cpath d='M22 44V22l10 12 10-12v22' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>맘핏 — 임산부 홈트</title>
+<style>
+/* ═══════════════ 디자인 토큰 ═══════════════ */
+:root{
+  --bg:#FAF7F5; --surface:#FFFFFF; --surface-2:#F4F0ED;
+  --ink:#241F2B; --ink-2:#544C61; --sub:#8B8397; --line:#EDE7E3;
+
+  --primary:#6D4FA8; --primary-press:#5B3F93; --primary-soft:#F1EDFB; --primary-ink:#4A3378;
+  --coral:#C05648; --coral-soft:#FCEBE7; --coral-ink:#96402F;
+  --mint:#E4F1EC; --mint-ink:#286B58;
+  --warn-bg:#FFF5E6; --warn-ink:#835410;
+  --danger-bg:#FDEBE9; --danger-ink:#A0362E;
+
+  --r-lg:22px; --r-md:16px; --r-sm:12px; --r-xs:10px;
+  --sh-1:0 1px 2px rgba(36,31,43,.04), 0 2px 8px rgba(36,31,43,.045);
+  --sh-2:0 2px 4px rgba(36,31,43,.04), 0 10px 28px rgba(36,31,43,.075);
+  --sh-3:0 4px 10px rgba(36,31,43,.06), 0 20px 50px rgba(36,31,43,.14);
+
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+  --tabh:66px; --safe:env(safe-area-inset-bottom,0px); --safet:env(safe-area-inset-top,0px);
+  --ease:cubic-bezier(.2,0,0,1);
+  --spring:cubic-bezier(.22,1,.28,1);
+}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+button,a,.card,.plan,.rowbtn{touch-action:manipulation}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);
+  font-family:'Pretendard','Pretendard Variable',-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  font-variant-numeric:tabular-nums;text-wrap:pretty;min-height:100dvh}
+h1,h2,h3{text-wrap:balance;letter-spacing:-.025em;line-height:1.3}
+button{font:inherit;border:0;background:none;color:inherit;cursor:pointer;text-align:left}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px;border-radius:6px}
+#app{max-width:520px;margin:0 auto;padding-bottom:calc(var(--tabh) + var(--safe) + 12px)}
+
+/* ═══════════════ 공통 ═══════════════ */
+.page{display:none;padding:0 var(--s4) var(--s5)}
+.page.on{display:block;animation:pagein .32s var(--ease) both}
+@keyframes pagein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hd{padding:calc(var(--s5) + var(--safet)) 0 var(--s4)}
+.hd.row{display:flex;align-items:center;justify-content:space-between;gap:var(--s3)}
+.hd.row>div{min-width:0}
+.hd h2{font-size:26px;font-weight:800}
+.hd p{font-size:14px;color:var(--sub);margin-top:2px}
+.streak{display:flex;align-items:center;gap:5px;flex:none;background:var(--coral-soft);color:var(--coral-ink);
+  font-size:13px;font-weight:700;padding:8px 13px;border-radius:999px;animation:pop .5s var(--spring) both .25s}
+.streak svg{width:15px;height:15px;stroke-width:2.1}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+.sect{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+  margin:var(--s5) 0 var(--s3)}
+.sect h3{font-size:17px;font-weight:700}
+.sect span{font-size:13px;color:var(--sub);flex:none}
+
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;
+  line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag.pri{background:var(--primary-soft);color:var(--primary-ink)}
+.tag.cor{background:var(--coral-soft);color:var(--coral-ink)}
+.tag.min{background:var(--mint);color:var(--mint-ink)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:var(--s2);width:100%;min-height:54px;
+  border-radius:var(--r-md);padding:15px var(--s4);background:var(--primary);color:#fff;
+  font-size:16.5px;font-weight:700;box-shadow:var(--sh-1);
+  transition-property:transform,background-color,box-shadow;transition-duration:.16s;transition-timing-function:var(--ease)}
+.btn:active{transform:scale(.96);background:var(--primary-press)}
+.btn.sec{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line),var(--sh-1)}
+.btn.sec:active{background:var(--surface-2)}
+.btn svg{width:20px;height:20px;flex:none}
+
+.icon-btn{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;
+  background:var(--surface);box-shadow:var(--sh-1);flex:none;
+  transition:transform .16s var(--ease),background-color .16s var(--ease)}
+.icon-btn:active{transform:scale(.94);background:var(--surface-2)}
+.icon-btn svg{width:21px;height:21px}
+svg.ic{stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+/* 진입 스태거 */
+.stg>*{animation:rise .42s var(--ease) both}
+.stg.col{display:flex;flex-direction:column;gap:var(--s3)}
+.stg>*:nth-child(1){animation-delay:.02s} .stg>*:nth-child(2){animation-delay:.08s}
+.stg>*:nth-child(3){animation-delay:.14s} .stg>*:nth-child(4){animation-delay:.2s}
+.stg>*:nth-child(5){animation-delay:.26s} .stg>*:nth-child(n+6){animation-delay:.32s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ═══════════════ 온보딩 ═══════════════ */
+#onb{position:fixed;inset:0;background:var(--bg);z-index:80;overflow-y:auto;display:none}
+#onb.on{display:block}
+.ob{max-width:520px;margin:0 auto;padding:var(--s6) var(--s5) var(--s5);
+  min-height:100dvh;display:flex;flex-direction:column}
+.ob-art{width:min(268px,72vw);margin:0 auto var(--s3)}
+.ob-art svg{width:100%;height:auto;display:block}
+.ob h1{font-size:34px;font-weight:800;color:var(--primary);letter-spacing:-.04em}
+.ob .lead{font-size:16px;color:var(--ink-2);margin:var(--s2) 0 var(--s6);line-height:1.7}
+.fld label{display:block;font-size:14.5px;font-weight:700;margin-bottom:var(--s2)}
+.fld input{width:100%;min-height:56px;padding:15px var(--s4);border-radius:var(--r-md);
+  border:1.5px solid var(--line);background:var(--surface);font:inherit;font-size:16px;color:var(--ink)}
+.fld input:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.fld .help{font-size:13px;color:var(--sub);margin-top:var(--s2)}
+.fld .err{font-size:13.5px;color:var(--danger-ink);margin-top:var(--s2);display:none;font-weight:600}
+.fld.bad input{border-color:var(--danger-ink)}
+.fld.bad .err{display:block}
+.note{display:flex;gap:var(--s3);background:var(--warn-bg);color:var(--warn-ink);
+  border-radius:var(--r-md);padding:var(--s4);margin:var(--s5) 0;font-size:13.5px;line-height:1.7}
+.note svg{width:20px;height:20px;flex:none;margin-top:2px}
+.note b{display:block;margin-bottom:3px;font-size:14px}
+
+/* ═══════════════ 홈 ═══════════════ */
+.wk{position:relative;overflow:hidden;background:linear-gradient(135deg,#6D4FA8 0%,#8A63C4 55%,#B08AD6 100%);
+  color:#fff;border-radius:var(--r-lg);padding:var(--s4) var(--s5);box-shadow:var(--sh-2)}
+.wk::after{content:"";position:absolute;right:-46px;top:-56px;width:160px;height:160px;
+  border-radius:50%;background:#ffffff1c}
+.wk .top{display:flex;align-items:center;gap:var(--s3);flex-wrap:wrap;position:relative}
+.wk .w{font-size:23px;font-weight:800;letter-spacing:-.035em}
+.wk .ph{font-size:12.5px;font-weight:700;background:#ffffff2e;padding:4px 11px;border-radius:999px}
+.wk .bar{height:7px;background:#ffffff33;border-radius:999px;margin-top:var(--s3);overflow:hidden;position:relative}
+.wk .bar i{display:block;height:100%;background:#fff;border-radius:999px;
+  transition:width .6s var(--ease)}
+.wk .meta{display:flex;justify-content:space-between;gap:var(--s3);font-size:12.5px;
+  margin-top:var(--s2);color:#ffffffdb;position:relative}
+
+.seg{display:flex;gap:var(--s2);background:var(--surface);padding:5px;border-radius:var(--r-md);
+  box-shadow:var(--sh-1)}
+.seg button{flex:1;min-height:46px;border-radius:var(--r-sm);font-size:15px;font-weight:700;
+  color:var(--sub);display:flex;align-items:center;justify-content:center;
+  transition:background-color .18s var(--ease),color .18s var(--ease)}
+.seg button[aria-pressed="true"]{background:var(--primary);color:#fff}
+
+/* 상황 타일 — "지금 왜 운동하나" */
+.moods{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+.mood{display:flex;align-items:center;gap:var(--s3);min-height:74px;background:var(--surface);
+  border-radius:var(--r-md);padding:var(--s3);box-shadow:var(--sh-1);
+  transition:transform .16s var(--ease),box-shadow .16s var(--ease)}
+.mood:active{transform:scale(.97);box-shadow:var(--sh-2)}
+.mood .ci{width:38px;height:38px;border-radius:var(--r-xs);display:flex;align-items:center;
+  justify-content:center;flex:none}
+.mood .ci svg{width:20px;height:20px}
+.mood .tx{min-width:0}
+.mood b{display:block;font-size:14.5px;font-weight:700;letter-spacing:-.025em}
+.mood .tx span{display:block;font-size:12px;color:var(--sub);line-height:1.4}
+
+/* 부위별 루틴 — 화면 끝까지 흐르는 가로 스크롤 */
+.plans{display:flex;gap:var(--s3);overflow-x:auto;scroll-snap-type:x proximity;
+  margin:0 calc(var(--s4) * -1);padding:2px var(--s4) var(--s2);
+  scrollbar-width:none;-ms-overflow-style:none}
+.plans::-webkit-scrollbar{display:none}
+.plan{flex:none;width:60%;max-width:212px;scroll-snap-align:start;
+  background:var(--surface);border-radius:var(--r-lg);padding:var(--s3) var(--s3) var(--s4);
+  box-shadow:var(--sh-1);display:flex;flex-direction:column;gap:var(--s2);
+  transition:transform .16s var(--ease),box-shadow .16s var(--ease)}
+.plan:active{transform:scale(.97);box-shadow:var(--sh-2)}
+.plan .pic{position:relative;display:block;border-radius:var(--r-sm);overflow:hidden;
+  aspect-ratio:5/4;min-height:0;background:var(--surface-2)}
+.plan .pic svg{position:absolute;top:6%;left:5%;width:90%;height:88%;display:block}
+.plan b{font-size:15.5px;font-weight:700;letter-spacing:-.02em}
+.plan .sb{font-size:12.5px;color:var(--sub);line-height:1.45}
+.plan .mt{font-size:12.5px;font-weight:700;color:var(--primary-ink);margin-top:auto}
+.plan.p-cor .pic{background:var(--coral-soft)} .plan.p-cor .mt{color:var(--coral-ink)}
+.plan.p-min .pic{background:var(--mint)} .plan.p-min .mt{color:var(--mint-ink)}
+.plan.p-pri .pic{background:var(--primary-soft)}
+
+.rowbtn{display:flex;align-items:center;gap:var(--s3);width:100%;min-height:56px;
+  background:var(--surface);border-radius:var(--r-md);padding:var(--s3) var(--s4);box-shadow:var(--sh-1);
+  transition:transform .16s var(--ease)}
+.rowbtn:active{transform:scale(.98)}
+.rowbtn .ci{width:36px;height:36px;border-radius:var(--r-xs);display:flex;align-items:center;
+  justify-content:center;flex:none}
+.rowbtn .ci svg{width:19px;height:19px}
+.rowbtn .tx{flex:1;min-width:0}
+.rowbtn .tx b{display:block;font-size:14.5px;font-weight:700}
+.rowbtn .tx span{display:block;font-size:12.5px;color:var(--sub);line-height:1.45}
+.rowbtn>svg:last-child{width:18px;height:18px;color:var(--sub);flex:none}
+.ci.dg{background:var(--danger-bg);color:var(--danger-ink)}
+.ci.pr{background:var(--primary-soft);color:var(--primary-ink)}
+.ci.cr{background:var(--coral-soft);color:var(--coral-ink)}
+.ci.mn{background:var(--mint);color:var(--mint-ink)}
+
+.done{display:flex;align-items:center;gap:var(--s3);background:var(--mint);color:var(--mint-ink);
+  border-radius:var(--r-md);padding:var(--s4);font-size:14.5px;font-weight:700}
+.done svg{width:22px;height:22px;flex:none}
+
+/* ═══════════════ 목록 ═══════════════ */
+.chips{display:flex;gap:var(--s2);overflow-x:auto;padding:2px 0 var(--s3);
+  scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:x proximity}
+.chips button{scroll-snap-align:start}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;min-height:40px;padding:8px 15px;border-radius:999px;background:var(--surface);
+  font-size:13.5px;font-weight:600;color:var(--ink-2);box-shadow:inset 0 0 0 1.5px var(--line);
+  transition:background-color .18s var(--ease),color .18s var(--ease),box-shadow .18s var(--ease)}
+.chips button[aria-pressed="true"]{background:var(--ink);color:#fff;box-shadow:none}
+
+.tagd{font-size:13.5px;color:var(--ink-2);line-height:1.65;background:var(--surface);
+  border-radius:var(--r-md);padding:var(--s3) var(--s4);margin-bottom:var(--s2);box-shadow:var(--sh-1)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.card{background:var(--surface);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-1);
+  display:flex;flex-direction:column;transition:transform .16s var(--ease),box-shadow .16s var(--ease)}
+.card:active{transform:scale(.97);box-shadow:var(--sh-2)}
+/* 카드 안 여백 — 동심원 라운드(바깥 22 = 안 14 + 패딩 8) */
+.card .pic{position:relative;display:block;aspect-ratio:5/4;min-height:0;overflow:hidden;
+  margin:var(--s2) var(--s2) 0;border-radius:14px;
+  background:linear-gradient(170deg,#F7F1FB,#FBEDE9)}
+/* inset + height:auto 는 SVG의 고유 비율로 계산돼 아래로 넘친다. 폭·높이를 직접 준다 */
+.card .pic svg{position:absolute;top:7%;left:6%;width:88%;height:86%;display:block}
+.card .bd{padding:var(--s3);display:flex;flex-direction:column;gap:7px;flex:1}
+.card .bd b{font-size:14.5px;font-weight:700;letter-spacing:-.02em}
+.card .bd .mt{font-size:12.5px;color:var(--sub)}
+/* 태그 2개를 같은 폭으로 한 줄에 — 카드 높이도 같이 맞는다 */
+.card .tags{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:auto}
+.card .tag{text-align:center;padding:4px 6px}
+.empty{grid-column:1/-1;text-align:center;color:var(--sub);font-size:14.5px;padding:var(--s7) var(--s4);
+  background:var(--surface);border-radius:var(--r-lg);line-height:1.7}
+
+/* ═══════════════ 케어 ═══════════════ */
+/* 인체도 — 부위를 눌러 아픈 곳·불편한 곳을 고른다 */
+.bodymap{max-width:250px;margin:0 auto;padding:var(--s2) 0}
+.bodymap svg{width:100%;height:auto;display:block;overflow:visible}
+/* 부위 경계가 눌러보기 전에도 보이게 옅게 깔아둔다 */
+.hot>*{fill:rgba(109,79,168,.05);stroke:rgba(109,79,168,.22);stroke-width:1;cursor:pointer;
+  transition:fill .18s var(--ease),stroke .18s var(--ease)}
+.hot:active>*{fill:rgba(109,79,168,.2)}
+.hot:focus-visible{outline:none}
+.hot:focus-visible>*{fill:rgba(109,79,168,.16);stroke:var(--primary);stroke-width:2}
+.hot.mk>*{fill:rgba(192,86,72,.14);stroke:var(--coral);stroke-width:1.6}
+.hot.sel>*{fill:rgba(109,79,168,.26);stroke:var(--primary);stroke-width:2}
+@media (hover:hover){.hot:hover>*{fill:rgba(109,79,168,.14)}}
+
+.panel{background:var(--surface);border-radius:var(--r-lg);padding:var(--s4);box-shadow:var(--sh-1);
+  margin-top:var(--s3);animation:rise .3s var(--ease) both}
+.panel .rowbtn{background:var(--bg);box-shadow:none}
+.panel .avoid button{background:var(--bg)}
+.phd{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);margin-bottom:var(--s2)}
+.phd h3{font-size:17.5px;font-weight:800;letter-spacing:-.025em}
+.lnk{display:flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-8px -8px -8px 0;
+  color:var(--sub);flex:none}
+.lnk svg{width:18px;height:18px}
+.plab{font-size:12.5px;font-weight:700;color:var(--sub);margin:var(--s3) 0 6px}
+.panel>.plab:first-of-type{margin-top:0}
+/* 한 줄 행 — 부위 안에서는 설명 없이 이름만 */
+.crow{display:flex;align-items:center;gap:var(--s2);width:100%;min-height:46px;
+  font-size:14.5px;font-weight:700;transition:opacity .16s var(--ease)}
+.crow:active{opacity:.55}
+.crow+.crow{border-top:1px solid var(--line)}
+.crow .ci{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;flex:none}
+.crow .ci svg{width:15px;height:15px}
+.crow b{flex:1;min-width:0}
+.crow>svg:last-child{width:17px;height:17px;color:var(--sub);flex:none}
+.hint{text-align:center;font-size:13.5px;color:var(--sub);line-height:1.7;padding:var(--s4) var(--s3);
+  background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--sh-1);margin-top:var(--s3)}
+.panel .hint{background:none;box-shadow:none;margin:0;padding:6px 0 2px;text-align:left}
+
+.tabs2{display:flex;gap:var(--s2);background:var(--surface);padding:5px;border-radius:var(--r-md);
+  box-shadow:var(--sh-1);margin-bottom:var(--s4)}
+.tabs2 button{flex:1;min-height:46px;border-radius:var(--r-sm);font-size:14.5px;font-weight:700;
+  color:var(--sub);display:flex;align-items:center;justify-content:center;
+  transition:background-color .18s var(--ease),color .18s var(--ease)}
+.tabs2 button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.lead-p{font-size:14px;color:var(--ink-2);line-height:1.7;margin-bottom:var(--s4)}
+.stack{display:flex;flex-direction:column;gap:var(--s2)}
+.avoid{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.avoid button{display:flex;align-items:center;gap:var(--s2);min-height:48px;padding:10px var(--s4);
+  border-radius:999px;background:var(--surface);font-size:14px;font-weight:600;color:var(--ink-2);
+  box-shadow:inset 0 0 0 1.5px var(--line);
+  transition:background-color .18s var(--ease),color .18s var(--ease),box-shadow .18s var(--ease)}
+.avoid button[aria-pressed="true"]{background:var(--primary);color:#fff;box-shadow:none}
+.avoid button svg{width:17px;height:17px;flex:none}
+.info{display:flex;gap:var(--s3);background:var(--primary-soft);color:var(--primary-ink);
+  border-radius:var(--r-md);padding:var(--s4);font-size:13.5px;line-height:1.7;margin-top:var(--s4)}
+.info svg{width:19px;height:19px;flex:none;margin-top:2px}
+
+/* ═══════════════ 기록 ═══════════════ */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2)}
+.stat{background:var(--surface);border-radius:var(--r-md);padding:13px var(--s2) 12px;text-align:center;
+  box-shadow:var(--sh-1)}
+.stat b{display:block;font-size:23px;font-weight:800;letter-spacing:-.035em;line-height:1.25}
+.stat span{font-size:12px;color:var(--sub);display:block;margin-top:1px}
+/* 이번 주 — ACOG 150분 대비 + 요일별 막대 */
+.wkgoal{background:var(--surface);border-radius:var(--r-lg);padding:var(--s4);box-shadow:var(--sh-1)}
+.wkgoal .hdr{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2);
+  margin-bottom:var(--s2)}
+.wkgoal .hdr b{font-size:16.5px;font-weight:800;letter-spacing:-.025em;flex:none}
+.wkgoal .num{font-size:13px;font-weight:700;color:var(--primary-ink);text-align:right;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wkgoal .num.hit{background:var(--mint);color:var(--mint-ink);padding:3px 9px;border-radius:999px;
+  font-size:12px}
+.gbar{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+.gbar i{display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,var(--primary),#9C80D6);transition:width .6s var(--ease)}
+/* 요일 칸 = 이번 주 기록. 한 날은 분 수를 그대로 보여준다 */
+/* 바깥 카드 22px - 패딩 16px = 안쪽 6~8px (동심원) */
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:var(--s3) 0 var(--s4)}
+.day{height:44px;border-radius:8px;background:var(--bg);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;line-height:1.05}
+.day b{font-size:14.5px;font-weight:800;letter-spacing:-.05em;color:var(--sub)}
+.day b.sm{font-size:12.5px;letter-spacing:-.06em}   /* 세 자리(100분 이상) */
+.day span{font-size:12px;margin-top:1px;transform:scale(.86);transform-origin:top center}
+.day.done{background:var(--primary)}
+.day.done b{color:#fff}
+.day.done span{color:#ffffffc4}
+.day.miss{background:var(--surface-2)}                        /* 지나갔는데 안 한 날 */
+.day.now{background:none;box-shadow:inset 0 0 0 2px var(--coral)}     /* 오늘, 아직 */
+.day.todo{background:none;box-shadow:inset 0 0 0 1.5px var(--line)}   /* 아직 안 온 날 */
+.days .lb{font-size:12px;color:var(--sub);text-align:center;margin-top:5px}
+.fine{font-size:12.5px;color:var(--sub);line-height:1.65;margin-top:var(--s3)}
+
+.cal{background:var(--surface);border-radius:var(--r-lg);padding:var(--s4);box-shadow:var(--sh-1)}
+.cal h3{font-size:15px;margin-bottom:var(--s3)}
+.calhd{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin-bottom:var(--s3)}
+.calhd h3{margin:0;flex:1;text-align:center}
+.calhd .icon-btn{width:40px;height:40px;box-shadow:none;background:var(--bg)}
+.calhd .icon-btn:disabled{opacity:.3}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cg i{aspect-ratio:1;border-radius:8px;background:var(--bg);display:flex;align-items:center;
+  justify-content:center;font-size:12.5px;font-style:normal;color:var(--sub)}
+.cg i.lb{aspect-ratio:auto;background:none;font-size:12px;font-weight:600;padding-bottom:2px}
+.cg i.on{background:var(--primary);color:#fff;font-weight:700}
+.cg i.td{box-shadow:inset 0 0 0 2px var(--coral);color:var(--coral-ink);font-weight:700}
+
+/* ═══════════════ 탭바 ═══════════════ */
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fffffff2;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 -1px 0 var(--line);padding-bottom:var(--safe)}
+.tabbar .in{max-width:520px;margin:0 auto;display:flex}
+.tabbar button{flex:1;min-height:var(--tabh);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--sub);
+  transition:color .18s var(--ease)}
+.tabbar button[aria-current="page"]{color:var(--primary)}
+.tabbar svg{width:23px;height:23px;transition:transform .2s var(--ease)}
+.tabbar button[aria-current="page"] svg{transform:translateY(-1px) scale(1.06)}
+
+/* ═══════════════ 오버레이 ═══════════════ */
+/* 시트가 아래에서 올라오고, 닫을 때도 같은 속도로 내려간다 (display 토글은 닫힘 모션이 안 보임) */
+.ov{position:fixed;inset:0;z-index:70;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;
+  visibility:hidden;opacity:0;transform:translateY(26px) scale(.985);
+  transition:transform .3s var(--ease),opacity .22s var(--ease),visibility 0s linear .3s}
+.ov.on{visibility:visible;opacity:1;transform:none;
+  transition:transform .42s var(--spring),opacity .22s var(--ease),visibility 0s}
+.ov .in{max-width:520px;margin:0 auto;padding-bottom:calc(var(--s7) + var(--safe))}
+.ovbar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:var(--s3);
+  padding:calc(var(--s3) + var(--safet)) var(--s4) var(--s3);background:#faf7f5f2;backdrop-filter:blur(14px)}
+.ovbar h3{flex:1;min-width:0;font-size:17px;font-weight:700}
+.ovbar .sp{flex:1}
+
+/* 확인 시트 (native confirm 대체) */
+.mask{position:fixed;inset:0;z-index:90;background:rgba(36,31,43,.42);
+  display:flex;align-items:flex-end;justify-content:center;
+  visibility:hidden;opacity:0;transition:opacity .24s var(--ease),visibility 0s linear .24s}
+.mask.on{visibility:visible;opacity:1;transition-delay:0s}
+.mask .sh{width:100%;max-width:520px;background:var(--surface);box-shadow:var(--sh-3);
+  border-radius:var(--r-lg) var(--r-lg) 0 0;padding:var(--s5) var(--s4) calc(var(--s4) + var(--safe));
+  transform:translateY(100%);transition:transform .34s var(--spring)}
+.mask.on .sh{transform:none}
+.mask h3{font-size:18.5px;font-weight:800;margin-bottom:5px}
+.mask p{font-size:14.5px;color:var(--ink-2);line-height:1.65;margin-bottom:var(--s5)}
+.mask .row{display:flex;gap:var(--s3)}
+.mask .row .btn{flex:1}
+.btn.dg{background:var(--danger-ink)}
+.btn.dg:active{background:#8B2E27}
+
+.stage{position:relative;margin:0 var(--s4);border-radius:var(--r-lg);overflow:hidden;
+  background:linear-gradient(170deg,#F7F1FB,#FBEDE9)}
+.stage svg{display:block;width:100%;height:auto}
+.cue{position:absolute;left:var(--s4);right:var(--s4);bottom:var(--s3);text-align:center;
+  font-size:14.5px;font-weight:700;color:var(--coral-ink);min-height:1.6em}
+.cue span{position:absolute;left:0;right:0;opacity:0;animation:cuef var(--dur,8s) infinite}
+.cue span:nth-child(2){animation-delay:calc(var(--dur,8s)/2)}
+@keyframes cuef{0%,3%{opacity:0}9%,45%{opacity:1}53%,100%{opacity:0}}
+
+.dt{padding:var(--s5) var(--s4) 0}
+.dt h1{font-size:25px;font-weight:800;margin:var(--s3) 0 3px}
+.dt .en{font-size:13.5px;color:var(--sub);margin-bottom:var(--s4)}
+.box{background:var(--surface);border-radius:var(--r-md);padding:var(--s4);margin-bottom:var(--s3);
+  box-shadow:var(--sh-1)}
+.box>b{display:block;font-size:13.5px;font-weight:700;color:var(--primary-ink);margin-bottom:var(--s2)}
+.box li{list-style:none;font-size:14.5px;line-height:1.7;padding-left:22px;position:relative;
+  color:var(--ink-2)}
+.box li+li{margin-top:2px}
+.box li::before{content:"";position:absolute;left:5px;top:11px;width:6px;height:6px;border-radius:50%;
+  background:var(--primary)}
+.steps{margin-bottom:var(--s3)}
+.stp{display:flex;gap:var(--s3);padding:var(--s3) 0;font-size:14.5px;line-height:1.65;color:var(--ink-2)}
+.stp+.stp{border-top:1px solid var(--line)}
+.stp .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--primary-soft);
+  color:var(--primary-ink);font-size:12px;font-weight:700;display:flex;align-items:center;
+  justify-content:center;margin-top:1px}
+.caut{display:flex;gap:var(--s3);background:var(--warn-bg);color:var(--warn-ink);border-radius:var(--r-md);
+  padding:var(--s4);font-size:13.5px;line-height:1.7;margin-bottom:var(--s4)}
+.caut svg{width:19px;height:19px;flex:none;margin-top:2px}
+.caut b{display:block;margin-bottom:2px}
+.warn{display:flex;gap:var(--s3);background:var(--danger-bg);color:var(--danger-ink);
+  border-radius:var(--r-md);padding:var(--s4);font-size:13.5px;line-height:1.7;margin-bottom:var(--s4)}
+.warn svg{width:20px;height:20px;flex:none;margin-top:2px}
+.warn b{display:block;margin-bottom:3px;font-size:14px}
+.cta{padding:var(--s2) var(--s4) 0}
+/* 시작 버튼은 스크롤해도 하단에 붙어 있는다 */
+.cta.stick{position:sticky;bottom:0;z-index:2;margin-top:var(--s4);
+  padding:var(--s4) var(--s4) calc(var(--s3) + var(--safe));
+  background:linear-gradient(to top,var(--bg) 58%,rgba(250,247,245,0))}
+#b-routine,#b-pain,#b-detail{padding-bottom:0}
+/* 통증 상세 안내 — 정보는 그대로 두고 밀도만 높인다 */
+.mini{display:flex;gap:var(--s3);border-radius:var(--r-md);padding:var(--s3) var(--s4);
+  font-size:13px;line-height:1.6;margin-bottom:var(--s2)}
+.mini svg{width:18px;height:18px;flex:none;margin-top:2px}
+.mini b{display:block;font-size:13.5px;margin-bottom:2px}
+.mini.dg{background:var(--danger-bg);color:var(--danger-ink)}
+.mini.mn{background:var(--mint);color:var(--mint-ink)}
+
+/* 루틴 시트 */
+.rlist{padding:0 var(--s4)}
+.ritem{display:flex;align-items:center;gap:var(--s3);padding:var(--s3) 0}
+.ritem+.ritem{border-top:1px solid var(--line)}
+.ritem .th{position:relative;display:block;width:58px;height:58px;border-radius:var(--r-sm);
+  overflow:hidden;flex:none;background:linear-gradient(170deg,#F7F1FB,#FBEDE9)}
+.ritem .th svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ritem .tx{flex:1;min-width:0}
+.ritem .tx b{display:block;font-size:15px;font-weight:700}
+.ritem .tx span{display:block;font-size:12.5px;color:var(--sub)}
+.ritem .no{font-size:12.5px;font-weight:700;color:var(--sub);flex:none}
+
+/* 플레이어 */
+.ptop{display:flex;align-items:center;gap:var(--s3);padding:calc(var(--s3) + var(--safet)) var(--s4) var(--s3);
+  position:sticky;top:0;z-index:3;background:#faf7f5f2;backdrop-filter:blur(14px)}
+.ptop .pb{flex:1;height:7px;background:var(--line);border-radius:999px;overflow:hidden}
+.ptop .pb i{display:block;height:100%;background:var(--primary);border-radius:999px;
+  transition:width .5s var(--spring)}
+.ptop .pc{font-size:13px;font-weight:700;color:var(--sub);flex:none;min-width:38px;text-align:center}
+.pnm{text-align:center;padding:var(--s4) var(--s4) 0}
+.pnm h1{font-size:25px;font-weight:800}
+.pnm p{font-size:13.5px;color:var(--sub);margin-top:3px}
+
+/* 링 타이머 — 남은 시간이 원으로 줄어든다 */
+.ring{position:relative;width:min(214px,58vw);aspect-ratio:1;margin:var(--s4) auto 0}
+.ring>svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.ring circle{fill:none;stroke-width:8;stroke-linecap:round}
+.ring .tr{stroke:var(--line)}
+.ring .bar{stroke:var(--primary);transition:stroke-dashoffset .98s linear,stroke .3s var(--ease)}
+.ring .cn{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .t{font-size:46px;font-weight:800;letter-spacing:-.045em;line-height:1.15;font-variant-numeric:tabular-nums;
+  transition:color .3s var(--ease)}
+.ring .l{font-size:12.5px;color:var(--sub);font-weight:700;margin-top:2px}
+.ring.pz .bar{stroke:var(--sub)} .ring.pz .t{color:var(--sub)}
+.ring.hot .bar{stroke:var(--coral)} .ring.hot .t{color:var(--coral-ink);animation:tick .95s var(--ease) infinite}
+@keyframes tick{0%,70%{transform:none}35%{transform:scale(1.09)}}
+
+.pctl{display:flex;align-items:center;gap:var(--s3);padding:var(--s5) var(--s4) 0}
+.pctl .btn{flex:1}
+.pctl .icon-btn{width:52px;height:52px;box-shadow:inset 0 0 0 1.5px var(--line),var(--sh-1)}
+.pctl .icon-btn:disabled{opacity:.35}
+
+/* 다음 동작 준비 화면 — 세로 가운데 */
+.restwrap{min-height:calc(100dvh - 78px - var(--safet));display:flex;flex-direction:column;justify-content:center}
+.rest{text-align:center;padding:0 var(--s4)}
+.rest .up{font-size:13px;font-weight:700;color:var(--primary-ink);background:var(--primary-soft);
+  display:inline-block;padding:6px 14px;border-radius:999px}
+.rest h1{font-size:27px;font-weight:800;margin-top:var(--s3)}
+.rest .sub{font-size:14px;color:var(--sub);margin-top:4px}
+.rest .th{position:relative;display:block;width:min(240px,64vw);aspect-ratio:5/4;margin:var(--s5) auto 0;
+  border-radius:var(--r-lg);overflow:hidden;background:linear-gradient(170deg,#F7F1FB,#FBEDE9)}
+.rest .th svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.rest .cd{font-size:64px;font-weight:800;letter-spacing:-.05em;line-height:1.1;margin-top:var(--s4);
+  font-variant-numeric:tabular-nums;color:var(--primary)}
+.rest .cd.hot{color:var(--coral-ink)}
+
+/* 완료 */
+.fin{text-align:center;padding:var(--s6) var(--s5) var(--s7);
+  min-height:calc(100dvh - var(--safet));display:flex;flex-direction:column;justify-content:center}
+.fin .em{position:relative;width:92px;height:92px;margin:0 auto var(--s5);border-radius:50%;background:var(--mint);
+  color:var(--mint-ink);display:flex;align-items:center;justify-content:center;
+  animation:pop .55s var(--spring) both}
+.fin .em::before,.fin .em::after{content:"";position:absolute;inset:0;border-radius:50%;
+  border:2px solid var(--mint-ink);opacity:0;animation:ripple 2.4s var(--ease) infinite}
+.fin .em::after{animation-delay:.8s}
+@keyframes ripple{0%{transform:scale(1);opacity:.3}70%{transform:scale(1.6);opacity:0}100%{opacity:0}}
+.fin .em svg{width:44px;height:44px;stroke-width:2.6;stroke-dasharray:30;stroke-dashoffset:30;
+  animation:draw .5s var(--ease) .22s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.fin h1{font-size:28px;font-weight:800;margin-bottom:var(--s2);animation:rise .45s var(--ease) both .3s}
+.fin p{font-size:15px;color:var(--ink-2);line-height:1.7;animation:rise .45s var(--ease) both .38s}
+.fin .sum{display:flex;gap:var(--s2);margin:var(--s5) 0 var(--s6);animation:rise .45s var(--ease) both .46s}
+.fin .sum div{flex:1;background:var(--surface);border-radius:var(--r-md);padding:var(--s4) var(--s2);
+  box-shadow:var(--sh-1)}
+.fin .sum b{display:block;font-size:24px;font-weight:800;letter-spacing:-.03em}
+.fin .sum span{font-size:12px;color:var(--sub)}
+.fin .cta2{display:flex;flex-direction:column;gap:var(--s2);animation:rise .45s var(--ease) both .54s}
+
+/* 안전 정보 */
+.sf{padding:0 var(--s4)}
+.sf h4{font-size:16px;font-weight:700;margin:var(--s5) 0 var(--s2)}
+.sf ul{padding-left:20px;margin:0}
+.sf li{font-size:14.5px;line-height:1.8;color:var(--ink-2)}
+.sf .src{font-size:12.5px;color:var(--sub);line-height:1.75;margin-top:var(--s5);
+  padding-top:var(--s4);border-top:1px solid var(--line)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <section class="page on" id="p-home" aria-labelledby="h-home"></section>
+  <section class="page" id="p-lib" aria-labelledby="h-lib"></section>
+  <section class="page" id="p-care" aria-labelledby="h-care"></section>
+  <section class="page" id="p-log" aria-labelledby="h-log"></section>
+  <nav class="tabbar" aria-label="주요 메뉴"><div class="in" id="tabbar"></div></nav>
+</div>
+
+<div id="onb" role="dialog" aria-modal="true" aria-labelledby="ob-t"></div>
+<div class="ov" id="ov-routine" role="dialog" aria-modal="true"><div class="in" id="b-routine"></div></div>
+<div class="ov" id="ov-detail" role="dialog" aria-modal="true"><div class="in" id="b-detail"></div></div>
+<div class="ov" id="ov-player" role="dialog" aria-modal="true"><div class="in" id="b-player"></div></div>
+<div class="ov" id="ov-pain" role="dialog" aria-modal="true"><div class="in" id="b-pain"></div></div>
+<div class="ov" id="ov-safety" role="dialog" aria-modal="true"><div class="in" id="b-safety"></div></div>
+<div class="mask" id="ov-ask" role="dialog" aria-modal="true" aria-labelledby="ask-t"><div class="sh" id="ask-b"></div></div>
+<p id="live" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></p>
+
+<script>
+"use strict";
+/* ═══════════════════════ 아이콘 (SVG · 이모지 미사용) ═══════════════════════ */
+const I={
+ home:'<path d="M3 10.6 12 3.5l9 7.1"/><path d="M5.6 9.4V20h12.8V9.4"/><path d="M9.8 20v-5.2h4.4V20"/>',
+ act:'<path d="M6 8v8M18 8v8M3.5 10.5v3M20.5 10.5v3M6 12h12"/>',
+ care:'<path d="M12 20.3S4.2 15.6 4.2 10.4A3.9 3.9 0 0 1 12 8.2a3.9 3.9 0 0 1 7.8 2.2c0 5.2-7.8 9.9-7.8 9.9Z"/>',
+ log:'<path d="M6.5 3.5h11v17l-5.5-3.6-5.5 3.6z"/><path d="M9.5 8.5h5M9.5 12h5"/>',
+ alert:'<path d="M12 4.4 2.9 19.6h18.2z"/><path d="M12 9.6v4.2M12 16.9v.1"/>',
+ chev:'<path d="M9 5.5 16 12l-7 6.5"/>',
+ back:'<path d="M15 5.5 8 12l7 6.5"/>',
+ close:'<path d="M6 6l12 12M18 6 6 18"/>',
+ play:'<path d="M7.5 5.2 18.5 12 7.5 18.8z" fill="currentColor" stroke-linejoin="round"/>',
+ pause:'<path d="M9 6v12M15 6v12"/>',
+ check:'<path d="M4.5 12.6 9.5 17.5 19.5 6.8"/>',
+ clock:'<circle cx="12" cy="12" r="8.4"/><path d="M12 7.4V12l3.2 2"/>',
+ flame:'<path d="M12 3.5c3 3.4 5.5 6 5.5 9.4a5.5 5.5 0 0 1-11 0c0-1.6.7-3 1.8-4.3.5 1 1.2 1.7 2 2 .3-3 .9-5.4 1.7-7.1Z"/>',
+ shield:'<path d="M12 3.6 19 6v5.4c0 4.2-2.8 7.4-7 9-4.2-1.6-7-4.8-7-9V6z"/><path d="M9 12.2l2.1 2.1 4-4.2"/>',
+ filter:'<path d="M4 6.5h16M7 12h10M10 17.5h4"/>',
+ /* 신체 부위 */
+ pelvis:'<path d="M5 7.5c0 4.4 2.2 6.8 3.4 9.6M19 7.5c0 4.4-2.2 6.8-3.4 9.6"/><path d="M5 7.5h14"/><path d="M9.6 12.4h4.8"/>',
+ belly:'<path d="M8.5 4.2v6.2c0 4 2 6.4 5 6.4"/><path d="M8.5 10.4c-3 .8-4.6 3-4.6 5.4 0 2.4 2 4 4.6 4"/><path d="M13.5 16.8c3.4 0 5.6-2 5.6-4.6"/>',
+ spine:'<path d="M12 3.6v16.8"/><path d="M8.6 6.4h6.8M8.6 10.2h6.8M8.6 14h6.8M8.6 17.8h6.8"/>',
+ legs:'<path d="M8.4 3.6v7.2l-2 9.6M15.6 3.6v7.2l2 9.6"/><path d="M8.4 3.6h7.2"/>',
+ ribs:'<path d="M12 3.6v16.8"/><path d="M12 6.6c3 0 5 1.6 5.6 3.4M12 6.6c-3 0-5 1.6-5.6 3.4"/><path d="M12 12c2.6 0 4.4 1.4 5 3M12 12c-2.6 0-4.4 1.4-5 3"/>',
+ neck:'<circle cx="12" cy="6.2" r="2.8"/><path d="M4.5 19.4c1.4-3.6 4-5.4 7.5-5.4s6.1 1.8 7.5 5.4"/>',
+ hand:'<path d="M9 11V5.4a1.4 1.4 0 0 1 2.8 0V11"/><path d="M11.8 10.4V4.6a1.4 1.4 0 0 1 2.8 0v6"/><path d="M14.6 10.8V6.6a1.4 1.4 0 0 1 2.8 0v7c0 3.7-2.2 6.4-5.6 6.4s-5.6-2.2-5.6-5.2v-3.6a1.4 1.4 0 0 1 2.8 0"/>',
+ knee:'<path d="M8 3.6v5.8c0 2 1.2 3 1.2 5.2 0 1.8-1.2 3-1.2 5.8"/><path d="M16 3.6v5.8c0 2-1.2 3-1.2 5.2 0 1.8 1.2 3 1.2 5.8"/>',
+ dizzy:'<circle cx="12" cy="12" r="8.4"/><path d="M9 9.5l2 2m0-2-2 2M13 9.5l2 2m0-2-2 2"/><path d="M9 16c1.8-1.4 4.2-1.4 6 0"/>',
+ floor:'<path d="M3.5 17.5h17"/><path d="M6.5 17.5V13a5.5 5.5 0 0 1 11 0v4.5"/>',
+ minus:'<path d="M6 12h12"/>',plus:'<path d="M12 6v12M6 12h12"/>',
+ meal:'<path d="M3.6 11.4h16.8c0 4.6-3.8 8.2-8.4 8.2s-8.4-3.6-8.4-8.2Z"/><path d="M9 4.8v3.2M12 3.9v4.1M15 4.8v3.2"/>',
+ sun:'<circle cx="12" cy="12" r="4.1"/><path d="M12 3.2v2.1M12 18.7v2.1M3.2 12h2.1M18.7 12h2.1M5.9 5.9l1.5 1.5M16.6 16.6l1.5 1.5M18.1 5.9l-1.5 1.5M7.4 16.6l-1.5 1.5"/>',
+ moon:'<path d="M20.2 14.4A8.4 8.4 0 0 1 9.6 3.8a8.4 8.4 0 1 0 10.6 10.6Z"/>',
+ feather:'<path d="M19.4 4.6c-6.2 0-11.2 2.6-11.2 8.8v3.4l2.8-2.8h3.4c3.2 0 5-2.8 5-9.4Z"/><path d="M4.6 19.4 9.6 14.4"/>',
+ prev:'<path d="M17.5 5.5 9 12l8.5 6.5z" fill="currentColor" stroke-linejoin="round"/><path d="M6 5.6v12.8"/>',
+ skip:'<path d="M6.5 5.5 15 12l-8.5 6.5z" fill="currentColor" stroke-linejoin="round"/><path d="M18 5.6v12.8"/>',
+ sound:'<path d="M4.5 9.4h3.2L12 5.6v12.8L7.7 14.6H4.5z"/><path d="M15.6 9.6a3.4 3.4 0 0 1 0 4.8M18 7.2a6.8 6.8 0 0 1 0 9.6"/>',
+ mute:'<path d="M4.5 9.4h3.2L12 5.6v12.8L7.7 14.6H4.5z"/><path d="M16.2 10.2 20.4 14M20.4 10.2 16.2 14"/>'
+};
+const ic=(n,cls='')=>`<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[n]}</svg>`;
+
+/* ═══════════════════════ 캐릭터 리그 ═══════════════════════
+   CLAUDE.md 고정 스펙. 그리는 순서 = 살 먼저 → 옷 나중 (옷이 항상 살 위) */
+const C={sk:'#F6C6B4',skF:'#E3A893',top:'#A58FD4',topF:'#8B78B3',
+         pant:'#8D7DB8',pantF:'#75649C',hair:'#5A4A54',mat:'#E8B7AB'};
+const kt=n=>Array.from({length:n},(_,i)=>(i/(n-1)).toFixed(4)).join(';');
+const ks=n=>Array(n-1).fill('.45 0 .55 1').join(';');
+const sg=(x1,y1,x2,y2,c,w)=>`<path d="M${x1},${y1} L${x2},${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
+const sgA=(v,c,w,d)=>`<path fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round"><animate attributeName="d" dur="${d}s" repeatCount="indefinite" keyTimes="${kt(v.length)}" calcMode="spline" keySplines="${ks(v.length)}" values="${v.join(';')}"/></path>`;
+const phA=(v,f,d)=>`<path fill="${f}"><animate attributeName="d" dur="${d}s" repeatCount="indefinite" keyTimes="${kt(v.length)}" calcMode="spline" keySplines="${ks(v.length)}" values="${v.join(';')}"/></path>`;
+const ft=(x,y,rx,c,rot=0)=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${(rx*.42).toFixed(1)}" transform="rotate(${rot} ${x} ${y})" fill="${c}"/>`;
+const hd=(x,y,r,c)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/>`;
+const matt=(x=40,w=344,y=252)=>`<rect x="${x}" y="${y}" width="${w}" height="12" rx="6" fill="${C.mat}"/><ellipse cx="${x+w/2}" cy="${y+6}" rx="${w*.4}" ry="8" fill="#00000010"/>`;
+/* 머리: 두상에 붙는 원호 머리카락 + 똥머리 */
+const head=(cx,cy,r,dir=1)=>{const hr=(r*1.08).toFixed(1),
+  ax=cx-(r*.9)*dir, ay=cy-r*.5, bx=cx+(r*.85)*dir, by=cy+r*.55;
+  return hd(cx,cy,r,C.sk)+
+   `<path d="M${ax},${ay} A${hr},${hr} 0 1 ${dir>0?1:0} ${bx},${by} Z" fill="${C.hair}"/>`+
+   `<circle cx="${cx+r*1.1*dir}" cy="${cy-r*1.3}" r="${(r*.44).toFixed(1)}" fill="${C.hair}"/>`;};
+const col=(x,y,r,c=C.top)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/>`;
+
+function rigCatCow(){
+  const spine=['M150,162 Q211,150 272,164','M150,158 Q211,114 272,160','M150,162 Q211,150 272,164',
+               'M150,166 Q211,186 272,166','M150,162 Q211,150 272,164'];
+  const belly=['M184,164 C178,206 208,238 234,232 C256,227 266,206 260,172 C234,150 199,150 184,164 Z',
+               'M184,150 C178,192 208,220 234,216 C256,212 264,194 258,160 C234,130 199,130 184,150 Z',
+               'M184,164 C178,206 208,238 234,232 C256,227 266,206 260,172 C234,150 199,150 184,164 Z',
+               'M184,172 C178,214 208,246 234,240 C256,235 266,214 260,180 C234,168 199,168 184,172 Z',
+               'M184,164 C178,206 208,238 234,232 C256,227 266,206 260,172 C234,150 199,150 184,164 Z'];
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="네발기기 자세에서 등을 둥글게 말았다 펴는 동작">${matt()}
+    ${sg(158,166,154,234,C.skF,14)}${hd(150,241,12.5,C.skF)}${sg(158,165,155,194,C.topF,18)}
+    ${sg(286,240,345,244,C.skF,15)}${ft(357,242,17.5,C.skF,4)}${sg(282,166,286,240,C.pantF,22)}
+    ${sgA(spine,C.top,34,8)}${phA(belly,C.top,8)}
+    ${sg(276,242,339,247,C.sk,17)}${ft(353,244.5,20,C.sk,4)}${sg(272,164,276,242,C.pant,26)}
+    ${sg(150,162,144,233,C.sk,15)}${hd(138,242,14,C.sk)}${sg(150,162,146,194,C.top,20)}
+    <g><animateTransform attributeName="transform" type="rotate" dur="8s" repeatCount="indefinite"
+      keyTimes="${kt(5)}" calcMode="spline" keySplines="${ks(5)}"
+      values="0 150 162;-19 150 162;0 150 162;13 150 162;0 150 162"/>
+      ${sg(148,162,130,146,C.sk,16)}${head(115,130,20,1)}</g>${col(148,160,12)}</svg>`;
+}
+function rigSquat(){
+  const T=`<animateTransform attributeName="transform" type="translate" dur="6s" repeatCount="indefinite"
+    keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;7 33;0 0"/>`;
+  const torso=['M227,75 Q228,110 238,140','M234,108 Q240,132 254,178','M227,75 Q228,110 238,140'];
+  const belly=['M221,95 C193,107 191,141 217,157 C227,163 236,157 234,150 C230,131 225,112 221,95 Z',
+               'M230,130 C202,142 200,176 226,194 C236,200 250,195 248,187 C242,168 235,148 230,130 Z',
+               'M221,95 C193,107 191,141 217,157 C227,163 236,157 234,150 C230,131 225,112 221,95 Z'];
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="서서 의자에 앉듯 천천히 내려갔다 일어서는 스쿼트 동작">${matt()}
+    ${sgA(['M242,194 L240,240','M232,200 L240,240','M242,194 L240,240'],C.skF,13.5,6)}
+    ${ft(231.5,244.5,17,C.skF)}
+    ${sgA(['M248,142 L242,194','M264,180 L232,200','M248,142 L242,194'],C.pantF,19,6)}
+    <g>${T}${sg(227,83,159,85,C.skF,12)}${hd(148,85,9.5,C.skF)}${sg(227,82,203,83,C.topF,15.5)}</g>
+    ${sgA(torso,C.top,30,6)}${phA(belly,C.top,6)}
+    ${sgA(['M232,194 L230,242','M222,198 L230,242','M232,194 L230,242'],C.sk,15,6)}
+    ${ft(219,246.5,19,C.sk)}
+    ${sgA(['M238,140 L232,194','M254,178 L222,198','M238,140 L232,194'],C.pant,22,6)}
+    <g>${T}${sg(225,79,153,81,C.sk,13)}${hd(142,81,10.5,C.sk)}${sg(225,78,199,79,C.top,17)}</g>
+    <g>${T}${sg(225,75,216,60,C.sk,14)}${head(208,44,17,1)}</g>
+    <g>${T}${col(226,74,11)}</g></svg>`;
+}
+/* 앉기 리그 — o.headTilt(목), o.footFlex(발목), o.breathe(호흡) 로 동작을 살린다 */
+function rigSit(armHTML,label,o){
+  o=o||{};
+  const arm=armHTML||`${sg(208,134,180,192,C.sk,14)}${hd(174,199,12,C.sk)}${sg(208,133,196,158,C.top,19)}`;
+  const K=(d)=>`dur="${d}s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+  const B1='M198,146 C168,160 166,202 196,218 C208,224 219,217 217,207 C210,184 202,164 198,146 Z';
+  const B2='M198,143 C164,157 162,204 194,221 C207,227 221,219 219,208 C212,183 202,161 198,143 Z';
+  const belly=o.breathe? phA([B1,B2,B1],C.top,6) : `<path fill="${C.top}" d="${B1}"/>`;
+  const nk=`${sg(210,124,206,106,C.sk,15)}${head(198,88,19,1)}`;
+  const headG=o.headTilt
+    ? `<g><animateTransform attributeName="transform" type="rotate" ${K(6)}
+         values="0 210 124;-15 210 124;0 210 124"/>${nk}</g>`
+    : (o.breathe
+      ? `<g><animateTransform attributeName="transform" type="translate" ${K(6)} values="0 0;0 -3;0 0"/>${nk}</g>`
+      : nk);
+  const nearFoot=o.footFlex
+    ? `<g><animateTransform attributeName="transform" type="rotate" ${K(4)}
+        values="0 206 248;-32 206 248;0 206 248"/>${ft(214,249,17,C.sk,-4)}</g>`
+    : ft(214,249,17,C.sk,-4);
+  const farFoot=o.footFlex
+    ? `<g><animateTransform attributeName="transform" type="rotate" ${K(4)}
+        values="0 204 244;-32 204 244;0 204 244"/>${ft(211,245,15,C.skF,-4)}</g>`
+    : ft(211,245,15,C.skF,-4);
+  /* 나비 자세 : 무릎이 위아래로 부드럽게 흔들린다 */
+  const knees=o.kneeBob
+    ? `<animateTransform attributeName="transform" type="rotate" ${K(5)} values="0 216 224;-4 216 224;0 216 224"/>`
+    : '';
+  /* reachArm : 팔을 머리 위로 뻗는 동작 — 머리보다 앞에 그려야 가려지지 않는다 */
+  const reach=o.reachArm? `
+    ${sgA(['M208,132 L168,80','M208,132 L186,56','M208,132 L168,80'],C.sk,14,6)}
+    <circle r="12" fill="${C.sk}">
+      <animate attributeName="cx" ${K(6)} values="161;181;161"/>
+      <animate attributeName="cy" ${K(6)} values="72;47;72"/></circle>
+    ${sgA(['M208,131 L188,105','M208,131 L197,94','M208,131 L188,105'],C.top,19,6)}` : '';
+  const torso=o.reachArm
+    ? sgA(['M210,126 L216,224','M206,126 L214,224','M210,126 L216,224'],C.top,34,6)
+    : sg(210,126,216,224,C.top,34);
+  /* 책상다리 옆모습 : 골반이 바닥에 닿고, 허벅지가 앞으로, 정강이가 몸쪽으로 접힌다 */
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="${label||'바닥에 앉아서 하는 동작'}">${matt(88,258,246)}
+    <g>${knees}${sg(172,238,206,244,C.skF,13)}${farFoot}${sg(216,218,172,238,C.pantF,20)}</g>
+    ${torso}${belly}
+    <g>${knees}${sg(166,241,208,248,C.sk,15)}${nearFoot}${sg(212,220,166,241,C.pant,24)}</g>
+    ${arm}${headG}${col(210,124,12)}${reach}</svg>`;
+}
+function rigSide(){
+  /* 무릎을 배 쪽으로 굽히고 눕는다. 위쪽 무릎만 조개처럼 열림 */
+  const thigh=['M262,208 L214,226','M262,208 L220,200','M262,208 L214,226'];
+  const shin =['M214,226 L256,246','M220,200 L262,220','M214,226 L256,246'];
+  const K5=`dur="5s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="옆으로 누워 무릎을 굽힌 채 위쪽 무릎을 여는 동작">${matt(60,320,250)}
+    ${sg(220,232,264,250,C.skF,13)}${ft(276,251,15,C.skF,12)}${sg(264,212,220,232,C.pantF,20)}
+    ${sg(150,216,262,208,C.top,32)}
+    <path fill="${C.top}" d="M192,214 C182,234 198,250 226,248 C250,246 262,234 260,216 C236,204 206,204 192,214 Z"/>
+    ${sgA(shin,C.sk,14,5)}
+    <g><animateTransform attributeName="transform" type="translate" ${K5} values="0 0;5 -25;0 0"/>
+      ${ft(268,248,17,C.sk,12)}</g>
+    ${sgA(thigh,C.pant,23,5)}
+    ${sg(162,212,140,240,C.sk,13)}${hd(133,246,12,C.sk)}${sg(162,211,150,225,C.top,17)}
+    ${sg(154,218,122,230,C.skF,12)}${hd(115,233,10.5,C.skF)}
+    ${sg(148,212,130,206,C.sk,14)}${head(114,198,19,1)}
+    ${col(152,214,12)}</svg>`;
+}
+function rigStand(armV,dur=5,label){
+  const A=armV||['M228,96 L182,120','M228,96 L182,80','M228,96 L182,120'];
+  const F=A.map(v=>v.replace(/L(-?\d+),(-?\d+)/,(m,x,y)=>`L${+x+8},${y}`));
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="${label||'서서 하는 동작'}">${matt(80,270,250)}
+    ${sg(238,196,240,238,C.skF,13.5)}${ft(243,242,17,C.skF)}${sg(234,152,238,196,C.pantF,19)}
+    ${sgA(F,C.skF,12,dur)}
+    ${sg(228,86,232,152,C.top,30)}
+    <path fill="${C.top}" d="M222,106 C196,118 194,152 220,168 C230,174 239,168 237,161 C233,142 226,123 222,106 Z"/>
+    ${sg(226,196,224,240,C.sk,15)}${ft(220,244,19,C.sk)}${sg(230,152,226,196,C.pant,22)}
+    ${sgA(A,C.sk,13,dur)}
+    ${sg(228,86,219,70,C.sk,14)}${head(211,54,17,1)}${col(229,85,11)}</svg>`;
+}
+function rigChild(){
+  /* 깊은 호흡에 따라 등이 부드럽게 오르내린다 */
+  /* 무릎을 접고 엉덩이를 발뒤꿈치에 앉힌 뒤 상체를 앞으로 내린다. 호흡에 따라 등이 오르내림 */
+  const back=['M176,214 Q232,186 276,214','M176,211 Q232,178 276,212','M176,214 Q232,186 276,214'];
+  const belly=['M204,220 C194,238 212,250 238,248 C256,246 264,236 260,222 C240,212 216,212 204,220 Z',
+               'M204,217 C193,236 211,250 238,248 C257,246 265,235 261,219 C240,209 216,209 204,217 Z',
+               'M204,220 C194,238 212,250 238,248 C256,246 264,236 260,222 C240,212 216,212 204,220 Z'];
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="무릎을 벌리고 상체를 앞으로 숙여 쉬는 아기 자세">${matt(70,290,250)}
+    ${sg(226,244,282,252,C.skF,13)}${ft(293,252,15,C.skF,4)}${sg(272,216,226,244,C.pantF,20)}
+    <path fill="none" stroke="${C.top}" stroke-width="34" stroke-linecap="round">
+      <animate attributeName="d" ${KA(6)} values="${back.join(';')}"/></path>
+    ${phA(belly,C.top,6)}
+    ${sg(222,248,286,256,C.sk,15)}${ft(298,256,17,C.sk,4)}${sg(276,218,222,248,C.pant,24)}
+    <g><animateTransform attributeName="transform" type="translate" ${KA(6)} values="0 0;0 -3;0 0"/>
+      ${sg(182,218,118,232,C.sk,13)}${hd(108,235,12,C.sk)}${sg(182,217,156,222,C.top,17)}
+      ${sg(178,216,158,224,C.sk,14)}${head(144,230,19,1)}${col(180,218,12)}</g></svg>`;
+}
+function rigWall(){
+  /* 손은 벽에 고정, 몸이 벽 쪽으로 기울었다 돌아온다 */
+  const K=`keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+  const torso=['M232,96 Q236,132 238,168','M218,102 Q226,136 230,170','M232,96 Q236,132 238,168'];
+  const thighN=['M238,168 L236,206','M230,170 L236,206','M238,168 L236,206'];
+  const thighF=['M244,172 L248,208','M236,174 L248,208','M244,172 L248,208'];
+  const armN=['M232,100 L172,106','M218,106 L172,106','M232,100 L172,106'];
+  const armF=['M238,106 L178,112','M224,112 L178,112','M238,106 L178,112'];
+  const slvN=['M232,99 L206,102','M218,105 L200,105','M232,99 L206,102'];
+  const slvF=['M238,105 L214,108','M224,111 L208,110','M238,105 L214,108'];
+  const belly=['M226,112 C202,124 200,156 224,172 C234,178 242,172 240,165 C236,146 230,128 226,112 Z',
+               'M214,118 C190,130 188,162 212,178 C222,184 230,178 228,171 C224,152 218,134 214,118 Z',
+               'M226,112 C202,124 200,156 224,172 C234,178 242,172 240,165 C236,146 230,128 226,112 Z'];
+  const neck=['M232,94 L224,80','M218,100 L212,86','M232,94 L224,80'];
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="벽을 짚고 팔을 굽혔다 펴는 벽 푸시업">${matt(140,230,252)}
+    <rect x="130" y="18" width="26" height="246" rx="4" fill="#EEE0D8"/>
+    ${sg(248,208,252,242,C.skF,13.5)}${ft(255,245,17,C.skF)}${sgA(thighF,C.pantF,19,5)}
+    ${sgA(armF,C.skF,12,5)}${hd(178,112,9.5,C.skF)}${sgA(slvF,C.topF,15.5,5)}
+    ${sgA(torso,C.top,30,5)}${phA(belly,C.top,5)}
+    ${sg(236,206,234,242,C.sk,15)}${ft(230,246,19,C.sk)}${sgA(thighN,C.pant,22,5)}
+    ${sgA(armN,C.sk,13,5)}${hd(170,106,10.5,C.sk)}${sgA(slvN,C.top,17,5)}
+    <g><animateTransform attributeName="transform" type="translate" dur="5s" repeatCount="indefinite"
+      ${K} values="0 0;-14 6;0 0"/>
+      ${sg(232,94,224,80,C.sk,14)}${head(216,64,17,1)}${col(232,95,11)}</g></svg>`;
+}
+const rigCalf=()=>rigStand(['M228,96 L180,132','M228,96 L180,132','M228,96 L180,132'],4,'서서 발뒤꿈치를 들었다 내리는 동작')
+  .replace(`${ft(220,244,19,C.sk)}`,
+   `<g><animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite"
+      keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;0 -12;0 0"/>
+      ${ft(220,244,19,C.sk)}</g>`);
+const rigShoulder=()=>rigStand(['M228,96 L186,126','M228,96 L192,96','M228,96 L186,126'],5,'서서 어깨를 크게 돌리는 동작');
+/* 서서 두 팔을 머리 위로 올리며 크게 숨을 마신다 */
+const rigBreathe=()=>rigStand(['M228,96 L188,126','M228,96 L206,40','M228,96 L188,126'],6,
+  '서서 두 팔을 위로 올리며 깊게 숨을 들이쉬는 동작');
+/* 제자리 걷기 — 무릎을 앞으로 들어올리고 팔은 반대로 흔든다 */
+function rigMarch(){
+  const thigh=['M230,152 L226,196','M230,152 L192,172','M230,152 L226,196'];
+  const shin =['M226,196 L224,240','M192,172 L200,214','M226,196 L224,240'];
+  const armN =['M228,94 L192,124','M228,94 L204,68','M228,94 L192,124'];
+  const armF =['M228,98 L202,128','M228,98 L248,142','M228,98 L202,128'];
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="제자리에서 무릎을 번갈아 들어올리며 걷는 동작">${matt(80,270,250)}
+    ${sg(238,196,240,238,C.skF,13.5)}${ft(243,242,17,C.skF)}${sg(234,152,238,196,C.pantF,19)}
+    ${sgA(armF,C.skF,12,4)}
+    <g><animateTransform attributeName="transform" type="translate" ${KA(4)} values="0 0;46 14;0 0"/>
+      ${hd(202,128,10,C.skF)}</g>
+    ${sg(228,86,232,152,C.top,30)}
+    <path fill="${C.top}" d="M222,106 C196,118 194,152 220,168 C230,174 239,168 237,161 C233,142 226,123 222,106 Z"/>
+    ${sgA(shin,C.sk,15,4)}
+    <g><animateTransform attributeName="transform" type="translate" ${KA(4)} values="0 0;-24 -26;0 0"/>
+      ${ft(220,244,19,C.sk)}</g>
+    ${sgA(thigh,C.pant,22,4)}
+    ${sgA(armN,C.sk,13,4)}
+    <g><animateTransform attributeName="transform" type="translate" ${KA(4)} values="0 0;12 -56;0 0"/>
+      ${hd(192,124,11,C.sk)}</g>
+    ${sg(228,86,219,70,C.sk,14)}${head(211,54,17,1)}${col(229,85,11)}</svg>`;
+}
+
+const KA=(d)=>`dur="${d}s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+/* 골반 기울이기 — 벽에 기대 골반을 앞뒤로 굴린다 */
+function rigTilt(){
+  const torso=['M228,86 Q231,120 232,152','M228,86 Q225,120 222,152','M228,86 Q231,120 232,152'];
+  const thighN=['M230,152 L226,196','M221,152 L224,196','M230,152 L226,196'];
+  const thighF=['M234,152 L238,196','M225,152 L236,196','M234,152 L238,196'];
+  const belly=['M222,106 C196,118 194,152 220,168 C230,174 239,168 237,161 C233,142 226,123 222,106 Z',
+               'M214,108 C190,120 188,152 214,168 C224,174 232,168 230,161 C226,142 218,125 214,108 Z',
+               'M222,106 C196,118 194,152 220,168 C230,174 239,168 237,161 C233,142 226,123 222,106 Z'];
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="벽에 기대 골반을 앞뒤로 기울이는 동작">${matt(150,200,250)}
+    <rect x="250" y="20" width="24" height="242" rx="4" fill="#EEE0D8"/>
+    ${sg(238,196,240,238,C.skF,13.5)}${ft(243,242,17,C.skF)}${sgA(thighF,C.pantF,19,5)}
+    ${sg(230,98,196,146,C.skF,12)}${hd(190,153,10.5,C.skF)}
+    ${sgA(torso,C.top,30,5)}${phA(belly,C.top,5)}
+    ${sg(226,196,224,240,C.sk,15)}${ft(220,244,19,C.sk)}${sgA(thighN,C.pant,22,5)}
+    ${sg(228,96,192,150,C.sk,13)}${hd(186,158,12,C.sk)}${sg(228,95,214,116,C.top,17)}
+    ${sg(228,86,219,70,C.sk,14)}${head(211,54,17,1)}${col(229,85,11)}</svg>`;
+}
+/* 사이드 레그 리프트 — 가까운 다리를 옆으로 들어올린다 */
+function rigLegLift(){
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="의자를 잡고 한쪽 다리를 옆으로 드는 동작">${matt(80,270,250)}
+    ${sg(238,196,240,238,C.skF,13.5)}${ft(243,242,17,C.skF)}${sg(234,152,238,196,C.pantF,19)}
+    ${sg(228,96,192,126,C.skF,12)}${hd(184,130,9.5,C.skF)}
+    ${sg(228,86,232,152,C.top,30)}
+    <path fill="${C.top}" d="M222,106 C196,118 194,152 220,168 C230,174 239,168 237,161 C233,142 226,123 222,106 Z"/>
+    <g><animateTransform attributeName="transform" type="rotate" ${KA(5)} values="0 230 152;-26 230 152;0 230 152"/>
+      ${sg(226,196,224,240,C.sk,15)}${ft(220,244,19,C.sk)}${sg(230,152,226,196,C.pant,22)}</g>
+    ${sg(228,94,190,122,C.sk,13)}${hd(182,126,10.5,C.sk)}${sg(228,93,206,109,C.top,17)}
+    ${sg(228,86,219,70,C.sk,14)}${head(211,54,17,1)}${col(229,85,11)}</svg>`;
+}
+/* 장요근 스트레칭 — 뒷다리를 뒤로 보내며 골반을 앞으로 민다 */
+function rigLunge(){
+  const farThigh=['M234,152 L238,196','M236,150 L268,192','M234,152 L238,196'];
+  const farShin =['M238,196 L240,238','M268,192 L292,230','M238,196 L240,238'];
+  const torso=['M228,86 Q230,120 232,152','M224,88 Q227,122 230,152','M228,86 Q230,120 232,152'];
+  const belly=['M222,106 C196,118 194,152 220,168 C230,174 239,168 237,161 C233,142 226,123 222,106 Z',
+               'M218,108 C192,120 190,154 216,170 C226,176 235,170 233,163 C229,144 222,125 218,108 Z',
+               'M222,106 C196,118 194,152 220,168 C230,174 239,168 237,161 C233,142 226,123 222,106 Z'];
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="한 발을 뒤로 보내 사타구니 앞쪽을 늘리는 동작">${matt(80,300,250)}
+    ${sgA(farShin,C.skF,13.5,5)}
+    <g><animateTransform attributeName="transform" type="translate" ${KA(5)} values="0 0;52 -8;0 0"/>
+      ${ft(250,240,17,C.skF,18)}</g>
+    ${sgA(farThigh,C.pantF,19,5)}
+    ${sg(228,96,192,126,C.skF,12)}${hd(184,130,9.5,C.skF)}
+    ${sgA(torso,C.top,30,5)}${phA(belly,C.top,5)}
+    ${sg(226,196,224,240,C.sk,15)}${ft(220,244,19,C.sk)}${sg(230,152,226,196,C.pant,22)}
+    ${sg(228,94,190,122,C.sk,13)}${hd(182,126,10.5,C.sk)}${sg(228,93,206,109,C.top,17)}
+    ${sg(228,86,219,70,C.sk,14)}${head(211,54,17,1)}${col(229,85,11)}</svg>`;
+}
+
+/* 온보딩 대표 일러스트 — 서서 두 손으로 배를 감싼 임산부 옆모습 (웰니스 대표 포즈) */
+function rigHero(){
+  const K=`dur="7s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+  const B1='M172,130 C136,146 134,192 170,208 C182,213 190,206 188,197 C182,172 176,150 172,130 Z';
+  const B2='M172,127 C132,144 130,194 168,211 C181,216 191,208 189,198 C183,171 176,147 172,127 Z';
+  return `<svg viewBox="0 0 340 340" role="img" aria-label="서서 두 손으로 배를 감싸 안은 임산부">
+    <circle cx="176" cy="168" r="132" fill="#F2ECFB"/>
+    <circle cx="176" cy="176" r="102" fill="#FAF1EC"/>
+    <path d="M42,206 q20,-30 40,-4" stroke="#CFBFEA" stroke-width="6" stroke-linecap="round" fill="none" opacity=".7"/>
+    <path d="M264,92 q22,-26 40,-2" stroke="#F0C6B6" stroke-width="6" stroke-linecap="round" fill="none" opacity=".7"/>
+    <circle cx="288" cy="206" r="7" fill="#DCCBF2"/><circle cx="58" cy="112" r="5" fill="#F2CDBE"/>
+    <ellipse cx="182" cy="296" rx="72" ry="9" fill="#00000012"/>
+    <g><animateTransform attributeName="transform" type="translate" ${K} values="0 0;0 -4;0 0"/>
+      <!-- 먼쪽 다리 -->
+      ${sg(190,241,192,290,C.skF,15)}${ft(199,292,17,C.skF,3)}${sg(188,184,190,241,C.pantF,23)}
+      <!-- 먼쪽 팔 : 배 위쪽을 감쌈 -->
+      ${sg(182,126,164,158,C.skF,13)}${hd(158,163,11,C.skF)}${sg(182,125,172,142,C.topF,17)}
+      <!-- 몸통 · 배 -->
+      ${sg(178,116,184,184,C.top,34)}
+      <path fill="${C.top}"><animate attributeName="d" ${K} values="${B1};${B2};${B1}"/></path>
+      <!-- 가까운쪽 다리 -->
+      ${sg(180,241,178,290,C.sk,17)}${ft(171,292,19,C.sk,-3)}${sg(184,184,180,241,C.pant,26)}
+      <!-- 가까운쪽 팔 : 배 아래를 받침 -->
+      ${sg(176,124,158,186,C.sk,14)}${hd(153,193,12,C.sk)}${sg(176,123,167,146,C.top,19)}
+      <!-- 목 · 머리 -->
+      ${sg(178,114,174,100,C.sk,15)}${head(168,83,18,1)}${col(179,115,12)}
+    </g></svg>`;
+}
+
+/* 썸네일 크롭 */
+const VB={cat:'88 82 300 190',squat:'125 5 170 268',sit:'142 58 116 205',side:'92 172 216 92',
+          stand:'160 18 130 246',child:'86 172 232 96',wall:'150 12 140 256'};
+rigCatCow.vb=VB.cat; rigSquat.vb=VB.squat; rigSide.vb=VB.side; rigChild.vb=VB.child;
+rigWall.vb=VB.wall; rigCalf.vb=VB.stand; rigShoulder.vb=VB.stand; rigLegLift.vb=VB.stand;
+rigTilt.vb=VB.stand; rigLunge.vb='160 18 175 246';
+rigBreathe.vb='160 18 130 246'; rigMarch.vb='170 40 130 224';
+const vbOf=e=>e.vb||e.rig.vb||'0 0 420 300';
+const thumb=e=>e.rig().replace('viewBox="0 0 420 300"',`viewBox="${vbOf(e)}"`);
+
+/* ═══════════════════════ 운동 데이터 ═══════════════════════
+   load = 이 동작이 부담을 주는 부위 (불편한 곳 선택 시 제외 기준) */
+const EX=[
+ {id:'catcow',name:'고양이-소 자세',en:'Cat-Cow Stretch',phase:[1,2,3],role:'main',min:3,reps:'10회',dur:8,
+  rig:rigCatCow,cue:['숨을 내쉬며 · 등을 둥글게 말아요','숨을 마시며 · 허리를 천천히 내려요'],
+  tags:['요통 완화','골반'],pains:['sacro','round','back'],load:['wrist','knee','floor'],
+  effects:['허리·골반 통증 완화 (임신 중 요통에 가장 권장되는 동작)','척추 유연성 유지, 자세 개선','복식호흡 연습으로 출산 호흡 준비'],
+  steps:['어깨 아래 손목, 엉덩이 아래 무릎이 오도록 네발기기 자세를 만들어요.',
+    '숨을 내쉬며 등을 천장 쪽으로 둥글게 말고 시선은 배꼽을 봐요.',
+    '숨을 마시며 허리를 부드럽게 내리고 시선은 정면을 봐요. 과하게 꺾지 않아요.',
+    '호흡에 맞춰 천천히 10회 반복해요.'],
+  caution:'허리를 아래로 내릴 때 과하게 꺾으면 오히려 요통이 심해져요. 배가 무거운 후기에는 움직임을 작게 하세요.'},
+
+ {id:'pelvictilt',name:'서서 골반 기울이기',en:'Standing Pelvic Tilt',phase:[1,2,3],role:'warmup',min:2,reps:'12회',dur:5,
+  rig:rigTilt,
+  cue:['숨을 내쉬며 · 꼬리뼈를 말아 넣어요','숨을 마시며 · 자연스럽게 돌아와요'],
+  tags:['요통 완화','자세 교정'],pains:['back','round','sacro'],load:[],
+  effects:['허리 부담 즉시 완화','골반 정렬과 자세 교정','복부 심부근육 활성화'],
+  steps:['벽에 등을 대고 무릎을 살짝 굽혀 서요.','숨을 내쉬며 아랫배를 당기고 꼬리뼈를 앞으로 말아 허리와 벽 사이 틈을 없애요.',
+    '3초 유지 후 숨을 마시며 힘을 풀어요.','12회 반복해요.'],
+  caution:'숨을 참지 마세요. 어지러우면 바로 멈추고 앉으세요.'},
+
+ {id:'squat',name:'임산부 스쿼트',en:'Pregnancy Squat',phase:[2,3],role:'main',min:3,reps:'12회',dur:6,
+  rig:rigSquat,cue:['숨을 마시며 · 천천히 앉아요','숨을 내쉬며 · 일어서요'],
+  tags:['하체 근력','출산 준비'],pains:['back'],load:['wideleg','balance'],
+  effects:['하체·골반저근 근력 강화','출산 시 필요한 자세와 근육 준비','골반 순환 개선'],
+  steps:['발을 어깨너비보다 살짝 넓게 벌리고, 팔을 앞으로 뻗어 균형을 잡아요.',
+    '숨을 마시며 의자에 앉듯 엉덩이를 뒤로 빼며 천천히 내려가요. 무릎이 발끝을 넘지 않게.',
+    '숨을 내쉬며 발뒤꿈치로 바닥을 밀며 일어서요. 12회 반복해요.'],
+  caution:'균형이 불안하면 의자 등받이나 벽을 잡고 하세요. 치골통이 있으면 다리를 넓게 벌리지 말고 건너뛰세요.'},
+
+ {id:'birddog',name:'버드독',en:'Bird Dog',phase:[1,2],role:'main',min:3,reps:'좌우 8회',dur:6,
+  rig:rigCatCow,cue:['숨을 내쉬며 · 팔다리를 뻗어요','숨을 마시며 · 천천히 돌아와요'],
+  tags:['요통 완화','코어'],pains:['back','sacro'],load:['wrist','knee','floor','balance'],
+  effects:['허리를 받치는 코어·둔근 강화','균형 감각 유지','요통 예방'],
+  steps:['네발기기 자세에서 배에 살짝 힘을 줘 허리를 중립으로 유지해요.',
+    '숨을 내쉬며 오른팔과 왼다리를 바닥과 평행하게 뻗어요.','2~3초 유지 후 천천히 돌아와요.','좌우 번갈아 8회씩 해요.'],
+  caution:'허리가 아래로 꺼지거나 골반이 기울면 범위를 줄이세요. 후기에는 팔만 뻗는 것으로 바꿔도 좋아요.'},
+
+ {id:'clam',name:'클램셸',en:'Clamshell',phase:[1,2,3],role:'main',min:3,reps:'좌우 12회',dur:5,
+  rig:rigSide,cue:['숨을 내쉬며 · 무릎을 열어요','숨을 마시며 · 천천히 닫아요'],
+  tags:['골반','환도선다'],pains:['sacro','back'],load:['floor'],
+  effects:['골반을 잡아주는 둔근(중둔근) 강화','천장관절 통증(환도선다) 완화','걸을 때 골반 흔들림 감소'],
+  steps:['옆으로 누워 무릎을 45도 굽히고 발뒤꿈치는 붙여요. 머리는 팔로 받쳐요.',
+    '골반이 뒤로 넘어가지 않게 고정한 채, 숨을 내쉬며 위쪽 무릎만 조개껍질처럼 열어요.',
+    '천천히 닫아요. 12회 후 반대쪽도 해요.'],
+  caution:'골반이 같이 굴러가면 효과가 없어요. 허리가 아니라 엉덩이 옆쪽에 힘이 느껴져야 해요.'},
+
+ {id:'sideleg',name:'옆누워 다리 들기',en:'Side-Lying Leg Lift',phase:[1,2,3],role:'main',min:3,reps:'좌우 10회',dur:5,
+  rig:rigSide,cue:['숨을 내쉬며 · 다리를 들어요','숨을 마시며 · 내려요'],
+  tags:['부종 완화','골반'],pains:['swell','sacro'],load:['floor'],
+  effects:['다리 순환 개선, 부종 완화','골반 안정근 강화','다리에 쥐가 나는 빈도 감소'],
+  steps:['옆으로 누워 아래 다리는 굽히고 위 다리는 펴요.','숨을 내쉬며 위 다리를 어깨 높이까지 천천히 들어요.',
+    '숨을 마시며 바닥에 닿기 직전까지 내려요.','10회 후 반대쪽도 해요.'],
+  caution:'반동으로 튕기지 말고 천천히 하세요. 왼쪽으로 누우면 순환에 더 좋아요.'},
+
+ {id:'butterfly',name:'나비 자세',en:'Butterfly Pose',phase:[1,2,3],role:'stretch',min:3,reps:'2분 유지',dur:6,
+  vb:VB.sit,rig:()=>rigSit(null,'앉아서 양 발바닥을 마주 붙인 나비 자세',{breathe:1,kneeBob:1}),
+  cue:['숨을 마시며 · 척추를 길게','숨을 내쉬며 · 어깨를 내려요'],
+  tags:['골반','출산 준비'],pains:['round','sacro'],load:['floor','wideleg'],
+  effects:['골반 유연성 향상, 출산 준비','고관절·사타구니 이완','허리 부담 완화'],
+  steps:['앉아서 양 발바닥을 마주 붙이고 무릎을 자연스럽게 벌려요.','등을 곧게 펴고 숨을 깊게 마셔요.',
+    '무릎을 억지로 누르지 말고, 호흡하며 2분간 편하게 유지해요.'],
+  caution:'치골통이 있으면 다리를 좁게 하거나 건너뛰세요. 엉덩이 밑에 방석을 깔면 편해요.'},
+
+ {id:'sidebend',name:'앉아 옆구리 늘리기',en:'Seated Side Stretch',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 5회',dur:6,
+  vb:VB.sit,rig:()=>rigSit(`${sg(212,124,186,152,C.skF,12)}${hd(180,158,10,C.skF)}${sg(212,123,198,138,C.topF,15.5)}`,
+    '앉아서 한 팔을 위로 올려 옆구리를 늘리는 동작',{reachArm:1}),
+  cue:['숨을 마시며 · 팔을 위로','숨을 내쉬며 · 옆으로 기울여요'],
+  tags:['갈비 통증','원인대'],pains:['rib','round'],load:['floor'],
+  effects:['갈비뼈 통증 완화 (자궁이 밀어올린 횡격막 이완)','원인대 통증(하복부 당김) 완화','옆구리·호흡근 이완'],
+  steps:['편하게 앉아 한 손은 바닥을 짚어요.','숨을 마시며 반대 팔을 귀 옆으로 들어올려요.',
+    '숨을 내쉬며 몸통을 옆으로 길게 기울여요. 배를 비틀지 않아요.','5호흡 유지 후 반대쪽도 해요.'],
+  caution:'배가 눌리거나 비틀리는 느낌이 들면 각도를 줄이세요.'},
+
+ {id:'neck',name:'앉아 목 스트레칭',en:'Seated Neck Stretch',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 4회',dur:6,
+  vb:VB.sit,rig:()=>rigSit(`${sg(212,120,180,148,C.sk,13)}${hd(174,154,10.5,C.sk)}${sg(212,119,196,133,C.top,17)}`,'앉아서 고개를 옆으로 기울이는 목 스트레칭',{headTilt:1}),
+  cue:['천천히 · 한쪽으로 기울여요','반대쪽도 · 같은 시간만큼'],
+  tags:['목·어깨'],pains:['neck','wrist'],load:['floor'],
+  effects:['목·어깨 결림 완화','수면 자세로 굳은 목 이완','두통 빈도 감소'],
+  steps:['바르게 앉아 어깨를 내려요.','머리를 오른쪽으로 천천히 기울이고 왼쪽 어깨는 아래로 밀어요.',
+    '15초 유지하고 반대쪽도 해요.','좌우 4회씩 반복해요.'],
+  caution:'손으로 머리를 세게 당기지 마세요. 팔이 저리면 즉시 멈추고 의사와 상담하세요.'},
+
+ {id:'ankle',name:'발목 펌프',en:'Ankle Pump',phase:[1,2,3],role:'warmup',min:2,reps:'20회',dur:4,
+  vb:VB.sit,rig:()=>rigSit(`${sg(212,120,182,146,C.sk,13)}${hd(176,152,10.5,C.sk)}${sg(212,119,198,131,C.top,17)}`,'앉아서 발목을 위아래로 움직이는 동작',{footFlex:1}),
+  cue:['발끝을 · 몸쪽으로 당겨요','발끝을 · 멀리 뻗어요'],
+  tags:['부종 완화'],pains:['swell'],load:[],
+  effects:['다리 부종 완화 (종아리 펌프 작용)','혈전 예방, 순환 개선','밤에 쥐 나는 것 예방'],
+  steps:['다리를 편하게 뻗고 앉거나 왼쪽으로 누워요.','발끝을 몸쪽으로 최대한 당겨요.',
+    '발끝을 멀리 밀어요.','20회 반복해요. 하루 여러 번 해도 좋아요.'],
+  caution:'한쪽 종아리만 아프고 부으면 혈전일 수 있어요. 운동하지 말고 바로 병원에 가세요.'},
+
+ {id:'calf',name:'카프 레이즈',en:'Calf Raise',phase:[1,2,3],role:'main',min:2,reps:'15회',dur:4,
+  rig:rigCalf,cue:['숨을 내쉬며 · 발뒤꿈치를 들어요','천천히 · 내려요'],
+  tags:['부종 완화','하체 근력'],pains:['swell'],load:['balance'],
+  effects:['종아리 근력 강화, 부종 완화','다리 쥐 예방','발목 안정성 향상'],
+  steps:['벽이나 의자를 가볍게 잡고 서요.','숨을 내쉬며 발뒤꿈치를 천천히 들어올려요.',
+    '2초 유지 후 천천히 내려요.','15회 반복해요.'],
+  caution:'반드시 잡을 곳을 두고 하세요. 배가 무거워 균형이 흔들리기 쉬워요.'},
+
+ {id:'wallpush',name:'벽 푸시업',en:'Wall Push-up',phase:[1,2,3],role:'main',min:3,reps:'12회',dur:5,
+  rig:rigWall,cue:['숨을 마시며 · 벽으로 다가가요','숨을 내쉬며 · 밀어내요'],
+  tags:['상체 근력','자세 교정'],pains:['neck'],load:['wrist'],
+  effects:['가슴·팔 근력 유지 (수유 시 필요한 근력)','어깨 자세 개선','배에 부담 없는 상체 운동'],
+  steps:['벽에서 한 팔 거리에 서서 손을 어깨 높이로 벽에 대요.','숨을 마시며 팔꿈치를 굽혀 가슴을 벽 쪽으로 가져가요.',
+    '숨을 내쉬며 벽을 밀어 돌아와요.','12회 반복해요.'],
+  caution:'배가 벽에 닿지 않도록 거리를 넉넉히 두세요.'},
+
+ {id:'shoulder',name:'어깨 돌리기',en:'Shoulder Roll',phase:[1,2,3],role:'warmup',min:2,reps:'앞뒤 10회',dur:5,
+  rig:rigShoulder,cue:['어깨를 · 크게 뒤로 돌려요','반대로 · 앞으로 돌려요'],
+  tags:['목·어깨','자세 교정'],pains:['neck','wrist','rib'],load:[],
+  effects:['목·어깨 결림 완화','굽은 등 자세 교정','손목 저림 완화에 도움'],
+  steps:['바르게 서거나 앉아요.','어깨를 귀 쪽으로 올렸다가 뒤로 크게 돌려 내려요. 10회.',
+    '반대 방향으로 10회 돌려요.','이어서 손목도 양방향으로 10회씩 돌려요.'],
+  caution:'통증이 있는 범위까지 무리해서 돌리지 마세요.'},
+
+ {id:'legraise',name:'사이드 레그 리프트',en:'Standing Side Leg Raise',phase:[1,2,3],role:'main',min:2,reps:'좌우 10회',dur:5,
+  rig:rigLegLift,cue:['숨을 내쉬며 · 다리를 옆으로','천천히 · 내려요'],
+  tags:['골반','환도선다'],pains:['sacro'],load:['balance','wideleg'],
+  effects:['골반 안정근 강화','환도선다·골반통 예방','균형 감각 유지'],
+  steps:['의자를 잡고 바르게 서요.','숨을 내쉬며 한쪽 다리를 옆으로 천천히 들어요. 몸통은 기울이지 않아요.',
+    '천천히 내려요. 10회 후 반대쪽도 해요.'],
+  caution:'몸이 반대로 기울면 범위를 줄이세요. 치골통이 심하면 건너뛰세요.'},
+
+ {id:'child',name:'아기 자세',en:'Child\'s Pose',phase:[1,2,3],role:'stretch',min:3,reps:'2분 유지',dur:6,
+  rig:rigChild,cue:['숨을 마시며 · 등을 넓게','숨을 내쉬며 · 몸을 내려놔요'],
+  tags:['요통 완화','이완'],pains:['sacro','back','round'],load:['knee','floor'],
+  effects:['허리·엉덩이 깊은 이완','천장관절(환도선다) 압박 해소','긴장 완화, 수면 준비'],
+  steps:['무릎을 배 너비보다 넓게 벌리고 앉아요.','상체를 앞으로 숙여 팔을 뻗고 이마를 바닥이나 쿠션에 대요.',
+    '배가 눌리지 않게 무릎 사이 공간을 충분히 두고, 2분간 깊게 호흡해요.'],
+  caution:'배가 눌리면 무릎을 더 벌리거나 쿠션을 받치세요. 어지러우면 천천히 일어나세요.'},
+
+ {id:'psoas',name:'서서 장요근 늘리기',en:'Standing Hip Flexor Stretch',phase:[2,3],role:'stretch',min:2,reps:'좌우 30초',dur:5,
+  rig:rigLunge,
+  cue:['골반을 · 앞으로 밀어요','반대쪽도 · 같은 시간'],
+  tags:['환도선다','골반'],pains:['sacro','round'],load:['balance'],
+  effects:['환도선다(골반 앞쪽·사타구니 통증) 완화','앉아 있어 굳은 고관절 이완','허리 앞쪽 당김 완화'],
+  steps:['의자를 잡고 한 발을 크게 뒤로 보내요.','뒷다리 무릎을 살짝 굽히고 골반을 앞으로 부드럽게 밀어요.',
+    '사타구니 앞쪽이 늘어나는 느낌으로 30초 유지해요.','반대쪽도 해요.'],
+  caution:'허리를 뒤로 꺾지 말고 골반만 밀어요. 치골이 아프면 범위를 크게 줄이세요.'},
+
+ {id:'kegel',name:'케겔 + 호흡',en:'Kegel with Breathing',phase:[1,2,3],role:'stretch',min:3,reps:'10회',dur:6,
+  vb:VB.sit,rig:()=>rigSit(`${sg(212,122,186,146,C.sk,13)}${hd(180,150,10.5,C.sk)}${sg(212,121,198,134,C.top,17)}`,'편하게 앉아 호흡에 맞춰 골반저근을 조였다 푸는 동작',{breathe:1}),
+  cue:['숨을 마시며 · 골반저를 이완','숨을 내쉬며 · 부드럽게 조여요'],
+  tags:['골반저근','출산 준비'],pains:[],load:[],
+  effects:['골반저근 강화 — 요실금 예방·회복','출산 시 힘주기와 회복에 도움','아래가 묵직한 느낌 완화'],
+  steps:['편하게 앉거나 옆으로 누워요.','숨을 마시며 골반 바닥이 부드럽게 내려간다고 상상하며 힘을 빼요.',
+    '숨을 내쉬며 소변을 참듯 아래를 조이고 위로 살짝 들어올려요. 5초 유지.',
+    '완전히 이완하고 10회 반복해요. 이완이 조이는 것만큼 중요해요.'],
+  caution:'배·엉덩이·허벅지에 힘이 들어가면 잘못하는 거예요. 숨을 참지 마세요.'},
+
+ {id:'pelvicclock',name:'골반 시계',en:'Pelvic Clock',phase:[1,2,3],role:'warmup',min:2,reps:'양방향 5회',dur:7,
+  rig:rigCatCow,cue:['골반으로 · 천천히 원을 그려요','반대 방향으로 · 다시 한 바퀴'],
+  tags:['골반','환도선다'],pains:['sacro','round','back'],load:['wrist','knee','floor'],
+  effects:['천장관절 이완 (환도선다 완화)','골반 주변 순환 개선','아기 자세 잡기에 도움'],
+  steps:['네발기기 자세를 만들어요.','골반으로 시계 방향으로 천천히 큰 원을 그려요. 어깨는 고정해요.',
+    '5바퀴 후 반대 방향으로 5바퀴 돌려요.'],
+  caution:'손목이 아프면 주먹을 쥐거나 팔꿈치를 대고 하세요.'},
+
+ {id:'march',name:'제자리 걷기',en:'Marching in Place',phase:[1,2,3],role:'main',min:3,reps:'좌우 20회',dur:4,
+  rig:rigMarch,cue:['무릎을 · 배 앞까지 들어요','팔은 · 반대로 흔들어요'],
+  tags:['부종 완화','하체 근력'],pains:['swell'],load:['balance'],
+  effects:['식후 소화와 혈당 조절에 도움 (가볍게 걷는 효과)','다리 순환 개선, 부종 완화','바닥에 앉지 않고 할 수 있는 가장 부담 없는 유산소'],
+  steps:['바르게 서서 배에 가볍게 힘을 줘요. 불안하면 의자를 잡아요.',
+    '한쪽 무릎을 배가 눌리지 않는 높이까지 천천히 들어올려요.',
+    '내리면서 반대쪽 무릎을 들어요. 팔은 자연스럽게 반대로 흔들어요.',
+    '좌우 합쳐 20회, 숨이 차지 않는 속도로 해요.'],
+  caution:'무릎을 배까지 올리지 마세요. 어지럽거나 균형이 흔들리면 의자를 잡거나 멈추세요.'},
+
+ {id:'breathe',name:'서서 깊은 호흡',en:'Standing Deep Breathing',phase:[1,2,3],role:'stretch',min:3,reps:'10회',dur:6,
+  rig:rigBreathe,cue:['숨을 마시며 · 팔을 위로','숨을 내쉬며 · 천천히 내려요'],
+  tags:['갈비 통증','이완'],pains:['rib','neck'],load:[],
+  effects:['자궁이 밀어올린 횡격막을 펴줘 갈비뼈 답답함 완화','위가 눌리는 느낌·속쓰림 완화에 도움','굽은 등을 펴고 긴장을 내려놓게 해요'],
+  steps:['발을 골반 너비로 벌리고 바르게 서요.','숨을 마시며 두 팔을 옆으로 크게 벌려 머리 위까지 올려요.',
+    '가슴과 갈비뼈가 넓어지는 느낌으로 3초 채워요.',
+    '숨을 내쉬며 팔을 천천히 내려요. 10회 반복해요.'],
+  caution:'팔을 올릴 때 허리를 뒤로 꺾지 마세요. 어지러우면 앉아서 팔만 올리세요.'}
+];
+
+/* 효과 태그 설명 — 효과를 고르면 목록 위에 한 줄로 보여준다 */
+const TAGD={
+ '요통 완화':'허리를 받치는 근육을 풀고 깨워, 임신 중 가장 흔한 요통을 덜어주는 동작이에요.',
+ '골반':'출산 때 열려야 할 골반 주변을 부드럽게 하고, 잡아주는 근육을 함께 키워요.',
+ '환도선다':'엉치·사타구니가 찌릿한 천장관절 통증을 덜어주는 데 도움이 될 수 있는 동작이에요.',
+ '부종 완화':'다리에 고인 피와 물을 돌려보내, 붓기와 밤에 나는 쥐를 줄이는 데 도움이 돼요.',
+ '하체 근력':'무거워진 몸을 버티고 출산 때 쓸 다리·엉덩이 힘을 길러요.',
+ '상체 근력':'배에 부담을 주지 않으면서, 아기를 안고 수유할 때 필요한 상체 힘을 유지해요.',
+ '코어':'허리를 안에서 받쳐주는 깊은 배 근육을 깨워요. 배를 조이는 복근 운동과는 달라요.',
+ '출산 준비':'출산 자세와 힘주기에 실제로 쓰이는 근육·관절을 미리 준비해요.',
+ '골반저근':'요실금 예방과 출산 후 회복에 직결되는 골반 바닥 근육을 조였다 푸는 연습이에요.',
+ '자세 교정':'배가 나오면서 앞으로 말리는 어깨와 젖혀지는 허리를 제자리로 돌려요.',
+ '목·어깨':'자는 자세와 굽은 등으로 굳은 목·어깨를 풀어, 결림과 두통을 줄이는 데 도움이 돼요.',
+ '갈비 통증':'자궁이 밀어올린 횡격막과 갈비 사이를 넓혀, 결리고 숨 얕은 느낌을 덜어줘요.',
+ '원인대':'자궁을 잡아주는 인대가 갑자기 당겨 생기는 아랫배 통증을 부드럽게 풀어줘요.',
+ '이완':'몸의 긴장을 내려놓고 호흡을 고르는 동작이에요. 잠들기 전에 특히 좋아요.'
+};
+
+/* 통증 (도움되는 운동 추천) */
+const PAINS=[
+ {id:'sacro',icon:'pelvis',name:'환도선다 (골반·엉치 통증)',desc:'엉치·사타구니가 찌릿하고 걸을 때 아파요',
+  hosp:'걷지 못할 정도의 통증이거나, 한쪽 다리로 뻗치는 저림이 지속되면 병원에 먼저 가세요.',
+  tip:'다리를 벌리는 동작(차 타고 내리기, 계단)을 천천히 하고, 잘 때 무릎 사이에 베개를 끼우면 도움이 돼요.'},
+ {id:'round',icon:'belly',name:'아랫배 당김 (원인대 통증)',desc:'움직일 때 아랫배·사타구니가 쭉 당겨요',
+  hosp:'출혈이 함께 있거나, 규칙적으로 반복되는 수축이거나, 쉬어도 통증이 가라앉지 않으면 즉시 병원에 연락하세요.',
+  tip:'갑자기 일어나거나 재채기할 때 무릎을 살짝 굽히면 당김이 줄어요.'},
+ {id:'back',icon:'spine',name:'허리 통증',desc:'허리가 뻐근하고 오래 서 있기 힘들어요',
+  hosp:'발이 저리거나 힘이 빠지는 느낌, 밤에 잠을 깰 정도의 통증이면 병원에 먼저 가세요.',
+  tip:'한 자세로 30분 이상 있지 말고, 굽 없는 신발을 신으세요.'},
+ {id:'swell',icon:'legs',name:'다리 부종 · 쥐',desc:'다리가 붓고 밤에 쥐가 나요',
+  hosp:'한쪽 다리만 붓고 아프거나 열감·붉어짐이 있으면 혈전일 수 있어요. 운동하지 말고 즉시 병원에 가세요.',
+  tip:'왼쪽으로 눕고 다리를 심장보다 높게 올려두면 부기가 잘 빠져요.'},
+ {id:'rib',icon:'ribs',name:'갈비뼈 통증 · 답답함',desc:'갈비뼈 아래가 결리고 숨이 얕아요',
+  hosp:'숨쉬기 자체가 힘들거나 흉통이 있으면 즉시 병원에 연락하세요.',
+  tip:'등받이에 기대지 말고 앉은 키를 높이면 횡격막이 덜 눌려요.'},
+ {id:'neck',icon:'neck',name:'목 · 어깨 결림',desc:'자고 일어나면 목과 어깨가 뻣뻣해요',
+  hosp:'팔 저림이나 힘 빠짐이 지속되면 병원에서 확인하세요.',
+  tip:'옆으로 누울 때 베개 높이를 어깨 너비에 맞추면 아침 결림이 줄어요.'},
+ {id:'wrist',icon:'hand',name:'손목 저림',desc:'손목·손가락이 저리고 힘이 잘 안 들어가요',
+  hosp:'감각이 없어지거나 물건을 자꾸 떨어뜨리면 병원에서 확인하세요.',
+  tip:'임신 중 부종으로 흔히 생기고 출산 후 대부분 좋아져요. 밤에 손목 보호대가 도움이 돼요.'}
+];
+
+/* 불편한 곳 (해당 부담 동작 제외) */
+const AVOIDS=[
+ {id:'wrist',icon:'hand',label:'손목',note:'손으로 체중을 받치는 동작을 빼요'},
+ {id:'knee',icon:'knee',label:'무릎',note:'무릎을 꿇는 동작을 빼요'},
+ {id:'balance',icon:'dizzy',label:'어지러움·균형',note:'서서 균형을 잡는 동작을 빼요'},
+ {id:'wideleg',icon:'pelvis',label:'치골(다리 벌릴 때)',note:'다리를 넓게 벌리는 동작을 빼요'},
+ {id:'floor',icon:'floor',label:'바닥에 앉기·눕기',note:'바닥에서 하는 동작을 빼요'}
+];
+
+/* ── 상황별 루틴 ──────────────────────────────────────────────
+   "지금 왜 운동하나" 기준. 상황마다 쓸 수 있는 동작 풀 · 시간 옵션 · 구성 비율이 다르다.
+   동작 풀을 EX 18개에 흩어 놓지 않고 여기 한 곳에 모아 둔다 (조정이 잦은 값이라).
+   roles = [역할, 최대 개수] 를 앞에서부터 시간이 찰 때까지 채운다. must = 반드시 넣을 동작. */
+const WHEN={
+  /* 식후: 눕거나 배를 누르거나 앞으로 굽히는 동작 제외 (역류·압박). 서서·앉아서 가볍게 */
+  meal:['pelvictilt','shoulder','calf','sidebend','psoas','legraise','neck','wallpush','kegel','butterfly','ankle','march','breathe'],
+  /* 오래 앉아 있었을 때: 굳은 고관절·골반, 굽은 등, 부은 다리 */
+  sit:['psoas','catcow','pelvicclock','legraise','ankle','shoulder','child','pelvictilt','butterfly','neck','march','breathe'],
+  /* 아침: 밤새 굳은 목·어깨·척추 깨우기 */
+  morning:['shoulder','neck','catcow','pelvicclock','sidebend','ankle','butterfly','child','calf','pelvictilt','psoas','march','breathe'],
+  /* 자기 전: 다리 쥐·부기 + 이완. 각성시키는 근력 동작은 최소로 */
+  night:['ankle','sideleg','clam','catcow','butterfly','sidebend','neck','child','kegel','shoulder','pelvicclock','breathe'],
+  /* 몸이 무거운 날: 앉거나 서서, 균형·근력 필요 없는 것만 */
+  light:['sidebend','neck','kegel','butterfly','ankle','shoulder','pelvictilt','breathe'],
+  full:null   /* 전체 */
+};
+/* 하루 시간 순(아침→식후→앉은 뒤→자기 전) 다음에 시간대와 무관한 두 가지 */
+/* 자세별 묶음 — 임산부가 실제로 먼저 따지는 건 "지금 바닥에 앉을 수 있나"다.
+   WHEN과 같이 여기 한 곳에서만 관리한다. */
+const POSE=[
+ {id:'stand',name:'서서',            sub:'바닥에 앉지 않아도 돼요',
+  ids:['pelvictilt','squat','calf','wallpush','shoulder','legraise','psoas','march','breathe']},
+ {id:'sit',  name:'앉아서',          sub:'바닥이나 의자에 앉아서',
+  ids:['butterfly','sidebend','neck','ankle','kegel']},
+ {id:'lie',  name:'옆으로 누워서',    sub:'왼쪽으로 누우면 순환에 더 좋아요',
+  ids:['clam','sideleg']},
+ {id:'quad', name:'네발기기 · 엎드려', sub:'매트나 이불 위에서',
+  ids:['catcow','birddog','pelvicclock','child']}
+];
+
+const MOODS=[
+ {id:'morning',name:'아침 운동',    sub:'뻣뻣한 몸 깨우기',  icon:'sun',    ci:'mn', hero:'shoulder',
+  mins:[5,10,15], roles:[['warmup',2],['stretch',3],['main',2]], must:['shoulder'],
+  note:'일어나자마자 급하게 움직이면 어지러울 수 있어요. 천천히 시작하세요.'},
+ {id:'meal',   name:'식후 운동',    sub:'소화 편하게',       icon:'meal',   ci:'cr', hero:'calf',
+  mins:[15,20,30],roles:[['warmup',3],['main',4],['stretch',6]], must:['march','calf'],
+  note:'식사하고 20~30분쯤 지나 시작하세요. 눕거나 배를 누르는 동작은 빼뒀어요.'},
+ {id:'sit',    name:'오래 앉은 뒤', sub:'골반·허리 풀기',    icon:'clock',  ci:'pr', hero:'psoas',
+  mins:[5,10,15], roles:[['warmup',1],['main',3],['stretch',3]], must:['psoas'],
+  note:'한 자세로 30분 이상 있지 않는 게 가장 좋아요.'},
+ {id:'night',  name:'자기 전 운동', sub:'다리 쥐·부기 완화',  icon:'moon',   ci:'mn', hero:'sideleg',
+  mins:[8,12,20], roles:[['warmup',1],['main',2],['stretch',4]], must:['ankle','sideleg'],
+  note:'왼쪽으로 눕고 다리를 심장보다 높게 두면 부기가 더 잘 빠져요.'},
+ {id:'light',  name:'힘든 날',      sub:'앉아서 최소한만',    icon:'feather',ci:'cr', hero:'kegel',
+  mins:[3,5,8],   roles:[['stretch',3],['warmup',2]], must:[],
+  note:'힘든 날은 쉬어도 괜찮아요. 이건 "안 하는 것보다 나은" 정도면 충분해요.'},
+ {id:'full',   name:'운동 부족',    sub:'근력까지 제대로',    icon:'act',    ci:'pr', hero:'squat',
+  mins:[15,20,30],roles:[['warmup',1],['main',9],['stretch',2]], must:[],
+  note:'주 150분(하루 20~30분씩 주 5일)이 권장량이에요.'}
+];
+
+/* ── 몸 부위 ────────────────────────────────────────────────
+   케어 탭 인체도. 부위 하나에 "아픈 곳"(통증 안내)과 "불편한 곳"(동작 제외)이 함께 걸린다.
+   어지러움·바닥 처럼 부위로 짚을 수 없는 것은 BODY 밖에서 따로 고른다. */
+const BODY=[
+ {id:'shoulder',name:'목 · 어깨',   pains:['neck'],           avoids:[]},
+ {id:'rib',     name:'갈비 · 가슴', pains:['rib'],            avoids:[]},
+ {id:'waist',   name:'허리 · 배',   pains:['round','back'],   avoids:[]},
+ {id:'pelvis',  name:'골반 · 엉치', pains:['sacro'],          avoids:['wideleg']},
+ {id:'wrist',   name:'손목 · 손',   pains:['wrist'],          avoids:['wrist']},
+ {id:'knee',    name:'무릎',        pains:[],                 avoids:['knee']},
+ {id:'leg',     name:'다리 · 발',   pains:['swell'],          avoids:[]}
+];
+const OFFBODY=['balance','floor'];   /* 부위가 아닌 제외 조건 */
+
+/* 정면 전신 — 캐릭터 스펙(민얼굴·플랫·살 먼저 옷 나중)을 따른다 */
+function bodyMap(){
+  const marked=b=>b.avoids.some(a=>S.avoid.includes(a));
+  const hot=(b,shape)=>`<g role="button" tabindex="0"
+      class="hot ${b.id===curBody?'sel':''} ${marked(b)?'mk':''}"
+      aria-label="${b.name}${marked(b)?', 제외 설정됨':''}" aria-pressed="${b.id===curBody}"
+      onclick="pickBody('${b.id}')" onkeydown="bodyKey(event,'${b.id}')">${shape}</g>`;
+  const B=id=>BODY.find(x=>x.id===id);
+  return `<svg viewBox="25 4 150 276" role="img" aria-label="몸 부위를 고르는 그림">
+    <!-- 다리: 살(정강이) 먼저, 옷(반바지) 나중 -->
+    ${sg(90,205,88,254,C.sk,13)}${ft(85,258,14,C.sk)}
+    ${sg(110,205,112,254,C.sk,13)}${ft(115,258,14,C.sk)}
+    ${sg(92,148,90,205,C.pant,19)}${sg(108,148,110,205,C.pant,19)}
+    <!-- 팔: 팔뚝(살) 먼저, 소매(옷) 나중 -->
+    ${sg(66,106,56,140,C.sk,11)}${hd(54,146,9,C.sk)}
+    ${sg(134,106,144,140,C.sk,11)}${hd(146,146,9,C.sk)}
+    ${sg(79,74,66,106,C.top,15)}${sg(121,74,134,106,C.top,15)}
+    <!-- 몸통 → 배 → 반바지 -->
+    <path fill="${C.top}" d="M78,70 Q100,64 122,70 L119,108 Q100,114 81,108 Z"/>
+    <ellipse cx="100" cy="126" rx="32" ry="26" fill="${C.top}"/>
+    <path fill="${C.pant}" d="M79,146 Q100,140 121,146 L119,163 Q100,169 81,163 Z"/>
+    <!-- 머리: 두상 위를 덮는 머리카락 + 똥머리 -->
+    ${sg(100,50,100,68,C.sk,14)}${col(100,70,10.5)}
+    ${hd(100,32,19,C.sk)}
+    <path fill="${C.hair}" d="M82,26 A19,19 0 0 1 118,26 Z"/>
+    <circle cx="100" cy="10" r="7.5" fill="${C.hair}"/>
+    <!-- 터치 영역 (배보다 뒤에 오면 안 되는 손목은 마지막) -->
+    ${hot(B('shoulder'),'<rect x="63" y="48" width="74" height="31" rx="12"/>')}
+    ${hot(B('rib'),     '<rect x="73" y="81" width="54" height="22" rx="9"/>')}
+    ${hot(B('waist'),   '<rect x="67" y="105" width="66" height="44" rx="19"/>')}
+    ${hot(B('pelvis'),  '<rect x="71" y="151" width="58" height="24" rx="11"/>')}
+    ${hot(B('knee'),    '<rect x="75" y="190" width="50" height="30" rx="12"/>')}
+    ${hot(B('leg'),     '<rect x="71" y="224" width="58" height="44" rx="15"/>')}
+    ${hot(B('wrist'),   '<rect x="39" y="129" width="26" height="34" rx="9"/><rect x="135" y="129" width="26" height="34" rx="9"/>')}
+  </svg>`;
+}
+
+/* 루틴 플랜 4종 */
+const PLANS=[
+ {id:'back',  name:'허리 편안하게', sub:'요통·골반 통증 완화',   want:['요통 완화','골반','환도선다'], cls:'p-cor', hero:'catcow'},
+ {id:'pelvic',name:'골반 열어주기', sub:'출산 준비 · 골반저근',  want:['골반','출산 준비','골반저근'], cls:'p-pri', hero:'butterfly'},
+ {id:'flow',  name:'부기 빼기',     sub:'다리 순환 · 부종 완화', want:['부종 완화'],                   cls:'p-min', hero:'sideleg'},
+ {id:'neck',  name:'목·어깨 풀기', sub:'결림 완화 · 자세 교정', want:['목·어깨','자세 교정'],         cls:'p-cor', hero:'shoulder'},
+ {id:'lower', name:'하체 힘 기르기',sub:'출산 준비 · 하체 근력', want:['하체 근력','출산 준비'],       cls:'p-min', hero:'squat'},
+ {id:'easy',  name:'가볍게 몸풀기', sub:'짧고 부드러운 전신',    want:null,                            cls:'p-pri', hero:'child'}
+];
+
+/* ═══════════════════════ 상태 ═══════════════════════ */
+const KEY='mamfit';
+let S=load(), curMin=20, curPlan=null, PL=null, filG='all', filE='all', calM=0, curBody=null, showAll=false;
+/* 운동 탭 시기 필터 기본값 = 내 시기 (칩은 전체/초기/중기/후기만 둔다) */
+let filP=1;
+function load(){ try{ const o=JSON.parse(localStorage.getItem(KEY))||{}; o.done=o.done||{}; o.avoid=o.avoid||[]; return o }
+  catch(e){ return {done:{},avoid:[]} } }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)) }catch(e){} }
+const pad=n=>String(n).padStart(2,'0');
+const ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=()=>ymd(new Date());
+const $=s=>document.querySelector(s);
+const say=t=>{ const el=$('#live'); if(el) el.textContent=t; };
+
+/* 연속 일수 — 홈·기록·완료 화면이 같이 쓴다 */
+function streakN(){ let n=0, d=new Date();
+  if(!S.done[today()]) d.setDate(d.getDate()-1);
+  while(S.done[ymd(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n; }
+
+/* 촉각·청각 피드백 — 음원 파일 없이 합성 */
+const hap=p=>{ try{ navigator.vibrate && navigator.vibrate(p) }catch(e){} };
+let AC=null;
+function beep(f,dur=.14,vol=.07){
+  if(S.mute) return;
+  try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended') AC.resume();
+    const o=AC.createOscillator(), g=AC.createGain(), t=AC.currentTime;
+    o.type='sine'; o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol,t+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+dur+.03);
+  }catch(e){}
+}
+const cue=(f,d,v)=>{ beep(f,d,v); hap(v>=.08?[0,40,60,40]:14); };
+
+/* 운동 중 화면이 꺼지지 않게 */
+let WL=null;
+function wake(on){ try{
+  if(on){ if(!WL && navigator.wakeLock) navigator.wakeLock.request('screen').then(w=>{ WL=w; w.addEventListener('release',()=>{WL=null}); },()=>{}); }
+  else if(WL){ WL.release(); WL=null; }
+}catch(e){} }
+
+/* 확인 시트 — window.confirm 대체 */
+let askFn=null;
+function ask(title,msg,yes,fn){ askFn=fn;
+  $('#ask-b').innerHTML=`<h3 id="ask-t">${title}</h3><p>${msg}</p><div class="row">
+    <button class="btn sec" onclick="closeAsk()">계속하기</button>
+    <button class="btn dg" onclick="runAsk()">${yes}</button></div>`;
+  $('#ov-ask').classList.add('on'); hap(10); }
+function runAsk(){ const f=askFn; closeAsk(); if(f) f(); }
+function closeAsk(){ $('#ov-ask').classList.remove('on'); askFn=null; }
+
+function preg(){
+  if(!S.due) return null;
+  const due=new Date(S.due+'T00:00:00'), now=new Date(); now.setHours(0,0,0,0);
+  const leftD=Math.round((due-now)/864e5), totalD=280-leftD;
+  const w=Math.max(0,Math.floor(totalD/7)), d=((totalD%7)+7)%7;
+  return {w,d,leftD,phase:w<14?1:w<28?2:3,pct:Math.max(2,Math.min(100,totalD/280*100))};
+}
+const PHN={1:'임신 초기 · 1분기',2:'임신 중기 · 2분기',3:'임신 후기 · 3분기'};
+const PHS={1:'초기',2:'중기',3:'후기'};
+/* 불편한 곳 제외를 반영한 사용 가능 동작 */
+const usable=ph=>EX.filter(e=>e.phase.includes(ph) && !e.load.some(l=>S.avoid.includes(l)));
+
+const DEF_ROLES=[['warmup',1],['main',9],['stretch',2]];
+const ROLE_ORD={warmup:0,main:1,stretch:2};
+const findPlan=id=>MOODS.find(x=>x.id===id)||PLANS.find(x=>x.id===id)||PLANS[0];
+const minsOf=id=>findPlan(id).mins||[15,20,30];
+
+function buildPlan(planId,mins){
+  const p=preg(), ph=p?p.phase:1, plan=findPlan(planId);
+  const pool=WHEN[planId], ok=pool? usable(ph).filter(e=>pool.includes(e.id)) : usable(ph);
+  /* 부위별 루틴은 want 태그로 가점, 상황 루틴은 풀 자체가 이미 걸러져 있다 */
+  const score=e=>plan.want? (e.tags.some(t=>plan.want.includes(t))?0:1) : 0;
+  const seed=[...today()].reduce((a,c)=>a+c.charCodeAt(0),0);
+  const out=[], cnt={warmup:0,main:0,stretch:0}; let used=0;
+  const take=e=>{ out.push(e); used+=e.min; cnt[e.role]++; };
+  (plan.must||[]).forEach(id=>{ const e=ok.find(x=>x.id===id); if(e&&!out.includes(e)&&used+e.min<=mins) take(e); });
+  const byRole=r=>ok.filter(e=>e.role===r&&out.indexOf(e)<0)
+    .map((e,i)=>({e,k:score(e)*100+((seed+i*7)%13)}))
+    .sort((a,b)=>a.k-b.k).map(x=>x.e);
+  for(const [r,cap] of (plan.roles||DEF_ROLES))
+    for(const e of byRole(r)){ if(cnt[r]>=cap) break; if(used+e.min<=mins) take(e); }
+  if(!out.length&&ok.length) take(ok[0]);   /* 제외 설정이 심해도 빈 루틴은 안 준다 */
+  return out.sort((a,b)=>ROLE_ORD[a.role]-ROLE_ORD[b.role]);
+}
+const planMeta=(id,mins)=>{const l=buildPlan(id,mins);return{list:l,min:l.reduce((a,e)=>a+e.min,0),n:l.length}};
+
+/* ═══════════════════════ 렌더 ═══════════════════════ */
+const TABS=[['home','홈','home'],['lib','운동','act'],['care','케어','care'],['log','기록','log']];
+let cur='home';
+function tabbar(){ $('#tabbar').innerHTML=TABS.map(([id,l,i])=>
+  `<button data-t="${id}" onclick="go('${id}')" ${id===cur?'aria-current="page"':''}>${ic(i)}<span>${l}</span></button>`).join(''); }
+function go(t){ if(t!==cur) hap(8); cur=t;
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id==='p-'+t));
+  tabbar(); window.scrollTo(0,0);
+  if(location.hash.slice(1)!==t) history.replaceState(null,'','#'+t);
+  ({home:renderHome,lib:renderLib,care:renderCare,log:renderLog})[t]();
+  kick(); }
+
+/* 주수 카드 — 홈·기록 공통 */
+const weekCard=p=>`<div class="wk">
+  <div class="top"><span class="w">임신 ${p.w}주 ${p.d}일</span><span class="ph">${PHN[p.phase]}</span></div>
+  <div class="bar"><i style="width:${p.pct.toFixed(1)}%"></i></div>
+  <div class="meta"><span>${p.leftD>0?`출산까지 ${p.leftD}일`:'출산예정일이 지났어요'}</span>
+    <span>예정일 ${S.due}</span></div>
+</div>`;
+
+function renderHome(){
+  const p=preg(); if(!p) return;
+  const d=new Date(), dt=`${d.getMonth()+1}월 ${d.getDate()}일 ${'일월화수목금토'[d.getDay()]}요일`;
+  const doneT=S.done[today()];
+  const moods=MOODS.map(m=>`<button class="mood" onclick="openRoutine('${m.id}')"
+      aria-label="${m.name}. ${m.sub}">
+      <span class="ci ${m.ci}">${ic(m.icon)}</span>
+      <span class="tx"><b>${m.name}</b><span>${m.sub}</span></span></button>`).join('');
+  const cards=PLANS.map(pl=>{ const hero=EX.find(e=>e.id===pl.hero);
+    return `<button class="plan ${pl.cls}" onclick="openRoutine('${pl.id}')"
+      aria-label="${pl.name} 루틴 선택. ${pl.sub}">
+      <span class="pic" aria-hidden="true">${hero?thumb(hero):''}</span>
+      <b>${pl.name}</b><span class="sb">${pl.sub}</span></button>`;}).join('');
+  const av=S.avoid.length? `<button class="rowbtn" onclick="go('care')" style="margin-top:var(--s3)">
+      ${'<span class="ci pr">'+ic('filter')+'</span>'}
+      <span class="tx"><b>불편한 곳 ${S.avoid.length}개 반영 중</b>
+      <span>${S.avoid.map(a=>AVOIDS.find(x=>x.id===a).label).join(' · ')} 부담 동작을 뺐어요</span></span>
+      ${ic('chev')}</button>` : '';
+  const st=streakN();
+  $('#p-home').innerHTML=`
+    <div class="hd row">
+      <div><h2 id="h-home">오늘의 운동</h2><p>${dt}</p></div>
+      ${st>=2?`<span class="streak">${ic('flame')}${st}일째</span>`:''}
+    </div>
+    <div class="stg">
+      ${weekCard(p)}
+      ${doneT?`<div class="done" style="margin-top:var(--s3)">${ic('check')}
+        <span>오늘 ${doneT.min}분 운동을 마쳤어요${st>=2?` · ${st}일 연속`:''}</span></div>`:''}
+      <div>
+        <div class="sect"><h3>상태별 운동 추천</h3><span>골라주면 맞춰 짜드려요</span></div>
+        <div class="moods">${moods}</div>
+        ${av}
+      </div>
+      <div>
+        <div class="sect"><h3>부위별로 고르기</h3><span>임신 ${PHS[p.phase]} 기준</span></div>
+        <div class="plans">${cards}</div>
+      </div>
+      <div style="margin-top:var(--s5)">
+        <button class="rowbtn" onclick="openSafety()">
+          <span class="ci dg">${ic('alert')}</span>
+          <span class="tx"><b>운동 중 이런 신호가 오면 멈추세요</b><span>ACOG 기준 중단 신호 10가지</span></span>
+          ${ic('chev')}</button>
+      </div>
+    </div>`;
+}
+function setMin(m){ curMin=m;
+  if($('#ov-routine').classList.contains('on')) drawRoutine(); else { renderHome(); kick(); } }
+
+const exCard=e=>`<button class="card" onclick="openDetail('${e.id}')" aria-label="${e.name}, ${e.min}분">
+  <span class="pic" aria-hidden="true">${thumb(e)}</span>
+  <span class="bd"><b>${e.name}</b><span class="mt">${e.min}분 · ${e.reps}</span>
+    <span class="tags">${e.tags.slice(0,2).map(t=>`<span class="tag min">${t}</span>`).join('')}</span></span>
+</button>`;
+
+function renderLib(){
+  const p=preg(), ph=p?p.phase:1;
+  const effs=[...new Set(EX.flatMap(e=>e.tags))];
+  const base=EX.filter(e=>!e.load.some(l=>S.avoid.includes(l)));
+  const list=base.filter(e=>
+    (filP==='all' || e.phase.includes(+filP)) && (filE==='all' || e.tags.includes(filE)));
+  const hidden=EX.length-base.length;
+  $('#p-lib').innerHTML=`
+    <div class="hd"><h2 id="h-lib">운동</h2><p>임신 ${PHS[ph]}에 맞는 동작을 골라보세요</p></div>
+    <div class="chips" role="group" aria-label="시기 필터">
+      ${[['all','전체'],[1,'초기'],[2,'중기'],[3,'후기']].map(([v,l])=>
+        `<button onclick="filP='${v}';renderLib();kick()" aria-pressed="${String(filP)===String(v)}">${l}</button>`).join('')}
+    </div>
+    <div class="chips" role="group" aria-label="자세 필터">
+      ${[['all','전체 자세'],...POSE.map(g=>[g.id,g.name])].map(([v,l])=>
+        `<button onclick="filG='${v}';renderLib();kick()" aria-pressed="${filG===v}">${l}</button>`).join('')}
+    </div>
+    <div class="chips" role="group" aria-label="효과 필터">
+      ${[['all','모든 효과'],...effs.map(t=>[t,t])].map(([v,l])=>
+        `<button onclick="filE='${v}';renderLib();kick()" aria-pressed="${filE===v}">${l}</button>`).join('')}
+    </div>
+    ${filE==='all'?'':`<p class="tagd">${TAGD[filE]||`'${filE}'에 도움이 되는 동작이에요.`}</p>`}
+    ${ list.length? POSE.filter(g=>filG==='all'||filG===g.id).map(g=>{
+        const items=list.filter(e=>g.ids.includes(e.id));
+        return items.length? `<div class="sect"><h3>${g.name}</h3><span>${items.length}개</span></div>
+          <div class="grid">${items.map(exCard).join('')}</div>` : '';
+      }).join('') || `<p class="empty">조건에 맞는 동작이 없어요.<br>필터를 바꿔보세요.</p>`
+      : `<p class="empty">조건에 맞는 동작이 없어요.<br>필터를 바꿔보세요.</p>`}
+    ${hidden?`<div class="info">${ic('filter')}<div><b>불편한 곳 설정으로 ${hidden}개 동작을 숨겼어요.</b><br>
+      케어 탭에서 언제든 바꿀 수 있어요.</div></div>`:''}`;
+}
+
+const painRow=p=>`<button class="rowbtn" onclick="openPain('${p.id}')">
+  <span class="ci cr">${ic(p.icon)}</span>
+  <span class="tx"><b>${p.name}</b><span>${p.desc}</span></span>
+  ${ic('chev')}</button>`;
+const avoidBtn=a=>`<button onclick="toggleAvoid('${a.id}')" aria-pressed="${S.avoid.includes(a.id)}">
+  ${ic(a.icon)}<span>${a.label}</span></button>`;
+
+/* 부위를 고르면 페이지를 넘기지 않고 그림 바로 아래에서 펼친다 */
+function pickBody(id){ curBody = curBody===id? null : id; hap(10);
+  const p=$('#bodypanel'); if(p) p.innerHTML=bodyPanel();
+  const m=$('.bodymap'); if(m) m.innerHTML=bodyMap();
+  kick(); }
+function bodyKey(e,id){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pickBody(id); } }
+function toggleAll(){ showAll=!showAll; renderCare(); kick(); }
+
+function bodyPanel(){
+  if(!curBody) return `<p class="hint">그림에서 신경 쓰이는 곳을 눌러보세요.</p>`;
+  const b=BODY.find(x=>x.id===curBody);
+  const pains=b.pains.map(id=>PAINS.find(p=>p.id===id)).filter(Boolean);
+  /* 이미 어디가 문제인지 아는 상태라 설명은 빼고 한 줄짜리 행으로 압축한다.
+     부담 빼기는 부위와 1:1로 안 맞아서(무릎은 통증 항목이 없다) 인체도 위로 뺐다 */
+  return `<div class="panel">
+    <div class="phd"><h3>${b.name}</h3>
+      <button class="lnk" onclick="pickBody('${b.id}')" aria-label="${b.name} 닫기">${ic('close')}</button></div>
+    ${pains.length? `<div class="crows">${pains.map(p=>`<button class="crow" onclick="openPain('${p.id}')">
+        <span class="ci cr">${ic(p.icon)}</span><b>${p.name}</b>${ic('chev')}</button>`).join('')}</div>`
+      : `<p class="hint">이 부위는 따로 안내하는 통증 항목이 없어요.
+         아프면 담당 의사와 상담하세요.</p>`}
+  </div>`;
+}
+
+function renderCare(){
+  const n=EX.length-EX.filter(e=>!e.load.some(l=>S.avoid.includes(l))).length;
+  $('#p-care').innerHTML=`
+    <div class="hd"><h2 id="h-care">케어</h2><p>불편한 곳을 짚어보세요</p></div>
+    <p class="lead-p">부담되는 곳을 켜두면 <b>모든 루틴에서 자동으로 빠져요.</b>
+      아픈 곳은 그림에서 눌러 완화 동작을 확인하세요.</p>
+    <div class="sect" style="margin-top:0"><h3>부담되는 곳 빼기</h3>
+      <span>${S.avoid.length?`${n}개 동작 제외 중`:'선택 없음'}</span></div>
+    <div class="avoid" role="group" aria-label="부담되는 곳">${AVOIDS.map(avoidBtn).join('')}</div>
+    ${S.avoid.length?`<div class="box" style="margin-top:var(--s3)">
+      ${S.avoid.map(id=>`<li>${AVOIDS.find(a=>a.id===id).note}</li>`).join('')}</div>`:''}
+    ${n>=EX.length-2?`<div class="caut" style="margin-top:var(--s3)">${ic('alert')}<div><b>대부분의 동작이 제외됐어요</b>
+      선택을 조금 줄이거나, 담당 의사와 상담해 안전한 범위를 확인해보세요.</div></div>`:''}
+
+    <div class="sect"><h3>아픈 곳 찾기</h3><span>눌러서 확인</span></div>
+    <div class="bodymap">${bodyMap()}</div>
+    <div id="bodypanel">${bodyPanel()}</div>
+    <button class="btn sec" style="margin-top:var(--s3)" onclick="toggleAll()"
+      aria-expanded="${showAll}">${ic('filter')}<span>${showAll?'목록 접기':'증상 전체 목록'}</span></button>
+    ${showAll?`<div class="panel"><div class="stack">${PAINS.map(painRow).join('')}</div></div>`:''}`;
+}
+function toggleAvoid(id){
+  S.avoid=S.avoid.includes(id)? S.avoid.filter(x=>x!==id) : [...S.avoid,id];
+  save(); renderCare(); kick();
+}
+
+const GOAL=150;   /* ACOG 권장 — 주 150분 중강도 */
+function shiftMonth(d){ calM+=d; renderLog(); kick(); }
+
+function renderLog(){
+  const p=preg();
+  const ent=Object.entries(S.done), tot=ent.reduce((a,[,v])=>a+v.min,0), streak=streakN();
+
+  /* 이번 주 (일~토) */
+  const ws=new Date(); ws.setHours(0,0,0,0); ws.setDate(ws.getDate()-ws.getDay());
+  const tk=today();
+  const week=Array.from({length:7},(_,i)=>{ const d=new Date(ws); d.setDate(ws.getDate()+i);
+    const k=ymd(d), min=(S.done[k]||{}).min||0;
+    /* done=한 날 · now=오늘 아직 · miss=지나갔는데 안 한 날 · todo=아직 안 온 날 */
+    return {k,min,st:min?'done':k===tk?'now':k<tk?'miss':'todo'}; });
+  const wmin=week.reduce((a,x)=>a+x.min,0), wpct=Math.min(100,wmin/GOAL*100);
+  const wdays=week.filter(x=>x.min).length;
+  /* 요일 칸이 곧 이번 주 기록이다 — 한 날은 분 수, 안 한 날은 상태만 */
+  const bars=week.map((x,i)=>`<div>
+      <div class="day ${x.st}">${x.min
+        ?`<b class="${x.min>=100?'sm':''}">${x.min}</b><span>min</span>`
+        :x.st==='miss'?'<b>–</b>':''}</div>
+      <div class="lb">${'일월화수목금토'[i]}</div></div>`).join('');
+
+  /* 달력 — calM 만큼 이전 달 */
+  const now=new Date(), cur=new Date(now.getFullYear(),now.getMonth()+calM,1);
+  const y=cur.getFullYear(), m=cur.getMonth();
+  const first=new Date(y,m,1).getDay(), last=new Date(y,m+1,0).getDate();
+  let cells='일월화수목금토'.split('').map(w=>`<i class="lb">${w}</i>`).join('')
+    + Array(first).fill('<i class="lb"></i>').join('');
+  let mdays=0;
+  for(let i=1;i<=last;i++){ const k=`${y}-${pad(m+1)}-${pad(i)}`; const v=S.done[k];
+    if(v) mdays++;
+    cells+=`<i class="${v?'on':''} ${k===tk?'td':''}">${i}</i>`; }
+
+  $('#p-log').innerHTML=`
+    <div class="hd row">
+      <div><h2 id="h-log">기록</h2><p>꾸준함이 가장 좋은 운동이에요</p></div>
+      ${streak>=2?`<span class="streak">${ic('flame')}${streak}일째</span>`:''}
+    </div>
+    <div class="stg col">
+    ${p?weekCard(p):''}
+    <div class="stats">
+      <div class="stat"><b>${ent.length}</b><span>총 운동일</span></div>
+      <div class="stat"><b>${streak}</b><span>연속 일수</span></div>
+      <div class="stat"><b>${tot}</b><span>총 시간(분)</span></div>
+    </div>
+    <div class="wkgoal">
+      <div class="hdr"><b>이번 주</b>
+        <span class="num ${wmin>=GOAL?'hit':''}">${wmin>=GOAL?`권장량 달성 · ${wmin}분`:`${wdays}일 · ${wmin}분`}</span></div>
+      <div class="days">${bars}</div>
+      <div class="gbar"><i style="width:${wpct.toFixed(1)}%"></i></div>
+      <p class="fine">${wmin>=GOAL? '권장 150분을 채웠어요. 무리하지 않는 선에서 이어가세요.'
+        : `권장 150분까지 ${GOAL-wmin}분 남았어요. 힘든 주는 못 채워도 괜찮아요.`}</p>
+    </div>
+    <div class="cal">
+      <div class="calhd">
+        <button class="icon-btn" onclick="shiftMonth(-1)" aria-label="이전 달">${ic('back')}</button>
+        <h3>${y}년 ${m+1}월 · ${mdays}일</h3>
+        <button class="icon-btn" onclick="shiftMonth(1)" aria-label="다음 달" ${calM>=0?'disabled':''}>${ic('chev')}</button>
+      </div>
+      <div class="cg">${cells}</div>
+    </div>
+    ${ent.length?'':`<p class="empty">아직 기록이 없어요.<br>홈에서 오늘의 운동을 하나 골라보세요.</p>`}
+    <button class="btn sec" onclick="resetDue()">출산예정일 다시 설정</button>
+    </div>`;
+}
+
+/* ═══════════════════════ 오버레이 ═══════════════════════ */
+let lastFocus=null, ovStack=[], popSelf=false;
+function openOv(id){ lastFocus=document.activeElement; $('#'+id).classList.add('on');
+  document.body.style.overflow='hidden'; $('#'+id).scrollTop=0;
+  ovStack.push(id); history.pushState({ov:id},''); kick(); }
+function closeOv(id){ const el=$('#'+id); if(!el.classList.contains('on')) return;
+  shutOv(id);
+  /* 안드로이드 뒤로가기와 어긋나지 않게, 내가 쌓은 히스토리 항목을 되감는다 */
+  if(history.state&&history.state.ov===id){ popSelf=true; history.back(); } }
+function shutOv(id){ const el=$('#'+id); el.classList.remove('on');
+  ovStack=ovStack.filter(x=>x!==id);
+  if(!ovStack.length) document.body.style.overflow='';
+  if(id==='ov-player'&&PL){ clearInterval(PL.iv); PL=null; wake(false); }
+  if(lastFocus&&lastFocus.focus) lastFocus.focus(); }
+/* 뒤로가기(하드웨어/제스처)는 앱을 나가는 대신 열린 시트를 닫는다 */
+window.addEventListener('popstate',()=>{
+  if(popSelf){ popSelf=false; return; }
+  const top=ovStack[ovStack.length-1];
+  if($('#ov-ask').classList.contains('on')){ closeAsk(); if(top) history.pushState({ov:top},''); return; }
+  if(top) shutOv(top);
+});
+/* SMIL 애니메이션이 확실히 재생되도록 삽입 직후 명시적으로 깨운다 */
+function kick(){ requestAnimationFrame(()=>{
+  const hold=PL&&PL.paused;
+  document.querySelectorAll('svg').forEach(s=>{ try{
+    if(hold&&s.closest('#ov-player')) s.pauseAnimations(); else s.unpauseAnimations();
+  }catch(e){} }); }); }
+const bar=(t,onBack)=>`<div class="ovbar"><button class="icon-btn" onclick="${onBack}" aria-label="뒤로">${ic('back')}</button><h3>${t}</h3></div>`;
+const stage=e=>`<div class="stage" style="--dur:${e.dur}s">${e.rig()}
+  <div class="cue" aria-hidden="true">${e.cue.map(c=>`<span>${c}</span>`).join('')}</div></div>`;
+
+function openRoutine(id){
+  curPlan=id; curMin=minsOf(id)[1];
+  $('#b-routine').innerHTML=bar('루틴 미리보기',"closeOv('ov-routine')")+`<div id="rt-in"></div>`;
+  drawRoutine(); openOv('ov-routine');
+}
+function drawRoutine(){
+  const pl=findPlan(curPlan), m=planMeta(curPlan,curMin), p=preg();
+  $('#rt-in').innerHTML=`
+    <div class="dt">
+      <div class="tags"><span class="tag pri">임신 ${PHS[p.phase]} 맞춤</span>
+        <span class="tag min">${m.n}개 동작 · 약 ${m.min}분</span></div>
+      <h1>${pl.name}</h1><p class="en">${pl.sub}</p>
+      ${pl.note?`<div class="info" style="margin:var(--s3) 0 0">${ic('shield')}<div>${pl.note}</div></div>`:''}
+      <div class="sect" style="margin-top:var(--s4)"><h3>얼마나 하실래요?</h3></div>
+      <div class="seg" role="group" aria-label="운동 시간 선택">
+        ${minsOf(curPlan).map(x=>`<button onclick="setMin(${x})" aria-pressed="${x===curMin}">${x}분</button>`).join('')}
+      </div>
+    </div>
+    <div class="rlist" style="margin-top:var(--s4)">${m.list.map((e,i)=>`
+      <div class="ritem"><span class="th" aria-hidden="true">${thumb(e)}</span>
+        <span class="tx"><b>${e.name}</b><span>${e.min}분 · ${e.reps}</span></span>
+        <span class="no">${i+1}</span></div>`).join('')}</div>
+    <div class="cta stick">
+      <button class="btn" onclick="startPlayer(${JSON.stringify(m.list.map(e=>e.id)).replace(/"/g,'&quot;')})">
+        ${ic('play')}<span>${curMin}분 루틴 시작하기</span></button></div>`;
+  kick();
+}
+function openDetail(id){
+  const e=EX.find(x=>x.id===id); if(!e) return;
+  $('#b-detail').innerHTML=bar('동작 정보',"closeOv('ov-detail')")+stage(e)+`
+    <div class="dt">
+      <div class="tags">
+        <span class="tag pri">${e.phase.length===3?'전 시기 가능':e.phase.map(p=>PHS[p]).join(' · ')}</span>
+        ${e.tags.map(t=>`<span class="tag min">${t}</span>`).join('')}
+        <span class="tag cor">${e.min}분 · ${e.reps}</span></div>
+      <h1>${e.name}</h1><p class="en">${e.en}</p>
+      <div class="box"><b>이런 효과가 있어요</b>${e.effects.map(x=>`<li>${x}</li>`).join('')}</div>
+      <div class="steps">${e.steps.map((s,i)=>`<div class="stp"><span class="n">${i+1}</span><span>${s}</span></div>`).join('')}</div>
+      <div class="caut">${ic('alert')}<div><b>주의</b>${e.caution}</div></div>
+    </div>
+    <div class="cta stick"><button class="btn" onclick="startPlayer(['${e.id}'])">
+      ${ic('play')}<span>이 동작 시작하기</span></button></div>`;
+  openOv('ov-detail');
+}
+function openPain(id){
+  const p=PAINS.find(x=>x.id===id);
+  const all=EX.filter(e=>e.pains.includes(id) && !e.load.some(l=>S.avoid.includes(l)));
+  const ord={stretch:0,warmup:1,main:2};
+  const list=[...all].sort((a,b)=>ord[a.role]-ord[b.role]).slice(0,5);
+  const mins=list.reduce((a,e)=>a+e.min,0);
+  $('#b-pain').innerHTML=bar('통증 케어',"closeOv('ov-pain')")+`
+    <div class="dt" style="padding-top:var(--s2)">
+      <h1>${p.name}</h1><p class="en">${p.desc}</p>
+      <div class="mini dg">${ic('alert')}<div><b>이럴 땐 운동 말고 병원 먼저</b>${p.hosp}</div></div>
+      <div class="mini mn">${ic('shield')}<div><b>생활 속 팁</b>${p.tip}</div></div>
+      <div class="sect"><h3>완화에 도움되는 동작</h3><span>${list.length}개 · 약 ${mins}분</span></div>
+      ${list.length? `<div class="grid">${list.map(e=>`
+        <button class="card" onclick="openDetail('${e.id}')" aria-label="${e.name}">
+          <span class="pic" aria-hidden="true">${thumb(e)}</span>
+          <span class="bd"><b>${e.name}</b><span class="mt">${e.min}분 · ${e.reps}</span></span></button>`).join('')}</div>`
+        : `<p class="empty">부담되는 곳 설정으로 추천할 동작이 모두 제외됐어요.<br>케어 탭에서 설정을 조정해보세요.</p>`}
+    </div>
+    ${list.length?`<div class="cta stick">
+      <button class="btn" onclick="startPlayer(${JSON.stringify(list.map(e=>e.id)).replace(/"/g,'&quot;')})">
+      ${ic('play')}<span>순서대로 하기 · ${mins}분</span></button></div>`:''}`;
+  openOv('ov-pain');
+}
+function openSafety(){
+  $('#b-safety').innerHTML=bar('안전하게 운동하기',"closeOv('ov-safety')")+`
+    <div class="sf">
+      <div class="warn">${ic('alert')}<div><b>운동을 즉시 멈추고 병원에 연락하세요</b>
+        아래 신호 중 하나라도 나타나면 바로 중단하세요.</div></div>
+      <ul>
+        <li>질 출혈</li><li>운동 전부터 있는 호흡곤란</li><li>어지러움</li><li>두통</li><li>흉통</li>
+        <li>근력 약화로 균형이 무너질 때</li><li>종아리 통증이나 한쪽만 붓는 증상 (혈전 의심)</li>
+        <li>규칙적으로 반복되는 자궁 수축 (조기진통)</li><li>태동이 눈에 띄게 줄었을 때</li><li>양수가 새는 느낌</li>
+      </ul>
+      <h4>이런 동작은 피해요</h4>
+      <ul>
+        <li>임신 20주 이후 등을 대고 오래 눕는 자세</li><li>배를 누르거나 강하게 비트는 동작</li>
+        <li>넘어질 위험이 있는 동작, 균형이 크게 흔들리는 자세</li>
+        <li>숨을 참고 힘주는 동작(발살바), 뜨거운 환경에서의 운동</li>
+        <li>스쿠버다이빙, 고지대(2500m 이상) 운동, 접촉성 스포츠</li>
+      </ul>
+      <h4>이 정도가 적당해요</h4>
+      <ul>
+        <li>주 150분 중강도 — 하루 20~30분씩 주 5일이면 충분해요</li>
+        <li>운동하면서 <b>대화할 수 있는 정도</b>의 강도 (노래는 어려운 정도)</li>
+        <li>물을 충분히 마시고, 더운 날은 시원한 시간대에</li>
+        <li>몸이 힘든 날은 쉬어도 괜찮아요. 무리가 목표가 아니에요</li>
+      </ul>
+      <p class="src">출처: 미국산부인과학회(ACOG) Committee Opinion 804
+        “Physical Activity and Exercise During Pregnancy and the Postpartum Period”(2020),
+        영국 NHS 임신 중 운동 지침.<br><br>
+        이 앱은 일반적인 정보 제공을 목적으로 하며 의학적 조언을 대신하지 않습니다.
+        증상이 있거나 판단이 어려울 때는 담당 의사에게 문의하세요.</p>
+    </div>`;
+  openOv('ov-safety');
+}
+
+/* ═══════════════════════ 플레이어 ═══════════════════════ */
+/* 준비 시간은 짧게 — 20분 루틴이 실제로 20분 근처에서 끝나야 한다 (7동작 기준 +75초) */
+const PREP=5, REST=10;
+const CIRC=2*Math.PI*88;            /* 링 둘레 (r=88) */
+
+/* 타이머는 한 곳(step)에서만 돈다 — 화면을 다시 그려도 인터벌은 하나뿐이다 */
+function startPlayer(ids){
+  ['ov-detail','ov-pain','ov-routine'].forEach(closeOv);
+  const list=ids.map(id=>EX.find(e=>e.id===id)).filter(Boolean);
+  if(!list.length) return;
+  if(PL) clearInterval(PL.iv);
+  PL={list,i:0,rest:true,left:PREP,tot:PREP,paused:false,iv:null};
+  openOv('ov-player'); wake(true); drawStep();
+  PL.iv=setInterval(step,1000);
+}
+function step(){
+  if(!PL||PL.paused) return;
+  PL.left--; paint();
+  if(PL.left>0&&PL.left<=3) beep(680,.09,.05);
+  if(PL.left<=0) advance();
+}
+function advance(){
+  if(!PL) return;
+  if(PL.rest){ PL.rest=false; PL.left=PL.tot=PL.list[PL.i].min*60; cue(940,.2,.09); drawStep(); return; }
+  if(PL.i<PL.list.length-1){ PL.i++; PL.rest=true; PL.left=PL.tot=REST; cue(560,.18,.08); drawStep(); }
+  else finishPlayer();
+}
+function skipStep(){ if(!PL) return; PL.left=0; advance(); }
+function prevStep(){ if(!PL||PL.i===0) return;
+  PL.i--; PL.rest=false; PL.left=PL.tot=PL.list[PL.i].min*60; hap(10); drawStep(); }
+
+const ptop=()=>{ const {list,i,rest}=PL, prog=((i+(rest?0:.5))/list.length*100).toFixed(1);
+  return `<div class="ptop">
+    <button class="icon-btn" onclick="quitPlayer()" aria-label="운동 종료">${ic('close')}</button>
+    <div class="pb"><i style="width:${prog}%"></i></div>
+    <div class="pc">${i+1}/${list.length}</div>
+    <button class="icon-btn" onclick="toggleMute()" aria-label="${S.mute?'소리 켜기':'소리 끄기'}"
+      aria-pressed="${!!S.mute}">${ic(S.mute?'mute':'sound')}</button>
+  </div>`; };
+
+function drawStep(){
+  const {list,i,rest}=PL, e=list[i];
+  if(rest){
+    const first=i===0;
+    $('#b-player').innerHTML=ptop()+`<div class="restwrap">
+      <div class="rest">
+        <span class="up">${first?'곧 시작해요':`다음 동작 ${i+1}/${list.length}`}</span>
+        <h1>${e.name}</h1>
+        <p class="sub">${e.min}분 · ${e.reps}</p>
+        <span class="th" aria-hidden="true">${thumb(e)}</span>
+        <div class="cd" id="tm">${PL.left}</div>
+        <p class="sub">${first?'편한 자리를 잡고 준비하세요':'자세를 바꿀 시간이에요'}</p>
+      </div>
+      <div class="pctl">
+        <button class="icon-btn" onclick="prevStep()" aria-label="이전 동작" ${i===0?'disabled':''}>${ic('prev')}</button>
+        <button class="btn sec" id="pz" onclick="togglePause()">${ic('pause')}<span>일시정지</span></button>
+        <button class="btn" onclick="skipStep()">${ic('play')}<span>바로 시작</span></button>
+      </div></div>`;
+    say(`다음 동작, ${e.name}`);
+  } else {
+    $('#b-player').innerHTML=ptop()+stage(e)+`
+      <div class="pnm"><h1>${e.name}</h1><p>${e.reps} · ${e.tags.join(' · ')}</p></div>
+      <div class="ring" id="ring">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="tr" cx="100" cy="100" r="88"/>
+          <circle class="bar" cx="100" cy="100" r="88" stroke-dasharray="${CIRC.toFixed(1)}" stroke-dashoffset="0"/>
+        </svg>
+        <div class="cn"><div class="t" id="tm">${Math.floor(PL.left/60)}:${pad(PL.left%60)}</div>
+          <div class="l">남은 시간</div></div>
+      </div>
+      <div class="pctl">
+        <button class="icon-btn" onclick="prevStep()" aria-label="이전 동작" ${i===0?'disabled':''}>${ic('prev')}</button>
+        <button class="btn sec" id="pz" onclick="togglePause()">${ic('pause')}<span>일시정지</span></button>
+        <button class="btn" onclick="skipStep()">${i===list.length-1?ic('check')+'<span>완료</span>':ic('skip')+'<span>다음</span>'}</button>
+      </div>
+      <div style="padding:var(--s5) var(--s4) 0">${e.steps.map((s,n)=>
+        `<div class="stp"><span class="n">${n+1}</span><span>${s}</span></div>`).join('')}</div>
+      <div style="padding:var(--s4) var(--s4) 0">
+        <div class="caut">${ic('alert')}<div><b>주의</b>${e.caution}</div></div></div>`;
+    say(`${e.name} 시작. ${e.reps}`);
+  }
+  $('#ov-player').scrollTop=0; paint(); kick();
+  if(PL.paused){ const b=$('#pz'); if(b) b.innerHTML=ic('play')+'<span>이어서 하기</span>';
+    const r=$('#ring'); if(r) r.classList.add('pz'); }
+}
+function paint(){
+  if(!PL) return; const el=$('#tm'); if(!el) return;
+  el.textContent=PL.rest? String(Math.max(0,PL.left))
+    : `${Math.floor(PL.left/60)}:${pad(Math.max(0,PL.left)%60)}`;
+  const bar=$('#ring .bar');
+  if(bar) bar.style.strokeDashoffset=(CIRC*(1-Math.max(0,PL.left)/PL.tot)).toFixed(1);
+  const hot=PL.left<=3;
+  const ring=$('#ring'); if(ring) ring.classList.toggle('hot',hot);
+  if(PL.rest) el.classList.toggle('hot',hot);
+}
+function togglePause(){ if(!PL) return; PL.paused=!PL.paused; hap(10);
+  const b=$('#pz'); if(b) b.innerHTML=PL.paused? ic('play')+'<span>이어서 하기</span>' : ic('pause')+'<span>일시정지</span>';
+  const ring=$('#ring'); if(ring) ring.classList.toggle('pz',PL.paused);
+  document.querySelectorAll('#ov-player svg').forEach(s=>{ try{
+    PL.paused? s.pauseAnimations() : s.unpauseAnimations() }catch(e){} }); }
+function toggleMute(){ S.mute=!S.mute; save(); if(PL) drawStep(); if(!S.mute) beep(880,.1); }
+
+function finishPlayer(){
+  clearInterval(PL.iv); PL.iv=null; wake(false);
+  const min=PL.list.reduce((a,e)=>a+e.min,0), k=today(), prev=S.done[k];
+  S.done[k]={min:(prev?prev.min:0)+min, ids:[...(prev?prev.ids:[]),...PL.list.map(e=>e.id)]};
+  save();
+  const st=streakN(), n=PL.list.length;
+  cue(1046,.24,.09); setTimeout(()=>beep(1318,.3,.08),160);
+  $('#b-player').innerHTML=`<div class="fin">
+    <div class="em">${ic('check')}</div>
+    <h1>오늘 운동 완료!</h1>
+    <p>몸과 아기 모두에게 좋은 시간이었어요.</p>
+    <div class="sum">
+      <div><b>${n}</b><span>동작</span></div>
+      <div><b>${min}</b><span>분</span></div>
+      <div><b>${st}</b><span>일 연속</span></div>
+    </div>
+    <div class="cta2">
+      <button class="btn" onclick="closeOv('ov-player');go('log')">${ic('log')}<span>기록 보기</span></button>
+      <button class="btn sec" onclick="closeOv('ov-player');renderHome();kick()">홈으로</button>
+    </div></div>`;
+  say(`운동 완료. ${n}개 동작 ${min}분`);
+}
+function quitPlayer(){
+  ask('운동을 그만할까요?','지금 종료하면 이번 운동은 기록에 남지 않아요.','종료하기',
+    ()=>closeOv('ov-player'));
+}
+
+/* ═══════════════════════ 온보딩 ═══════════════════════ */
+function renderOnb(){
+  $('#onb').innerHTML=`<div class="ob">
+    <div class="ob-art" aria-hidden="true">${rigHero()}</div>
+    <h1 id="ob-t">맘핏</h1>
+    <p class="lead">주수에 맞춰 집에서 하루 15~30분.<br>몸이 편해지는 운동만 골랐어요.</p>
+    <div class="fld" id="fld">
+      <label for="due">출산예정일이 언제인가요?</label>
+      <input type="date" id="due" value="${S.due||''}" autocomplete="off">
+      <p class="help">오늘 기준 주수를 자동으로 계산해요.</p>
+      <p class="err" id="due-err" role="alert"></p>
+    </div>
+    <div class="note">${ic('shield')}<div><b>시작하기 전에</b>
+      담당 의사와 상담 후 시작하세요. 이 앱은 일반적인 정보 제공이며 의학적 조언이 아닙니다.
+      고위험 임신이거나 의사가 운동을 제한한 경우 따르지 마세요.</div></div>
+    <div style="margin-top:auto;padding-top:var(--s5)">
+      <button class="btn" onclick="saveDue()">${ic('check')}<span>시작하기</span></button></div>
+  </div>`;
+  kick();
+}
+function saveDue(){
+  const v=$('#due').value, f=$('#fld'), er=$('#due-err');
+  const bad=m=>{ f.classList.add('bad'); er.textContent=m; $('#due').focus(); };
+  if(!v) return bad('출산예정일을 선택해주세요.');
+  const d=new Date(v+'T00:00:00'); if(isNaN(d)) return bad('날짜 형식을 확인해주세요.');
+  const now=new Date(); now.setHours(0,0,0,0);
+  const left=Math.round((d-now)/864e5);
+  if(left>294) return bad('예정일이 너무 멀어요. 다시 확인해주세요.');
+  if(left<-30) return bad('예정일이 너무 지났어요. 다시 확인해주세요.');
+  f.classList.remove('bad'); S.due=v; save();
+  $('#onb').classList.remove('on'); document.body.style.overflow='';
+  /* 기록 탭에서 다시 설정한 경우에도 저장 후에는 홈으로 */
+  history.replaceState(null,'','#home');
+  boot();
+}
+function resetDue(){ renderOnb(); $('#onb').classList.add('on'); document.body.style.overflow='hidden'; }
+
+/* ═══════════════════════ 시작 ═══════════════════════ */
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return;
+  if($('#ov-ask').classList.contains('on')) return closeAsk();
+  ['ov-player','ov-detail','ov-pain','ov-routine','ov-safety'].forEach(closeOv); });
+/* 화면을 벗어나면 타이머를 멈추고, 돌아오면 화면 꺼짐 방지를 다시 건다 */
+document.addEventListener('visibilitychange',()=>{
+  if(!PL) return;
+  if(document.visibilityState==='hidden'){ if(!PL.paused) togglePause(); }
+  else wake(true);
+});
+function boot(){
+  const p0=preg(); if(p0) filP=p0.phase;
+  tabbar(); renderHome(); renderLib(); renderCare(); renderLog();
+  const [k,v]=location.hash.slice(1).split(':');
+  if(TABS.some(t=>t[0]===k)) go(k);
+  else {
+    go('home');   /* 딥링크가 없으면(=가입 직후 포함) 항상 홈부터 */
+    if(k==='detail'&&v) openDetail(v);
+    else if(k==='pain'&&v) openPain(v);
+    else if(k==='routine'&&v) openRoutine(v);
+    else if(k==='play'&&v) startPlayer(v.split(','));
+    else if(k==='safety') openSafety();
+  }
+  kick();
+}
+if(S.due) boot();
+else { renderOnb(); $('#onb').classList.add('on'); document.body.style.overflow='hidden'; tabbar(); }
+</script>
+</body>
+</html>
