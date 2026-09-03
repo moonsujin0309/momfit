@@ -518,6 +518,29 @@ svg.ic{stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;strok
 .sf .src{font-size:12.5px;color:var(--sub);line-height:1.75;margin-top:var(--s5);
   padding-top:var(--s4);border-top:1px solid var(--line)}
 
+/* 배경음악 버튼 — 모든 화면에 뜬다. z-index 75 = 시트(70) 위, 온보딩(80)·확인창(90) 아래.
+   그래서 온보딩 중에는 따로 숨기지 않아도 가려진다.
+   하단 sticky 시작 버튼(.cta.stick)과 겹치지 않게 탭바 위로 충분히 띄운다. */
+.bgm{position:fixed;right:var(--s4);bottom:calc(var(--tabh) + var(--safe) + 52px);z-index:75;
+  display:flex;flex-direction:column;align-items:flex-end;gap:var(--s2);pointer-events:none}
+.bgm>*{pointer-events:auto}
+.bgm .fab{width:48px;height:48px;border-radius:50%;background:var(--surface);
+  box-shadow:var(--sh-2);display:flex;align-items:center;justify-content:center;
+  color:var(--primary);transition:transform .16s var(--ease)}
+.bgm .fab:active{transform:scale(.94)}
+.bgm .fab svg{width:22px;height:22px}
+.bgm.off .fab{color:var(--sub)}
+.bgm .items{display:flex;flex-direction:column;align-items:flex-end;gap:var(--s2)}
+.bgm .items button{min-height:44px;padding:0 var(--s4);border-radius:999px;
+  background:var(--surface);box-shadow:var(--sh-2);font-size:13.5px;font-weight:700;
+  color:var(--ink);white-space:nowrap;animation:bgmin .24s var(--spring) backwards}
+.bgm .items button[aria-pressed=true]{background:var(--primary);color:#fff}
+@keyframes bgmin{from{opacity:0;transform:translateY(12px) scale(.92)}to{opacity:1;transform:none}}
+/* 플레이어만 예외 — 하단 컨트롤(.pctl)이 화면 중간에 있어서 스피커가 "다음" 버튼을 정확히 덮는다
+   (375x812 실측 48x48 겹침). 플레이어에서는 상단 바 아래로 올려 일러스트 위에 띄우고,
+   메뉴는 아래로 펼친다. 컴포넌트를 하나 더 만들지 않고 위치만 바꾼다. */
+body:has(#ov-player.on) .bgm{top:calc(var(--safet) + 112px);bottom:auto;flex-direction:column-reverse}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
     transition-duration:.01ms !important}
@@ -534,6 +557,7 @@ svg.ic{stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;strok
   <nav class="tabbar" aria-label="주요 메뉴"><div class="in" id="tabbar"></div></nav>
 </div>
 
+<div class="bgm" id="bgm"></div>
 <div id="onb" role="dialog" aria-modal="true" aria-labelledby="ob-t"></div>
 <div class="ov" id="ov-routine" role="dialog" aria-modal="true"><div class="in" id="b-routine"></div></div>
 <div class="ov" id="ov-detail" role="dialog" aria-modal="true"><div class="in" id="b-detail"></div></div>
@@ -588,7 +612,13 @@ const ic=(n,cls='')=>`<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="tr
 /* ═══════════════════════ 캐릭터 리그 ═══════════════════════
    CLAUDE.md 고정 스펙. 그리는 순서 = 살 먼저 → 옷 나중 (옷이 항상 살 위) */
 const C={sk:'#F6C6B4',skF:'#E3A893',top:'#A58FD4',topF:'#8B78B3',
-         pant:'#8D7DB8',pantF:'#75649C',hair:'#5A4A54',mat:'#E8B7AB'};
+         pant:'#8D7DB8',pantF:'#75649C',hair:'#5A4A54',mat:'#E8B7AB',
+         ball:'#86C7BE'};
+/* 짐볼 — 옷·살과 겹치지 않는 톤이라야 도구로 읽힌다.
+   ry 를 따로 주면 체중에 눌려 납작해진 공이 된다(앉는 동작). 뒤 타원은 광택. */
+const ballSVG=(cx,cy,rx,ry)=>{ry=ry||rx; const hx=cx-rx*.34, hy=cy-ry*.42;
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${C.ball}"/>`
+   +`<ellipse cx="${hx}" cy="${hy}" rx="${(rx*.24).toFixed(1)}" ry="${(ry*.16).toFixed(1)}" transform="rotate(-24 ${hx} ${hy})" fill="#FFFFFF66"/>`;};
 const kt=n=>Array.from({length:n},(_,i)=>(i/(n-1)).toFixed(4)).join(';');
 const ks=n=>Array(n-1).fill('.45 0 .55 1').join(';');
 const sg=(x1,y1,x2,y2,c,w)=>`<path d="M${x1},${y1} L${x2},${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
@@ -826,6 +856,30 @@ function rigChair(armHTML,label,o){
     ? `<g><animateTransform attributeName="transform" type="rotate" ${K} values="0 218 96;12 218 96;0 218 96"/>${nk}</g>`
     : nk;
   const arm=armHTML||`${sg(216,106,202,146,C.sk,13)}${hd(197,168,11,C.sk)}${sg(216,105,206,130,C.top,17)}`;
+  /* 짐볼 앉기 — 의자를 공으로 바꾼다. 몸 전체를 한 그룹으로 움직여야(발까지)
+     골반·무릎 이음새가 벌어지지 않는다. o.circle(골반 돌리기) / o.bounce(통통) */
+  if(o.ball){
+    const move=o.circle
+      ? `<animateTransform attributeName="transform" type="translate" dur="7s" repeatCount="indefinite"
+          keyTimes="${kt(5)}" calcMode="spline" keySplines="${ks(5)}"
+          values="0 0;11 -7;0 -11;-11 -7;0 0"/>`
+      : o.bounce
+      ? `<animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite"
+          keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;0 11;0 0"/>`
+      : '';
+    const ballMove=o.bounce
+      ? `<animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite"
+          keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;0 4;0 0"/>`
+      : '';
+    return `<svg viewBox="0 0 420 300" role="img" aria-label="${label||'짐볼에 앉아서 하는 동작'}">${matt(60,320,250)}
+      <g>${ballMove}${ballSVG(230,217,44,33)}</g>
+      <g>${move}
+        ${farThigh}${farShin}${farFoot}
+        <g>${breatheG}${torso}
+        <path fill="${C.top}" d="M208,112 C182,126 180,164 206,180 C216,186 225,180 223,172 C219,150 212,130 208,112 Z"/>
+        ${o.armFront?'':arm}${headG}${col(219,94,12)}${o.armFront?arm:''}</g>
+        ${nearShin}${nearFoot}${nearThigh}</g></svg>`;
+  }
   return `<svg viewBox="0 0 420 300" role="img" aria-label="${label||'의자에 앉아서 하는 동작'}">${matt(60,320,250)}
     <rect x="240" y="100" width="11" height="92" rx="5.5" fill="${CH2}"/>
     ${farThigh}${farShin}${farFoot}
@@ -918,7 +972,50 @@ function rigChild(){
       ${sg(182,218,118,232,C.sk,13)}${hd(108,235,12,C.sk)}${sg(182,217,156,222,C.top,17)}
       ${sg(178,216,158,224,C.sk,14)}${head(144,230,19,1)}${col(180,218,12)}</g></svg>`;
 }
-function rigWall(){
+/* 무릎 꿇고 상체를 짐볼에 얹기 — 배가 커져 아기 자세가 힘들 때의 대체 자세.
+   호흡에 따라 등이 오르내리고 상체가 짐볼 위에서 살짝 눌린다. */
+function rigBallLean(){
+  const D=6, K=`dur="${D}s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+  const back=['M186,188 Q234,196 278,210','M186,183 Q234,190 278,208','M186,188 Q234,196 278,210'];
+  const belly=['M220,218 C210,236 228,248 254,246 C272,244 280,234 276,220 C256,210 232,210 220,218 Z',
+               'M220,214 C209,233 227,247 254,245 C273,243 281,232 277,217 C256,207 232,207 220,214 Z',
+               'M220,218 C210,236 228,248 254,246 C272,244 280,234 276,220 C256,210 232,210 220,218 Z'];
+  const sink=`<animateTransform attributeName="transform" type="translate" ${K} values="0 0;0 -4;0 0"/>`;
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="무릎을 벌리고 앉아 상체를 짐볼 위에 얹어 쉬는 동작">${matt(70,290,250)}
+    ${ballSVG(158,212,38)}
+    ${sg(228,242,284,250,C.skF,13)}${ft(295,250,15,C.skF,4)}${sg(282,208,228,242,C.pantF,20)}
+    <path fill="none" stroke="${C.top}" stroke-width="34" stroke-linecap="round">
+      <animate attributeName="d" ${K} values="${back.join(';')}"/></path>
+    ${phA(belly,C.top,D)}
+    ${sg(224,246,288,254,C.sk,15)}${ft(300,254,17,C.sk,4)}${sg(278,212,224,246,C.pant,24)}
+    <g>${sink}
+      ${sg(190,194,136,186,C.skF,12)}${hd(128,185,10.5,C.skF)}
+      ${sg(188,190,132,180,C.sk,13)}${hd(124,179,12,C.sk)}${sg(188,189,164,186,C.top,17)}
+      ${sg(184,182,172,168,C.sk,14)}${head(157,154,19,1)}${col(186,186,12)}</g></svg>`;
+}
+function rigWall(o){
+  o=o||{};
+  /* 짐볼을 벽에 대고 두 손으로 머리 위까지 굴려 올린다 — 몸통은 세운 채 팔만 움직인다 */
+  if(o.ball){
+    const KB=`dur="5s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+    /* 볼은 벽을 타고 수직으로만 올라가고, 손은 볼 표면을 따라 위로 미끄러진다(팔이 펴짐) */
+    const mv=(dx,dy,v)=>`<g><animateTransform attributeName="transform" type="translate" ${KB}
+        values="0 0;${dx} ${dy};0 0"/>${v}</g>`;
+    return `<svg viewBox="0 0 420 300" role="img" aria-label="벽에 짐볼을 대고 두 손으로 머리 위까지 굴려 올리는 동작">${matt(126,240,252)}
+      <rect x="118" y="18" width="26" height="246" rx="4" fill="#EEE0D8"/>
+      ${mv(0,-64,ballSVG(174,134,30))}
+      ${sg(248,208,252,242,C.skF,13.5)}${ft(255,245,17,C.skF)}${sg(244,172,248,208,C.pantF,19)}
+      ${sgA(['M238,106 L206,138','M238,106 L194,72','M238,106 L206,138'],C.skF,12,5)}
+      ${mv(-12,-66,hd(206,138,10.5,C.skF))}
+      ${sgA(['M238,105 L222,121','M238,105 L220,94','M238,105 L222,121'],C.topF,15.5,5)}
+      ${sg(232,96,238,168,C.top,30)}
+      <path fill="${C.top}" d="M226,112 C202,124 200,156 224,172 C234,178 242,172 240,165 C236,146 230,128 226,112 Z"/>
+      ${sg(236,206,234,242,C.sk,15)}${ft(230,246,19,C.sk)}${sg(238,168,236,206,C.pant,22)}
+      ${sgA(['M232,100 L200,132','M232,100 L188,66','M232,100 L200,132'],C.sk,13,5)}
+      ${mv(-12,-66,hd(200,132,12,C.sk))}
+      ${sgA(['M232,99 L216,115','M232,99 L214,88','M232,99 L216,115'],C.top,17,5)}
+      ${sg(232,94,224,80,C.sk,14)}${head(216,64,17,1)}${col(232,95,11)}</svg>`;
+  }
   /* 손은 벽에 고정, 몸이 벽 쪽으로 기울었다 돌아온다 */
   const K=`keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
   const torso=['M232,96 Q236,132 238,168','M218,102 Q226,136 230,170','M232,96 Q236,132 238,168'];
@@ -1062,6 +1159,7 @@ rigChair.vb='120 34 190 232'; rigWall.vb=VB.wall; rigCalf.vb=VB.stand; rigShould
 rigTilt.vb=VB.stand; rigLunge.vb='160 18 175 246';
 rigBreathe.vb='160 18 130 246'; rigMarch.vb='170 40 130 224';
 rigLongSit.vb='76 58 196 206'; rigWallStand.vb='150 18 140 250'; rigCalfStretch.vb='120 30 200 236';
+rigBallLean.vb='104 126 216 138';
 const vbOf=e=>e.vb||e.rig.vb||'0 0 420 300';
 const thumb=e=>e.rig().replace('viewBox="0 0 420 300"',`viewBox="${vbOf(e)}"`);
 
@@ -1404,7 +1502,62 @@ const EX=[
     '얹은 쪽 무릎을 억지로 누르지 말고 편하게 내려놔요.',
     '척추를 곧게 세운 채 숨을 내쉬며 엉덩이가 늘어나는 느낌을 찾아요. 30초 유지해요.',
     '반대쪽도 해요.'],
-  caution:'치골통이 있으면 무릎을 얹는 높이를 낮추거나 건너뛰세요. 상체를 앞으로 깊이 숙여 배를 누르지 마세요.'}
+  caution:'치골통이 있으면 무릎을 얹는 높이를 낮추거나 건너뛰세요. 상체를 앞으로 깊이 숙여 배를 누르지 마세요.'},
+
+ /* ── 짐볼(gear:'ball') ─────────────────────────────────────────
+    gear 가 있으면 자동 생성 루틴(usable)·통증 추천에서 빠지고, 운동 탭 도구 필터로만 고른다.
+    짐볼이 손에 없는 날에도 앱이 그대로 굴러가야 해서 그렇게 나눴다. */
+ {id:'ballcircle',name:'짐볼 골반 돌리기',en:'Pelvic Circles on Ball',phase:[1,2,3],role:'warmup',min:3,reps:'양방향 8회',dur:7,
+  gear:'ball',vb:'124 14 160 246',
+  rig:()=>rigChair(null,'짐볼에 앉아 골반으로 큰 원을 그리는 동작',{ball:1,circle:1,dur:7}),
+  cue:['천천히 · 한 방향으로 원을 그려요','반대 방향으로 · 다시 8바퀴'],
+  tags:['골반','환도선다'],pains:['sacro','back','round'],load:['balance'],
+  effects:['짐볼이 함께 흔들려서, 의자에 앉아 하는 것보다 골반이 움직이는 범위가 커요',
+    '천장관절 통증(환도선다) 완화에 도움이 될 수 있어요',
+    '아기가 골반 안에서 자리를 잡는 데 도움이 되는 움직임이라, 후기에 특히 많이 권해요'],
+  steps:['짐볼을 벽 앞에 두고 앉아요. 무릎이 엉덩이보다 살짝 낮게 오는 높이가 맞는 크기예요.',
+    '발을 어깨너비보다 넓게 벌려 바닥을 단단히 눌러요. 손은 무릎이나 허벅지에 놓아요.',
+    '상체는 세운 채, 골반으로만 천천히 큰 원을 그려요.',
+    '한 방향으로 8바퀴, 반대 방향으로 8바퀴 돌려요.'],
+  caution:'처음에는 벽이나 가구를 한 손으로 짚고 하세요. 공기를 꽉 채우면 미끄러워요 — 손으로 눌러 2~3cm 들어가는 정도가 안전해요.'},
+
+ {id:'ballbounce',name:'짐볼 통통 튀기',en:'Gentle Ball Bouncing',phase:[2,3],role:'warmup',min:3,reps:'2~3분',dur:4,
+  gear:'ball',vb:'124 14 160 246',
+  rig:()=>rigChair(null,'짐볼에 앉아 작게 위아래로 통통 움직이는 동작',{ball:1,bounce:1,dur:4}),
+  cue:['작게 · 통통 내려앉아요','숨은 · 편하게 이어가요'],
+  tags:['출산 준비','이완'],pains:['back','sacro'],load:['balance'],
+  effects:['골반 바닥이 부드럽게 눌렸다 풀리며 긴장이 내려가요',
+    '허리에 실리는 무게를 짐볼이 나눠 받아, 오래 앉아 있어도 덜 뻐근해요',
+    '진통이 시작됐을 때 분만실에서도 쓰는 자세예요. 미리 익혀두면 그때 편해요'],
+  steps:['짐볼에 앉아 발을 넓게 벌리고 바닥을 단단히 눌러요.',
+    '엉덩이가 짐볼에서 떨어지지 않을 만큼, 아주 작게 위아래로 통통 움직여요.',
+    '숨을 편하게 쉬면서 2~3분 이어가요. TV를 보면서 해도 돼요.'],
+  caution:'엉덩이가 공에서 뜰 정도로 크게 튀지 마세요. 배가 당기거나 어지러우면 바로 멈추고 앉으세요.'},
+
+ {id:'ballroll',name:'짐볼 벽에 굴려 올리기',en:'Wall Ball Roll-Up',phase:[1,2,3],role:'main',min:3,reps:'10회',dur:5,
+  gear:'ball',vb:'112 26 160 240',
+  rig:()=>rigWall({ball:1}),
+  cue:['숨을 내쉬며 · 볼을 굴려 올려요','숨을 마시며 · 천천히 내려요'],
+  tags:['목·어깨','자세 교정'],pains:['neck','rib'],load:['wrist'],
+  effects:['앞으로 말린 어깨를 펴고 굽은 등을 세워요',
+    '배에 부담을 주지 않으면서 어깨·등 근육을 쓸 수 있어요',
+    '갈비뼈 사이가 넓어져 숨이 깊게 들어가요'],
+  steps:['벽에서 한 팔 거리에 서서, 짐볼을 가슴 높이 벽에 대고 두 손으로 받쳐요.',
+    '숨을 내쉬며 짐볼을 벽에 붙인 채 머리 위로 천천히 굴려 올려요. 어깨가 귀에 붙지 않게 내려요.',
+    '숨을 마시며 가슴 높이까지 천천히 내려요.','10회 반복해요.'],
+  caution:'허리를 뒤로 젖히지 마세요 — 배에 힘을 살짝 주고 갈비뼈만 올린다고 생각해요. 어깨가 아프면 눈높이까지만 올리세요.'},
+
+ {id:'balllean',name:'짐볼 기대 등 늘리기',en:'Kneeling Ball Lean',phase:[2,3],role:'stretch',min:3,reps:'2분 유지',dur:6,
+  gear:'ball',rig:rigBallLean,
+  cue:['숨을 마시며 · 등을 넓게','숨을 내쉬며 · 몸을 내려놔요'],
+  tags:['요통 완화','목·어깨'],pains:['back','sacro','neck'],load:['knee','floor'],
+  effects:['배가 커져 아기 자세가 힘들어질 때, 짐볼이 상체를 받쳐줘 같은 이완을 얻을 수 있어요',
+    '배가 아래로 늘어뜨려지면서 허리에 실린 무게가 빠져요',
+    '어깨와 등 위쪽까지 길게 늘어나 굽은 등이 펴져요'],
+  steps:['매트나 이불 위에 무릎을 배 너비보다 넓게 벌리고 앉아요. 짐볼은 몸 앞, 벽 쪽에 둬요.',
+    '상체를 앞으로 내려 가슴과 팔을 짐볼 위에 편하게 얹어요. 머리도 팔 위에 내려놔요.',
+    '배가 눌리지 않게 무릎 사이 공간을 충분히 두고, 2분간 깊게 호흡해요.'],
+  caution:'무릎이 아프면 무릎 아래에 쿠션을 받치세요. 짐볼이 굴러가지 않게 벽 쪽에 두고 하세요. 어지러우면 천천히 일어나세요.'}
 ];
 
 /* 효과 태그 설명 — 효과를 고르면 목록 위에 한 줄로 보여준다 */
@@ -1482,14 +1635,15 @@ const WHEN={
 const POSE=[
  {id:'stand',name:'서서',            sub:'바닥에 앉지 않아도 돼요',
   ids:['pelvictilt','squat','calf','wallpush','shoulder','legraise','psoas','march','breathe',
-       'calfstr','wallsquat','scapula']},
- {id:'sit',  name:'앉아서',          sub:'바닥에도, 의자에도 앉아서 할 수 있어요',
+       'calfstr','wallsquat','scapula','ballroll']},
+ {id:'sit',  name:'앉아서',          sub:'바닥 · 의자 · 짐볼 어디든 앉아서',
   ids:['butterfly','sidebend','neck','ankle','kegel','wriststr','seatedrock',
-       'chairsqueeze','chairleg','seatcurl','chintuck','sitstand','birthbreath','kneeup','fig4']},
+       'chairsqueeze','chairleg','seatcurl','chintuck','sitstand','birthbreath','kneeup','fig4',
+       'ballcircle','ballbounce']},
  {id:'lie',  name:'옆으로 누워서',    sub:'왼쪽으로 누우면 순환에 더 좋아요',
   ids:['clam','sideleg','sideknee','sideopen']},
  {id:'quad', name:'네발기기 · 엎드려', sub:'매트나 이불 위에서',
-  ids:['catcow','birddog','pelvicclock','child']}
+  ids:['catcow','birddog','pelvicclock','child','balllean']}
 ];
 
 const MOODS=[
@@ -1576,7 +1730,7 @@ const PLANS=[
 
 /* ═══════════════════════ 상태 ═══════════════════════ */
 const KEY='mamfit';
-let S=load(), curMin=20, curPlan=null, PL=null, filG='all', filE='all', calM=0, curBody=null, showAll=false;
+let S=load(), curMin=20, curPlan=null, PL=null, filG='all', filE='all', filQ='all', calM=0, curBody=null, showAll=false;
 /* 운동 탭 시기 필터 기본값 = 내 시기 (칩은 전체/초기/중기/후기만 둔다) */
 let filP=1;
 function load(){ try{ const o=JSON.parse(localStorage.getItem(KEY))||{}; o.done=o.done||{}; o.avoid=o.avoid||[]; return o }
@@ -1611,6 +1765,141 @@ function beep(f,dur=.14,vol=.07){
 }
 const cue=(f,d,v)=>{ beep(f,d,v); hap(v>=.08?[0,40,60,40]:14); };
 
+/* ═══════════════════════ 배경음악 ═══════════════════════
+   전부 WebAudio 합성이다 — 음원 파일 없음(굿슬립·플레이어와 같은 원칙).
+   그래서 저작권·용량·외부 요청이 모두 0이고, 단일 index.html 구조가 그대로 유지된다.
+   세 곡은 진행(prog)·박자(bpm)·소리 만드는 함수(play)만 다르고 엔진은 하나를 공유한다. */
+const hz=m=>440*Math.pow(2,(m-69)/12);
+let MBUS=null, MGAIN=null, MU=null;   /* MU = {trk, step, next, iv} */
+
+function mbus(){
+  if(MBUS) return;
+  MGAIN=AC.createGain(); MGAIN.gain.value=0;
+  /* 공간감은 리버브 파일 대신 피드백 딜레이로 만든다 */
+  const dly=AC.createDelay(1), fb=AC.createGain(), wet=AC.createGain();
+  dly.delayTime.value=.3; fb.gain.value=.28; wet.gain.value=.32;
+  MBUS=AC.createGain(); MBUS.gain.value=1;
+  MBUS.connect(MGAIN); MBUS.connect(dly); dly.connect(fb); fb.connect(dly);
+  dly.connect(wet); wet.connect(MGAIN); MGAIN.connect(AC.destination);
+}
+/* 한 음 — 오실레이터 + 로우패스 + 감쇠 엔벨로프 */
+function tone(t,f,dur,o){ o=o||{};
+  const os=AC.createOscillator(), g=AC.createGain(), lp=AC.createBiquadFilter();
+  os.type=o.type||'sine'; os.frequency.setValueAtTime(f,t);
+  if(o.drop) os.frequency.exponentialRampToValueAtTime(f*o.drop,t+dur);
+  lp.type='lowpass'; lp.frequency.value=o.cut||2400; lp.Q.value=.4;
+  const v=o.g||.05, a=o.atk||.012;
+  g.gain.setValueAtTime(.0001,t);
+  g.gain.exponentialRampToValueAtTime(v,t+a);
+  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  os.connect(lp); lp.connect(g); g.connect(MBUS); os.start(t); os.stop(t+dur+.05);
+}
+/* 셰이커·하이햇 — 짧은 화이트노이즈에 하이패스 */
+let NB=null;
+function hit(t,dur,v,cut){
+  if(!NB){ NB=AC.createBuffer(1,AC.sampleRate*.4,AC.sampleRate); const d=NB.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; }
+  const src=AC.createBufferSource(), g=AC.createGain(), hp=AC.createBiquadFilter();
+  src.buffer=NB; hp.type='highpass'; hp.frequency.value=cut||6000;
+  g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  src.connect(hp); hp.connect(g); g.connect(MBUS); src.start(t); src.stop(t+dur+.02);
+}
+
+/* 세 곡. div = 한 박을 몇 스텝으로 쪼개나, bar = 한 마디 스텝 수 */
+const MTRK=[
+ {id:'calm',name:'차분히',sub:'요가·스트레칭',bpm:52,div:2,bar:8,
+  prog:[[57,60,64,67],[53,57,60,64],[60,64,67,71],[55,59,62,66]],
+  play(t,s){ const b=(s/this.bar|0)%4, k=s%this.bar, c=this.prog[b], spb=60/this.bpm/this.div;
+    if(k===0){ tone(t,hz(c[0]-12),spb*9,{g:.035,cut:520,atk:.9});      /* 낮은 패드 */
+               tone(t,hz(c[1]),spb*9,{type:'triangle',g:.022,cut:900,atk:1.2}); }
+    /* 드문 뜯는 음 — 코드 안에서 위로 올라간다 */
+    if(k===1||k===4||k===6){ const n=c[(k===1?1:k===4?2:3)];
+      tone(t,hz(n+12),2.6,{type:'triangle',g:.042,cut:2600,atk:.02}); }
+  }},
+ {id:'light',name:'가볍게',sub:'발랄한 마림바',bpm:96,div:4,bar:16,
+  prog:[[60,64,67],[57,60,64],[53,57,60],[55,59,62]],
+  play(t,s){ const b=(s/this.bar|0)%4, k=s%this.bar, c=this.prog[b];
+    if(k===0||k===8) tone(t,hz(c[0]-24),.6,{g:.055,cut:340,atk:.02});  /* 베이스 */
+    if(k%2===0){ const up=[0,1,2,1], n=c[up[(k/2)%4]] + (k>=8?12:0);
+      tone(t,hz(n+12),.5,{type:'triangle',g:.05,cut:3400,atk:.006}); } /* 마림바 */
+    if(k%4===2) hit(t,.05,.028,7000);                                  /* 셰이커 */
+  }},
+ {id:'up',name:'신나게',sub:'살짝 신나는',bpm:112,div:4,bar:16,
+  prog:[[53,57,60],[55,59,62],[57,60,64],[55,59,62]],
+  play(t,s){ const b=(s/this.bar|0)%4, k=s%this.bar, c=this.prog[b];
+    if(k===0||k===6||k===10) tone(t,hz(36),.2,{g:.09,cut:200,drop:.55,atk:.004}); /* 킥 */
+    if(k===4||k===12) hit(t,.09,.035,4200);                            /* 스네어 자리 */
+    if(k%2===1) hit(t,.035,.02,8000);                                  /* 하이햇 */
+    if(k===0||k===3||k===6||k===8||k===11||k===14)
+      tone(t,hz(c[0]-24),.22,{type:'triangle',g:.06,cut:420,atk:.005});/* 통통 튀는 베이스 */
+    if(k===2||k===7||k===10||k===14)                                   /* 엇박 코드 */
+      c.forEach(n=>tone(t,hz(n+12),.2,{type:'triangle',g:.026,cut:2000,atk:.006}));
+  }}
+];
+const mtrk=id=>MTRK.find(x=>x.id===id);
+
+function mtick(){
+  if(!MU) return;
+  const T=MU.trk, spb=60/T.bpm/T.div;
+  while(MU.next < AC.currentTime+.8){
+    if(MU.next>AC.currentTime-.05) try{ T.play(MU.next,MU.step) }catch(e){}
+    MU.step++; MU.next+=spb;
+  }
+}
+function stopMusic(){
+  if(!MU) return;
+  try{ MGAIN.gain.cancelScheduledValues(AC.currentTime);
+       MGAIN.gain.setTargetAtTime(0,AC.currentTime,.25) }catch(e){}
+  clearInterval(MU.iv); MU=null;
+}
+function playMusic(id){
+  const T=mtrk(id); if(!T) return stopMusic();
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended') AC.resume();
+    mbus();
+    if(MU) { clearInterval(MU.iv); MU=null; }
+    MGAIN.gain.cancelScheduledValues(AC.currentTime);
+    MGAIN.gain.setValueAtTime(Math.max(.0001,MGAIN.gain.value),AC.currentTime);
+    MGAIN.gain.setTargetAtTime(.9,AC.currentTime+.05,.4);              /* 페이드 인 */
+    MU={trk:T,step:0,next:AC.currentTime+.15,iv:setInterval(mtick,220)};
+    mtick();
+  }catch(e){ MU=null; }
+}
+/* 첫 사용자 동작이 오기 전에는 브라우저가 오디오를 막는다 —
+   저장된 곡이 있으면 최초 터치 한 번에 이어서 켠다. */
+function armMusic(){
+  if(!S.bgm || MU) return;
+  const on=()=>{ document.removeEventListener('pointerdown',on); playMusic(S.bgm); };
+  document.addEventListener('pointerdown',on,{once:true});
+}
+
+/* ── 스피커 버튼 (모든 화면 공통) ── */
+let bgmOn=false;
+function renderBgm(){
+  const cur=S.bgm? mtrk(S.bgm) : null;
+  const el=$('#bgm'); if(!el) return;
+  el.className='bgm'+(cur?'':' off');
+  const items=bgmOn? `<div class="items" role="group" aria-label="배경음악 고르기">
+      ${MTRK.map((t,i)=>`<button onclick="pickBgm('${t.id}')" aria-pressed="${S.bgm===t.id}"
+        style="animation-delay:${i*45}ms">${t.name}</button>`).join('')}
+      <button onclick="pickBgm('')" aria-pressed="${!S.bgm}"
+        style="animation-delay:${MTRK.length*45}ms">음악 끄기</button>
+    </div>` : '';
+  el.innerHTML=items+`<button class="fab" onclick="toggleBgm()" aria-expanded="${bgmOn}"
+    aria-label="배경음악 — ${cur?cur.name:'꺼짐'}${bgmOn?'. 목록 닫기':'. 목록 열기'}">
+    ${ic(bgmOn?'close':(cur?'sound':'mute'))}</button>`;
+}
+function toggleBgm(){ bgmOn=!bgmOn; hap(8); renderBgm();
+  if(bgmOn){ const out=e=>{ if(!e.target.closest('#bgm')){ bgmOn=false; renderBgm(); } };
+    setTimeout(()=>document.addEventListener('pointerdown',out,{once:true}),0); } }
+function pickBgm(id){
+  S.bgm=id||null; save(); hap(12);
+  if(id) playMusic(id); else stopMusic();
+  bgmOn=false; renderBgm();
+  say(id? mtrk(id).name+' 배경음악을 켰어요' : '배경음악을 껐어요');
+}
+
 /* 운동 중 화면이 꺼지지 않게 */
 let WL=null;
 function wake(on){ try{
@@ -1638,7 +1927,8 @@ function preg(){
 const PHN={1:'임신 초기 · 1분기',2:'임신 중기 · 2분기',3:'임신 후기 · 3분기'};
 const PHS={1:'초기',2:'중기',3:'후기'};
 /* 불편한 곳 제외를 반영한 사용 가능 동작 */
-const usable=ph=>EX.filter(e=>e.phase.includes(ph) && !e.load.some(l=>S.avoid.includes(l)));
+/* 자동으로 짜주는 루틴에는 도구 없이 되는 동작만 쓴다 — 짐볼이 손에 없는 날도 있어서 */
+const usable=ph=>EX.filter(e=>e.phase.includes(ph) && !e.gear && !e.load.some(l=>S.avoid.includes(l)));
 
 const DEF_ROLES=[['warmup',1],['main',9],['stretch',2]];
 const ROLE_ORD={warmup:0,main:1,stretch:2};
@@ -1735,7 +2025,8 @@ function setMin(m){ curMin=m;
 const exCard=e=>`<button class="card" onclick="openDetail('${e.id}')" aria-label="${e.name}, ${e.min}분">
   <span class="pic" aria-hidden="true">${thumb(e)}</span>
   <span class="bd"><b>${e.name}</b><span class="mt">${e.min}분 · ${e.reps}</span>
-    <span class="tags">${e.tags.slice(0,2).map(t=>`<span class="tag min">${t}</span>`).join('')}</span></span>
+    <span class="tags">${(e.gear?'<span class="tag pri">짐볼</span>':'')
+      +e.tags.slice(0,e.gear?1:2).map(t=>`<span class="tag min">${t}</span>`).join('')}</span></span>
 </button>`;
 
 function renderLib(){
@@ -1743,7 +2034,8 @@ function renderLib(){
   const effs=[...new Set(EX.flatMap(e=>e.tags))];
   const base=EX.filter(e=>!e.load.some(l=>S.avoid.includes(l)));
   const list=base.filter(e=>
-    (filP==='all' || e.phase.includes(+filP)) && (filE==='all' || e.tags.includes(filE)));
+    (filP==='all' || e.phase.includes(+filP)) && (filE==='all' || e.tags.includes(filE)) &&
+    (filQ==='all' || (filQ==='ball'? e.gear==='ball' : !e.gear)));
   const hidden=EX.length-base.length;
   $('#p-lib').innerHTML=`
     <div class="hd"><h2 id="h-lib">운동</h2><p>임신 ${PHS[ph]}에 맞는 동작을 골라보세요</p></div>
@@ -1754,6 +2046,10 @@ function renderLib(){
     <div class="chips" role="group" aria-label="자세 필터">
       ${[['all','전체 자세'],...POSE.map(g=>[g.id,g.name])].map(([v,l])=>
         `<button onclick="filG='${v}';renderLib();kick()" aria-pressed="${filG===v}">${l}</button>`).join('')}
+    </div>
+    <div class="chips" role="group" aria-label="도구 필터">
+      ${[['all','도구 전체'],['none','맨몸'],['ball','짐볼']].map(([v,l])=>
+        `<button onclick="filQ='${v}';renderLib();kick()" aria-pressed="${filQ===v}">${l}</button>`).join('')}
     </div>
     <div class="chips" role="group" aria-label="효과 필터">
       ${[['all','모든 효과'],...effs.map(t=>[t,t])].map(([v,l])=>
@@ -1958,6 +2254,7 @@ function openDetail(id){
     <div class="dt">
       <div class="tags">
         <span class="tag pri">${e.phase.length===3?'전 시기 가능':e.phase.map(p=>PHS[p]).join(' · ')}</span>
+        ${e.gear==='ball'?'<span class="tag pri">짐볼 필요</span>':''}
         ${e.tags.map(t=>`<span class="tag min">${t}</span>`).join('')}
         <span class="tag cor">${e.min}분 · ${e.reps}</span></div>
       <h1>${e.name}</h1><p class="en">${e.en}</p>
@@ -1971,7 +2268,7 @@ function openDetail(id){
 }
 function openPain(id){
   const p=PAINS.find(x=>x.id===id);
-  const all=EX.filter(e=>e.pains.includes(id) && !e.load.some(l=>S.avoid.includes(l)));
+  const all=EX.filter(e=>e.pains.includes(id) && !e.gear && !e.load.some(l=>S.avoid.includes(l)));
   const ord={stretch:0,warmup:1,main:2};
   const list=[...all].sort((a,b)=>ord[a.role]-ord[b.role]).slice(0,5);
   const mins=list.reduce((a,e)=>a+e.min,0);
@@ -2071,7 +2368,7 @@ const ptop=()=>{ const {list,i,rest}=PL, prog=((i+(rest?0:.5))/list.length*100).
     <button class="icon-btn" onclick="quitPlayer()" aria-label="운동 종료">${ic('close')}</button>
     <div class="pb"><i style="width:${prog}%"></i></div>
     <div class="pc">${i+1}/${list.length}</div>
-    <button class="icon-btn" onclick="toggleMute()" aria-label="${S.mute?'소리 켜기':'소리 끄기'}"
+    <button class="icon-btn" onclick="toggleMute()" aria-label="${S.mute?'동작 알림 소리 켜기':'동작 알림 소리 끄기'}"
       aria-pressed="${!!S.mute}">${ic(S.mute?'mute':'sound')}</button>
   </div>`; };
 
@@ -2213,7 +2510,7 @@ document.addEventListener('visibilitychange',()=>{
 });
 function boot(){
   const p0=preg(); if(p0) filP=p0.phase;
-  tabbar(); renderHome(); renderLib(); renderCare(); renderLog();
+  tabbar(); renderBgm(); armMusic(); renderHome(); renderLib(); renderCare(); renderLog();
   const [k,v]=location.hash.slice(1).split(':');
   if(TABS.some(t=>t[0]===k)) go(k);
   else {
