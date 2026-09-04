@@ -819,12 +819,16 @@ function rigChair(armHTML,label,o){
   const K=`dur="${D}s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
   const CH='#E0D3CB', CH2='#CDBDB3';
   /* footLift: 발끝·발뒤꿈치 번갈아 들기 / kneeSq: 무릎을 안쪽으로 조인다 / lean: 상체를 옆으로 기울인다 */
-  const nearShin=o.legExt
+  const nearShin=o.kneeLift
+    ? sgA(['M170,196 L164,244','M166,168 L158,216','M170,196 L164,244'],C.sk,14,D)
+    : o.legExt
     ? sgA(['M170,196 L164,244','M170,196 L112,208','M170,196 L164,244'],C.sk,14,D)
     : o.kneeSq
     ? sgA(['M170,196 L164,244','M176,196 L170,244','M170,196 L164,244'],C.sk,14,D)
     : sg(170,196,164,244,C.sk,14);
-  const nearFoot=o.legExt
+  const nearFoot=o.kneeLift
+    ? `<g><animateTransform attributeName="transform" type="translate" ${K} values="0 0;-8 -30;0 0"/>${ft(150,247,17,C.sk,0)}</g>`
+    : o.legExt
     ? `<g><animateTransform attributeName="transform" type="translate" ${K} values="0 0;-54 -40;0 0"/>${ft(150,247,17,C.sk,0)}</g>`
     : o.footLift
     ? `<g><animateTransform attributeName="transform" type="rotate" ${K}
@@ -839,7 +843,8 @@ function rigChair(armHTML,label,o){
     ? `<g><animateTransform attributeName="transform" type="rotate" ${K}
         values="0 171 240;-26 171 240;14 171 240"/>${ft(158,243,15,C.skF,0)}</g>`
     : ft(158,243,15,C.skF,0);
-  const nearThigh=o.oneLeg? sgA(['M226,184 L170,196','M226,184 L166,182','M226,184 L170,196'],C.pant,22,D)
+  const nearThigh=o.kneeLift? sgA(['M226,184 L170,196','M226,184 L166,168','M226,184 L170,196'],C.pant,22,D)
+                          : o.oneLeg? sgA(['M226,184 L170,196','M226,184 L166,182','M226,184 L170,196'],C.pant,22,D)
                           : o.kneeSq? sgA(['M226,184 L170,196','M226,184 L176,196','M226,184 L170,196'],C.pant,22,D)
                           : sg(226,184,170,196,C.pant,22);
   const farThigh =o.kneeSq? sgA(['M230,180 L176,192','M230,180 L170,192','M230,180 L176,192'],C.pantF,19,D)
@@ -865,11 +870,11 @@ function rigChair(armHTML,label,o){
           values="0 0;11 -7;0 -11;-11 -7;0 0"/>`
       : o.bounce
       ? `<animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite"
-          keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;0 11;0 0"/>`
+          keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;0 13;0 0"/>`
       : '';
     const ballMove=o.bounce
       ? `<animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite"
-          keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;0 4;0 0"/>`
+          keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;0 5;0 0"/>`
       : '';
     return `<svg viewBox="0 0 420 300" role="img" aria-label="${label||'짐볼에 앉아서 하는 동작'}">${matt(60,320,250)}
       <g>${ballMove}${ballSVG(230,217,44,33)}</g>
@@ -925,8 +930,13 @@ function rigWallStand(o){
   const armF=o.squat? ['M232,100 L180,124','M232,100 L176,150','M232,100 L180,124'] : o.angel? ['M232,100 L250,136','M232,100 L248,62','M232,100 L250,136'] : ['M232,100 L200,152','M232,100 L200,152','M232,100 L200,152'];
   const handN=o.squat? `<g><animateTransform attributeName="transform" type="translate" ${K} values="0 0;-4 26;0 0"/>${hd(172,122,12,C.sk)}</g>` : o.angel? `<g><animateTransform attributeName="transform" type="translate" ${K} values="0 0;-2 -74;0 0"/>${hd(249,137,12,C.sk)}</g>` : hd(192,154,12,C.sk);
   const handF=o.squat? `<g><animateTransform attributeName="transform" type="translate" ${K} values="0 0;-4 26;0 0"/>${hd(176,126,10.5,C.skF)}</g>` : o.angel? `<g><animateTransform attributeName="transform" type="translate" ${K} values="0 0;-2 -74;0 0"/>${hd(253,141,10.5,C.skF)}</g>` : hd(196,158,10.5,C.skF);
+  /* 짐볼 벽 스쿼트 — 등과 벽 사이에 공을 끼우고 함께 굴러 내려간다.
+     공이 몸통에 다 가리지 않게 벽을 오른쪽으로 물리고 공을 크게 잡았다. */
+  const ballG=o.ball? `<g><animateTransform attributeName="transform" type="translate" ${K}
+      values="0 0;0 42;0 0"/>${ballSVG(234,142,40)}</g>` : '';
   return `<svg viewBox="0 0 420 300" role="img" aria-label="${o.label||'벽에 등을 대고 하는 동작'}">${matt(140,220,250)}
-    <rect x="250" y="18" width="24" height="244" rx="4" fill="#EEE0D8"/>
+    <rect x="${o.ball?274:250}" y="18" width="24" height="244" rx="4" fill="#EEE0D8"/>
+    ${ballG}
     ${sgA(shinF,C.skF,13.5,D)}${footF}${sgA(thighF,C.pantF,19,D)}
     ${sgA(armF,C.skF,12,D)}${handF}
     <g>${drop}${sg(228,86,232,152,C.top,30)}
@@ -974,24 +984,35 @@ function rigChild(){
 }
 /* 무릎 꿇고 상체를 짐볼에 얹기 — 배가 커져 아기 자세가 힘들 때의 대체 자세.
    호흡에 따라 등이 오르내리고 상체가 짐볼 위에서 살짝 눌린다. */
-function rigBallLean(){
-  const D=6, K=`dur="${D}s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+function rigBallLean(o){
+  o=o||{};
+  const D=o.dur||6, K=`dur="${D}s" repeatCount="indefinite" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"`;
+  /* rock: 상체는 짐볼에 얹은 채 골반을 앞뒤로 민다. 짐볼도 절반만큼 함께 굴러간다 */
+  const rockBody=o.rock? `<animateTransform attributeName="transform" type="translate" ${K}
+      values="0 0;-15 0;0 0"/>`:'';
+  const rockBall=o.rock? `<animateTransform attributeName="transform" type="translate" ${K}
+      values="0 0;-8 0;0 0"/>`:'';
   const back=['M186,188 Q234,196 278,210','M186,183 Q234,190 278,208','M186,188 Q234,196 278,210'];
   const belly=['M220,218 C210,236 228,248 254,246 C272,244 280,234 276,220 C256,210 232,210 220,218 Z',
                'M220,214 C209,233 227,247 254,245 C273,243 281,232 277,217 C256,207 232,207 220,214 Z',
                'M220,218 C210,236 228,248 254,246 C272,244 280,234 276,220 C256,210 232,210 220,218 Z'];
   const sink=`<animateTransform attributeName="transform" type="translate" ${K} values="0 0;0 -4;0 0"/>`;
-  return `<svg viewBox="0 0 420 300" role="img" aria-label="무릎을 벌리고 앉아 상체를 짐볼 위에 얹어 쉬는 동작">${matt(70,290,250)}
-    ${ballSVG(158,212,38)}
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="${o.label||'무릎을 벌리고 앉아 상체를 짐볼 위에 얹어 쉬는 동작'}">${matt(70,290,250)}
+    <g>${rockBall}${ballSVG(158,212,38)}</g>
+    <g>${rockBody}
     ${sg(228,242,284,250,C.skF,13)}${ft(295,250,15,C.skF,4)}${sg(282,208,228,242,C.pantF,20)}
     <path fill="none" stroke="${C.top}" stroke-width="34" stroke-linecap="round">
       <animate attributeName="d" ${K} values="${back.join(';')}"/></path>
     ${phA(belly,C.top,D)}
-    ${sg(224,246,288,254,C.sk,15)}${ft(300,254,17,C.sk,4)}${sg(278,212,224,246,C.pant,24)}
-    <g>${sink}
-      ${sg(190,194,136,186,C.skF,12)}${hd(128,185,10.5,C.skF)}
-      ${sg(188,190,132,180,C.sk,13)}${hd(124,179,12,C.sk)}${sg(188,189,164,186,C.top,17)}
-      ${sg(184,182,172,168,C.sk,14)}${head(157,154,19,1)}${col(186,186,12)}</g></svg>`;
+    ${sg(224,246,288,254,C.sk,15)}${ft(300,254,17,C.sk,4)}${sg(278,212,224,246,C.pant,24)}</g>
+    <g>${rockBody}${sink}
+      ${o.rock
+        ? `${sg(190,196,142,214,C.skF,12)}${hd(134,217,10.5,C.skF)}
+           ${sg(188,192,138,210,C.sk,13)}${hd(130,213,12,C.sk)}${sg(188,191,166,199,C.top,17)}
+           ${sg(184,184,178,164,C.sk,14)}${head(172,146,19,1)}${col(186,188,12)}`
+        : `${sg(190,194,136,186,C.skF,12)}${hd(128,185,10.5,C.skF)}
+           ${sg(188,190,132,180,C.sk,13)}${hd(124,179,12,C.sk)}${sg(188,189,164,186,C.top,17)}
+           ${sg(184,182,172,168,C.sk,14)}${head(157,154,19,1)}${col(186,186,12)}`}</g></svg>`;
 }
 function rigWall(o){
   o=o||{};
@@ -1001,6 +1022,29 @@ function rigWall(o){
     /* 볼은 벽을 타고 수직으로만 올라가고, 손은 볼 표면을 따라 위로 미끄러진다(팔이 펴짐) */
     const mv=(dx,dy,v)=>`<g><animateTransform attributeName="transform" type="translate" ${KB}
         values="0 0;${dx} ${dy};0 0"/>${v}</g>`;
+    /* push: 짐볼은 벽에 고정, 몸이 다가갔다 밀어낸다 (굴려 올리기와 움직임이 반대라 그림이 다르다) */
+    if(o.push){
+      const T=['M232,96 Q236,132 238,168','M220,102 Q228,136 232,170','M232,96 Q236,132 238,168'];
+      const BY=['M226,112 C202,124 200,156 224,172 C234,178 242,172 240,165 C236,146 230,128 226,112 Z',
+                'M216,118 C192,130 190,162 214,178 C224,184 232,178 230,171 C226,152 220,134 216,118 Z',
+                'M226,112 C202,124 200,156 224,172 C234,178 242,172 240,165 C236,146 230,128 226,112 Z'];
+      return `<svg viewBox="0 0 420 300" role="img" aria-label="벽에 댄 짐볼을 두 손으로 짚고 팔을 굽혔다 펴는 동작">${matt(126,240,252)}
+        <rect x="118" y="18" width="26" height="246" rx="4" fill="#EEE0D8"/>
+        ${ballSVG(174,124,32)}
+        ${sgA(['M244,172 L248,208','M238,174 L248,208','M244,172 L248,208'],C.pantF,19,5)}
+        ${sg(248,208,252,242,C.skF,13.5)}${ft(255,245,17,C.skF)}
+        ${sgA(['M238,106 L206,124','M224,113 L206,124','M238,106 L206,124'],C.skF,12,5)}
+        ${hd(202,126,10.5,C.skF)}
+        ${sgA(['M238,105 L223,113','M224,112 L214,118','M238,105 L223,113'],C.topF,15.5,5)}
+        ${sgA(T,C.top,30,5)}${phA(BY,C.top,5)}
+        ${sgA(['M238,168 L236,206','M232,170 L236,206','M238,168 L236,206'],C.pant,22,5)}
+        ${sg(236,206,234,242,C.sk,15)}${ft(230,246,19,C.sk)}
+        ${sgA(['M232,100 L200,116','M218,107 L200,116','M232,100 L200,116'],C.sk,13,5)}
+        ${hd(196,118,12,C.sk)}
+        ${sgA(['M232,99 L217,107','M218,106 L208,112','M232,99 L217,107'],C.top,17,5)}
+        <g><animateTransform attributeName="transform" type="translate" ${KB} values="0 0;-15 7;0 0"/>
+          ${sg(232,94,224,80,C.sk,14)}${head(216,64,17,1)}${col(232,95,11)}</g></svg>`;
+    }
     return `<svg viewBox="0 0 420 300" role="img" aria-label="벽에 짐볼을 대고 두 손으로 머리 위까지 굴려 올리는 동작">${matt(126,240,252)}
       <rect x="118" y="18" width="26" height="246" rx="4" fill="#EEE0D8"/>
       ${mv(0,-64,ballSVG(174,134,30))}
@@ -1160,6 +1204,17 @@ rigTilt.vb=VB.stand; rigLunge.vb='160 18 175 246';
 rigBreathe.vb='160 18 130 246'; rigMarch.vb='170 40 130 224';
 rigLongSit.vb='76 58 196 206'; rigWallStand.vb='150 18 140 250'; rigCalfStretch.vb='120 30 200 236';
 rigBallLean.vb='104 126 216 138';
+/* 짐볼 앉기 팔 자세 — 같은 리그를 쓰는 동작들이 카드에서 같은 그림으로 보이면 안 된다.
+   knee = 무릎에 손 얹기(통통 튀기) / up = 한 팔 위로 뻗기(옆구리 늘리기, armFront 로 머리 앞에 그린다) */
+const ARM={
+  knee:`${sg(216,110,184,176,C.sk,13)}${hd(178,186,11.5,C.sk)}${sg(216,108,202,140,C.top,17)}`,
+  up:`${sgA(['M216,104 L198,46','M216,104 L206,40','M216,104 L198,46'],C.sk,13,6)}
+      <circle r="11.5" fill="${C.sk}"><animate attributeName="cx" dur="6s" repeatCount="indefinite"
+        keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="195;204;195"/>
+        <animate attributeName="cy" dur="6s" repeatCount="indefinite"
+        keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="38;32;38"/></circle>
+      ${sgA(['M216,103 L208,74','M216,103 L212,70','M216,103 L208,74'],C.top,17,6)}`
+};
 const vbOf=e=>e.vb||e.rig.vb||'0 0 420 300';
 const thumb=e=>e.rig().replace('viewBox="0 0 420 300"',`viewBox="${vbOf(e)}"`);
 
@@ -1523,7 +1578,7 @@ const EX=[
 
  {id:'ballbounce',name:'짐볼 통통 튀기',en:'Gentle Ball Bouncing',phase:[2,3],role:'warmup',min:3,reps:'2~3분',dur:4,
   gear:'ball',vb:'124 14 160 246',
-  rig:()=>rigChair(null,'짐볼에 앉아 작게 위아래로 통통 움직이는 동작',{ball:1,bounce:1,dur:4}),
+  rig:()=>rigChair(ARM.knee,'짐볼에 앉아 작게 위아래로 통통 움직이는 동작',{ball:1,bounce:1,dur:4}),
   cue:['작게 · 통통 내려앉아요','숨은 · 편하게 이어가요'],
   tags:['출산 준비','이완'],pains:['back','sacro'],load:['balance'],
   effects:['골반 바닥이 부드럽게 눌렸다 풀리며 긴장이 내려가요',
@@ -1557,7 +1612,72 @@ const EX=[
   steps:['매트나 이불 위에 무릎을 배 너비보다 넓게 벌리고 앉아요. 짐볼은 몸 앞, 벽 쪽에 둬요.',
     '상체를 앞으로 내려 가슴과 팔을 짐볼 위에 편하게 얹어요. 머리도 팔 위에 내려놔요.',
     '배가 눌리지 않게 무릎 사이 공간을 충분히 두고, 2분간 깊게 호흡해요.'],
-  caution:'무릎이 아프면 무릎 아래에 쿠션을 받치세요. 짐볼이 굴러가지 않게 벽 쪽에 두고 하세요. 어지러우면 천천히 일어나세요.'}
+  caution:'무릎이 아프면 무릎 아래에 쿠션을 받치세요. 짐볼이 굴러가지 않게 벽 쪽에 두고 하세요. 어지러우면 천천히 일어나세요.'},
+
+ {id:'ballsquat',name:'짐볼 벽 스쿼트',en:'Ball Wall Squat',phase:[1,2,3],role:'main',min:3,reps:'10회',dur:5,
+  gear:'ball',vb:'186 16 126 252',
+  rig:()=>rigWallStand({squat:1,ball:1,label:'등과 벽 사이에 짐볼을 끼우고 앉았다 일어서는 동작'}),
+  cue:['숨을 마시며 · 볼을 타고 내려가요','숨을 내쉬며 · 밀고 올라와요'],
+  tags:['하체 근력','골반'],pains:['back','sacro'],load:['knee'],
+  effects:['짐볼이 등을 받치고 함께 굴러서, 맨몸 벽 스쿼트보다 허리·무릎에 부담이 적어요',
+    '내려갈 때 골반이 자연스럽게 열려 출산 자세 연습이 돼요',
+    '넘어질 걱정 없이 허벅지·엉덩이 힘을 기를 수 있어요'],
+  steps:['짐볼을 허리 아래(엉치 위쪽)와 벽 사이에 끼우고, 발은 어깨너비로 벽에서 한 발 앞에 둬요.',
+    '숨을 마시며 볼을 등으로 누르며 천천히 내려가요. 무릎이 90도를 넘지 않게, 발끝보다 앞으로 나가지 않게 해요.',
+    '2초 멈췄다가 숨을 내쉬며 발뒤꿈치로 밀고 올라와요.','10회 반복해요.'],
+  caution:'무릎이 아프면 내려가는 깊이를 절반으로 줄이세요. 치골이 아프면 발 간격을 좁히세요. 어지러우면 바로 멈추고 앉으세요.'},
+
+ {id:'ballpush',name:'짐볼 벽 푸시업',en:'Ball Wall Push-up',phase:[1,2,3],role:'main',min:3,reps:'12회',dur:5,
+  gear:'ball',vb:'112 30 158 234',
+  rig:()=>rigWall({ball:1,push:1}),
+  cue:['숨을 마시며 · 팔을 굽혀 다가가요','숨을 내쉬며 · 밀어내요'],
+  tags:['상체 근력','코어'],pains:['neck','wrist'],load:['wrist'],
+  effects:['공이 흔들려서 맨몸 벽 푸시업보다 배 속 근육이 더 일해요',
+    '아기를 안고 수유할 때 쓰는 가슴·팔 힘을 배에 부담 없이 길러요',
+    '손목을 곧게 편 채 짚을 수 있어 손목이 저린 사람에게 더 편해요'],
+  steps:['벽에 짐볼을 가슴 높이로 대고 두 손을 볼 위에 얹어요. 발은 벽에서 한 발 뒤에 둬요.',
+    '몸을 판자처럼 곧게 유지한 채, 숨을 마시며 팔꿈치를 굽혀 볼 쪽으로 천천히 다가가요.',
+    '숨을 내쉬며 볼을 밀어 제자리로 돌아와요.','12회 반복해요.'],
+  caution:'허리가 아래로 꺼지지 않게 배에 힘을 살짝 줘요. 볼이 미끄러지면 발을 벽에 더 가까이 두세요. 손목이 아프면 주먹을 쥐고 하세요.'},
+
+ {id:'ballside',name:'짐볼 앉아 옆구리 늘리기',en:'Seated Ball Side Reach',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 30초',dur:6,
+  gear:'ball',vb:'124 22 160 238',
+  rig:()=>rigChair(ARM.up,'짐볼에 앉아 한 팔을 위로 뻗고 상체를 옆으로 기울이는 동작',{ball:1,lean:1,armFront:1,dur:6}),
+  cue:['숨을 마시며 · 옆구리를 길게','반대쪽도 · 같은 시간'],
+  tags:['갈비 통증','이완'],pains:['rib','neck'],load:['balance'],
+  effects:['짐볼 위에서는 골반이 고정되지 않아 갈비뼈 아래가 더 깊게 열려요',
+    '자궁이 밀어올린 횡격막 주변이 늘어나 숨이 편해져요',
+    '옆구리와 등 위쪽 결림을 함께 풀어줘요'],
+  steps:['짐볼에 앉아 발을 넓게 벌려 바닥을 눌러요. 한 손은 볼 옆이나 허벅지를 짚어요.',
+    '반대쪽 팔을 위로 뻗고, 숨을 마시며 옆구리를 길게 늘려요. 몸이 앞뒤로 기울지 않게 옆으로만 가요.',
+    '30초 편하게 호흡하며 유지해요.','반대쪽도 해요.'],
+  caution:'반동으로 튕기지 마세요. 균형이 불안하면 벽 옆에 볼을 두고 하세요.'},
+
+ {id:'ballmarch',name:'짐볼 앉아 무릎 들기',en:'Seated Ball March',phase:[1,2],role:'main',min:3,reps:'좌우 10회',dur:5,
+  gear:'ball',vb:'124 14 160 246',
+  rig:()=>rigChair(null,'짐볼에 앉아 한쪽 무릎을 번갈아 들어올리는 동작',{ball:1,kneeLift:1,dur:5}),
+  cue:['숨을 내쉬며 · 무릎을 들어요','천천히 · 내려요'],
+  tags:['코어','자세 교정'],pains:['back'],load:['balance'],
+  effects:['한 발을 떼면 몸이 흔들려서, 허리를 안에서 받치는 깊은 배 근육이 깨어나요',
+    '배를 조이지 않고 코어를 쓸 수 있는 몇 안 되는 방법이에요',
+    '골반을 바로 세우고 앉는 습관이 들어 요통이 줄어요'],
+  steps:['짐볼에 앉아 골반을 바로 세우고 발을 어깨너비로 바닥에 둬요. 벽이나 가구 옆에서 하세요.',
+    '숨을 내쉬며 한쪽 무릎을 배가 눌리지 않는 높이까지 천천히 들어요. 상체는 흔들리지 않게 해요.',
+    '천천히 내리고 반대쪽도 들어요.','좌우 10회씩 해요.'],
+  caution:'배가 무거워지는 후기에는 균형을 잃기 쉬워요 — 이 동작은 초기·중기까지만 권해요. 어지러우면 바로 멈추세요.'},
+
+ {id:'ballrock',name:'짐볼 기대 골반 흔들기',en:'Kneeling Ball Pelvic Rock',phase:[2,3],role:'warmup',min:3,reps:'앞뒤 12회',dur:5,
+  gear:'ball',vb:'92 124 228 142',
+  rig:()=>rigBallLean({rock:1,dur:5,label:'무릎 꿇고 상체를 짐볼에 얹은 채 골반을 앞뒤로 미는 동작'}),
+  cue:['골반을 · 앞으로 천천히','다시 · 뒤로 부드럽게'],
+  tags:['요통 완화','골반'],pains:['back','sacro'],load:['knee','floor'],
+  effects:['상체 무게를 짐볼이 받아주니 허리에 실린 부담 없이 골반만 움직일 수 있어요',
+    '진통 중에 실제로 쓰는 자세라, 미리 익혀두면 그때 몸이 기억해요',
+    '아기가 골반 안에서 좋은 자리를 잡는 데 도움이 되는 움직임이에요'],
+  steps:['매트 위에 무릎을 배 너비보다 넓게 벌리고 앉아, 상체를 짐볼 위에 편하게 얹어요.',
+    '숨을 편하게 쉬면서 골반만 앞으로 천천히 밀어요. 상체와 어깨는 그대로 둬요.',
+    '다시 뒤로 부드럽게 돌아와요. 반동을 쓰지 않아요.','앞뒤로 12회 천천히 해요.'],
+  caution:'무릎이 아프면 무릎 아래에 쿠션을 받치세요. 짐볼이 굴러가지 않게 벽 쪽에 두고 하세요.'}
 ];
 
 /* 효과 태그 설명 — 효과를 고르면 목록 위에 한 줄로 보여준다 */
@@ -1635,15 +1755,15 @@ const WHEN={
 const POSE=[
  {id:'stand',name:'서서',            sub:'바닥에 앉지 않아도 돼요',
   ids:['pelvictilt','squat','calf','wallpush','shoulder','legraise','psoas','march','breathe',
-       'calfstr','wallsquat','scapula','ballroll']},
+       'calfstr','wallsquat','scapula','ballroll','ballsquat','ballpush']},
  {id:'sit',  name:'앉아서',          sub:'바닥 · 의자 · 짐볼 어디든 앉아서',
   ids:['butterfly','sidebend','neck','ankle','kegel','wriststr','seatedrock',
        'chairsqueeze','chairleg','seatcurl','chintuck','sitstand','birthbreath','kneeup','fig4',
-       'ballcircle','ballbounce']},
+       'ballcircle','ballbounce','ballside','ballmarch']},
  {id:'lie',  name:'옆으로 누워서',    sub:'왼쪽으로 누우면 순환에 더 좋아요',
   ids:['clam','sideleg','sideknee','sideopen']},
  {id:'quad', name:'네발기기 · 엎드려', sub:'매트나 이불 위에서',
-  ids:['catcow','birddog','pelvicclock','child','balllean']}
+  ids:['catcow','birddog','pelvicclock','child','balllean','ballrock']}
 ];
 
 const MOODS=[
