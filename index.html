@@ -897,9 +897,10 @@ function rigChair(armHTML,label,o){
     ${nearShin}${nearFoot}${nearThigh}</svg>`;
 }
 
-function rigStand(armV,dur=5,label){
+/* armFv 를 주면 먼쪽 팔을 따로 움직인다 (양팔을 번갈아 뻗는 동작용) */
+function rigStand(armV,dur=5,label,armFv){
   const A=armV||['M228,96 L182,120','M228,96 L182,80','M228,96 L182,120'];
-  const F=A.map(v=>v.replace(/L(-?\d+),(-?\d+)/,(m,x,y)=>`L${+x+8},${y}`));
+  const F=armFv||A.map(v=>v.replace(/L(-?\d+),(-?\d+)/,(m,x,y)=>`L${+x+8},${y}`));
   return `<svg viewBox="0 0 420 300" role="img" aria-label="${label||'서서 하는 동작'}">${matt(80,270,250)}
     ${sg(238,196,240,238,C.skF,13.5)}${ft(243,242,17,C.skF)}${sg(234,152,238,196,C.pantF,19)}
     ${sgA(F,C.skF,12,dur)}
@@ -1084,6 +1085,12 @@ function rigWall(o){
       ${K} values="0 0;-14 6;0 0"/>
       ${sg(232,94,224,80,C.sk,14)}${head(216,64,17,1)}${col(232,95,11)}</g></svg>`;
 }
+const rigReach=()=>rigStand(['M228,96 L198,142','M228,96 L212,42','M228,96 L198,142'],3,
+   '서서 두 팔을 위로 뻗어 올리며 발뒤꿈치를 드는 동작')
+  .replace(`${ft(220,244,19,C.sk)}`,
+   `<g><animateTransform attributeName="transform" type="translate" dur="3s" repeatCount="indefinite"
+      keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="0 0;0 -14;0 0"/>
+      ${ft(220,244,19,C.sk)}</g>`);
 const rigCalf=()=>rigStand(['M228,96 L180,132','M228,96 L180,132','M228,96 L180,132'],4,'서서 발뒤꿈치를 들었다 내리는 동작')
   .replace(`${ft(220,244,19,C.sk)}`,
    `<g><animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite"
@@ -1094,24 +1101,41 @@ const rigShoulder=()=>rigStand(['M228,96 L186,126','M228,96 L192,96','M228,96 L1
 const rigBreathe=()=>rigStand(['M228,96 L188,126','M228,96 L206,40','M228,96 L188,126'],6,
   '서서 두 팔을 위로 올리며 깊게 숨을 들이쉬는 동작');
 /* 제자리 걷기 — 무릎을 앞으로 들어올리고 팔은 반대로 흔든다 */
-function rigMarch(){
-  const thigh=['M230,152 L226,196','M230,152 L192,172','M230,152 L226,196'];
-  const shin =['M226,196 L224,240','M192,172 L200,214','M226,196 L224,240'];
+/* 제자리 걷기 계열 — o.high(무릎 높이) / o.heel(뒤꿈치 앞으로 콕콕) / o.kick(뒤꿈치로 엉덩이 차기).
+   유산소 동작은 빨라야 해서 dur 을 3초로 줄인다. */
+function rigMarch(o){
+  o=o||{}; const D=o.dur||4;
+  const SET={
+    high:{thigh:['M230,152 L226,196','M230,152 L184,148','M230,152 L226,196'],
+          shin :['M226,196 L224,240','M184,148 L196,196','M226,196 L224,240'],
+          foot:'0 0;-18 -48;0 0', hand:'0 0;12 -66;0 0'},
+    heel:{thigh:['M230,152 L226,196','M230,152 L214,198','M230,152 L226,196'],
+          shin :['M226,196 L224,240','M214,198 L182,230','M226,196 L224,240'],
+          foot:'0 0;-42 -12;0 0', hand:'0 0;10 -30;0 0'},
+    kick:{thigh:['M230,152 L226,196','M230,152 L232,196','M230,152 L226,196'],
+          shin :['M226,196 L224,240','M232,196 L266,212','M226,196 L224,240'],
+          foot:'0 0;46 -32;0 0', hand:'0 0;10 -34;0 0'}
+  };
+  const V=SET[o.high?'high':o.heel?'heel':o.kick?'kick':'x'];
+  const thigh=V? V.thigh : ['M230,152 L226,196','M230,152 L192,172','M230,152 L226,196'];
+  const shin =V? V.shin  : ['M226,196 L224,240','M192,172 L200,214','M226,196 L224,240'];
+  const footV=V? V.foot : '0 0;-24 -26;0 0';
+  const handV=V? V.hand : '0 0;12 -56;0 0';
   const armN =['M228,94 L192,124','M228,94 L204,68','M228,94 L192,124'];
   const armF =['M228,98 L202,128','M228,98 L248,142','M228,98 L202,128'];
-  return `<svg viewBox="0 0 420 300" role="img" aria-label="제자리에서 무릎을 번갈아 들어올리며 걷는 동작">${matt(80,270,250)}
+  return `<svg viewBox="0 0 420 300" role="img" aria-label="${o.label||'제자리에서 무릎을 번갈아 들어올리며 걷는 동작'}">${matt(80,270,250)}
     ${sg(238,196,240,238,C.skF,13.5)}${ft(243,242,17,C.skF)}${sg(234,152,238,196,C.pantF,19)}
-    ${sgA(armF,C.skF,12,4)}
-    <g><animateTransform attributeName="transform" type="translate" ${KA(4)} values="0 0;46 14;0 0"/>
+    ${sgA(armF,C.skF,12,D)}
+    <g><animateTransform attributeName="transform" type="translate" ${KA(D)} values="0 0;46 14;0 0"/>
       ${hd(202,128,10,C.skF)}</g>
     ${sg(228,86,232,152,C.top,30)}
     <path fill="${C.top}" d="M222,106 C196,118 194,152 220,168 C230,174 239,168 237,161 C233,142 226,123 222,106 Z"/>
-    ${sgA(shin,C.sk,15,4)}
-    <g><animateTransform attributeName="transform" type="translate" ${KA(4)} values="0 0;-24 -26;0 0"/>
+    ${sgA(shin,C.sk,15,D)}
+    <g><animateTransform attributeName="transform" type="translate" ${KA(D)} values="${footV}"/>
       ${ft(220,244,19,C.sk)}</g>
-    ${sgA(thigh,C.pant,22,4)}
-    ${sgA(armN,C.sk,13,4)}
-    <g><animateTransform attributeName="transform" type="translate" ${KA(4)} values="0 0;12 -56;0 0"/>
+    ${sgA(thigh,C.pant,22,D)}
+    ${sgA(armN,C.sk,13,D)}
+    <g><animateTransform attributeName="transform" type="translate" ${KA(D)} values="${handV}"/>
       ${hd(192,124,11,C.sk)}</g>
     ${sg(228,86,219,70,C.sk,14)}${head(211,54,17,1)}${col(229,85,11)}</svg>`;
 }
@@ -1200,7 +1224,7 @@ const VB={cat:'88 82 300 190',squat:'125 5 170 268',sit:'142 58 116 205',side:'9
           stand:'160 18 130 246',child:'86 172 232 96',wall:'150 12 140 256'};
 rigCatCow.vb=VB.cat; rigSquat.vb=VB.squat; rigSide.vb=VB.side; rigChild.vb=VB.child;
 rigChair.vb='120 34 190 232'; rigWall.vb=VB.wall; rigCalf.vb=VB.stand; rigShoulder.vb=VB.stand; rigLegLift.vb=VB.stand;
-rigTilt.vb=VB.stand; rigLunge.vb='160 18 175 246';
+rigTilt.vb=VB.stand; rigLunge.vb='160 18 175 246'; rigReach.vb='150 18 150 250';
 rigBreathe.vb='160 18 130 246'; rigMarch.vb='170 40 130 224';
 rigLongSit.vb='76 58 196 206'; rigWallStand.vb='150 18 140 250'; rigCalfStretch.vb='120 30 200 236';
 rigBallLean.vb='104 126 216 138';
@@ -1208,6 +1232,12 @@ rigBallLean.vb='104 126 216 138';
    knee = 무릎에 손 얹기(통통 튀기) / up = 한 팔 위로 뻗기(옆구리 늘리기, armFront 로 머리 앞에 그린다) */
 const ARM={
   knee:`${sg(216,110,184,176,C.sk,13)}${hd(178,186,11.5,C.sk)}${sg(216,108,202,140,C.top,17)}`,
+  swing:`${sgA(['M216,110 L184,166','M216,110 L200,146','M216,110 L184,166'],C.sk,13,3)}
+      <circle r="11.5" fill="${C.sk}"><animate attributeName="cx" dur="3s" repeatCount="indefinite"
+        keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="179;195;179"/>
+        <animate attributeName="cy" dur="3s" repeatCount="indefinite"
+        keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="174;154;174"/></circle>
+      ${sgA(['M216,108 L204,138','M216,108 L208,130','M216,108 L204,138'],C.top,17,3)}`,
   up:`${sgA(['M216,104 L198,46','M216,104 L206,40','M216,104 L198,46'],C.sk,13,6)}
       <circle r="11.5" fill="${C.sk}"><animate attributeName="cx" dur="6s" repeatCount="indefinite"
         keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="195;204;195"/>
@@ -1215,13 +1245,18 @@ const ARM={
         keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" values="38;32;38"/></circle>
       ${sgA(['M216,103 L208,74','M216,103 L212,70','M216,103 L208,74'],C.top,17,6)}`
 };
+/* 동작 한 개를 실제로 하는 시간(초). 예전엔 전부 120/180초 고정이라
+   12회 스쿼트에 180초를 주고 2분 넘게 타이머만 보게 했다 — 느리게 느껴진 원인. */
+const secOf=e=>e.sec;
+const durTxt=x=>{const v=typeof x==='number'?x:secOf(x);
+  return v<60? v+'초' : (v%60? Math.floor(v/60)+'분 '+(v%60)+'초' : (v/60)+'분');};
 const vbOf=e=>e.vb||e.rig.vb||'0 0 420 300';
 const thumb=e=>e.rig().replace('viewBox="0 0 420 300"',`viewBox="${vbOf(e)}"`);
 
 /* ═══════════════════════ 운동 데이터 ═══════════════════════
    load = 이 동작이 부담을 주는 부위 (불편한 곳 선택 시 제외 기준) */
 const EX=[
- {id:'catcow',name:'고양이-소 자세',en:'Cat-Cow Stretch',phase:[1,2,3],role:'main',min:3,reps:'10회',dur:8,
+ {id:'catcow',name:'고양이-소 자세',en:'Cat-Cow Stretch',phase:[1,2,3],role:'main',sec:60,reps:'10회',dur:8,
   rig:rigCatCow,cue:['숨을 내쉬며 · 등을 둥글게 말아요','숨을 마시며 · 허리를 천천히 내려요'],
   tags:['요통 완화','골반'],pains:['sacro','round','back'],load:['wrist','knee','floor'],
   effects:['허리·골반 통증 완화 (임신 중 요통에 가장 권장되는 동작)','척추 유연성 유지, 자세 개선','복식호흡 연습으로 출산 호흡 준비'],
@@ -1231,7 +1266,7 @@ const EX=[
     '호흡에 맞춰 천천히 10회 반복해요.'],
   caution:'허리를 아래로 내릴 때 과하게 꺾으면 오히려 요통이 심해져요. 배가 무거운 후기에는 움직임을 작게 하세요.'},
 
- {id:'pelvictilt',name:'서서 골반 기울이기',en:'Standing Pelvic Tilt',phase:[1,2,3],role:'warmup',min:2,reps:'12회',dur:5,
+ {id:'pelvictilt',name:'서서 골반 기울이기',en:'Standing Pelvic Tilt',phase:[1,2,3],role:'warmup',sec:45,reps:'12회',dur:5,
   rig:rigTilt,
   cue:['숨을 내쉬며 · 꼬리뼈를 말아 넣어요','숨을 마시며 · 자연스럽게 돌아와요'],
   tags:['요통 완화','자세 교정'],pains:['back','round','sacro'],load:[],
@@ -1240,7 +1275,7 @@ const EX=[
     '3초 유지 후 숨을 마시며 힘을 풀어요.','12회 반복해요.'],
   caution:'숨을 참지 마세요. 어지러우면 바로 멈추고 앉으세요.'},
 
- {id:'squat',name:'임산부 스쿼트',en:'Pregnancy Squat',phase:[2,3],role:'main',min:3,reps:'12회',dur:6,
+ {id:'squat',name:'임산부 스쿼트',en:'Pregnancy Squat',phase:[2,3],role:'main',sec:45,reps:'12회',dur:6,
   rig:rigSquat,cue:['숨을 마시며 · 천천히 앉아요','숨을 내쉬며 · 일어서요'],
   tags:['하체 근력','출산 준비'],pains:['back'],load:['wideleg','balance'],
   effects:['하체·골반저근 근력 강화','출산 시 필요한 자세와 근육 준비','골반 순환 개선'],
@@ -1249,7 +1284,7 @@ const EX=[
     '숨을 내쉬며 발뒤꿈치로 바닥을 밀며 일어서요. 12회 반복해요.'],
   caution:'균형이 불안하면 의자 등받이나 벽을 잡고 하세요. 치골통이 있으면 다리를 넓게 벌리지 말고 건너뛰세요.'},
 
- {id:'birddog',name:'버드독',en:'Bird Dog',phase:[1,2],role:'main',min:3,reps:'좌우 8회',dur:6,
+ {id:'birddog',name:'버드독',en:'Bird Dog',phase:[1,2],role:'main',sec:60,reps:'좌우 8회',dur:6,
   rig:()=>rigCatCow({reach:1}),cue:['숨을 내쉬며 · 팔다리를 뻗어요','숨을 마시며 · 천천히 돌아와요'],
   tags:['요통 완화','코어'],pains:['back','sacro'],load:['wrist','knee','floor','balance'],
   effects:['허리를 받치는 코어·둔근 강화','균형 감각 유지','요통 예방'],
@@ -1257,7 +1292,7 @@ const EX=[
     '숨을 내쉬며 오른팔과 왼다리를 바닥과 평행하게 뻗어요.','2~3초 유지 후 천천히 돌아와요.','좌우 번갈아 8회씩 해요.'],
   caution:'허리가 아래로 꺼지거나 골반이 기울면 범위를 줄이세요. 후기에는 팔만 뻗는 것으로 바꿔도 좋아요.'},
 
- {id:'clam',name:'클램셸',en:'Clamshell',phase:[1,2,3],role:'main',min:3,reps:'좌우 12회',dur:5,
+ {id:'clam',name:'클램셸',en:'Clamshell',phase:[1,2,3],role:'main',sec:60,reps:'좌우 12회',dur:5,
   rig:()=>rigSide({mode:'clam',label:'옆으로 누워 무릎을 조개처럼 여는 동작'}),
   cue:['숨을 내쉬며 · 무릎을 열어요','숨을 마시며 · 천천히 닫아요'],
   tags:['골반','환도선다'],pains:['sacro','back'],load:['floor'],
@@ -1267,7 +1302,7 @@ const EX=[
     '천천히 닫아요. 12회 후 반대쪽도 해요.'],
   caution:'골반이 같이 굴러가면 효과가 없어요. 허리가 아니라 엉덩이 옆쪽에 힘이 느껴져야 해요.'},
 
- {id:'sideleg',name:'옆누워 다리 들기',en:'Side-Lying Leg Lift',phase:[1,2,3],role:'main',min:3,reps:'좌우 10회',dur:5,
+ {id:'sideleg',name:'옆누워 다리 들기',en:'Side-Lying Leg Lift',phase:[1,2,3],role:'main',sec:60,reps:'좌우 10회',dur:5,
   rig:()=>rigSide({mode:'legUp',label:'옆으로 누워 곧게 편 다리를 들어올리는 동작'}),
   cue:['숨을 내쉬며 · 다리를 들어요','숨을 마시며 · 내려요'],
   tags:['부종 완화','골반'],pains:['swell','sacro'],load:['floor'],
@@ -1276,7 +1311,7 @@ const EX=[
     '숨을 마시며 바닥에 닿기 직전까지 내려요.','10회 후 반대쪽도 해요.'],
   caution:'반동으로 튕기지 말고 천천히 하세요. 왼쪽으로 누우면 순환에 더 좋아요.'},
 
- {id:'butterfly',name:'나비 자세',en:'Butterfly Pose',phase:[1,2,3],role:'stretch',min:3,reps:'2분 유지',dur:6,
+ {id:'butterfly',name:'나비 자세',en:'Butterfly Pose',phase:[1,2,3],role:'stretch',sec:100,reps:'2분 유지',dur:6,
   vb:VB.sit,rig:()=>rigSit(null,'앉아서 양 발바닥을 마주 붙인 나비 자세',{breathe:1,kneeBob:1}),
   cue:['숨을 마시며 · 척추를 길게','숨을 내쉬며 · 어깨를 내려요'],
   tags:['골반','출산 준비'],pains:['round','sacro'],load:['floor','wideleg'],
@@ -1285,7 +1320,7 @@ const EX=[
     '무릎을 억지로 누르지 말고, 호흡하며 2분간 편하게 유지해요.'],
   caution:'치골통이 있으면 다리를 좁게 하거나 건너뛰세요. 엉덩이 밑에 방석을 깔면 편해요.'},
 
- {id:'sidebend',name:'앉아 옆구리 늘리기',en:'Seated Side Stretch',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 5회',dur:6,
+ {id:'sidebend',name:'앉아 옆구리 늘리기',en:'Seated Side Stretch',phase:[1,2,3],role:'stretch',sec:60,reps:'좌우 5회',dur:6,
   vb:VB.sit,rig:()=>rigSit(`${sg(212,124,186,152,C.skF,12)}${hd(180,158,10,C.skF)}${sg(212,123,198,138,C.topF,15.5)}`,
     '앉아서 한 팔을 위로 올려 옆구리를 늘리는 동작',{reachArm:1}),
   cue:['숨을 마시며 · 팔을 위로','숨을 내쉬며 · 옆으로 기울여요'],
@@ -1295,7 +1330,7 @@ const EX=[
     '숨을 내쉬며 몸통을 옆으로 길게 기울여요. 배를 비틀지 않아요.','5호흡 유지 후 반대쪽도 해요.'],
   caution:'배가 눌리거나 비틀리는 느낌이 들면 각도를 줄이세요.'},
 
- {id:'neck',name:'앉아 목 스트레칭',en:'Seated Neck Stretch',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 4회',dur:6,
+ {id:'neck',name:'앉아 목 스트레칭',en:'Seated Neck Stretch',phase:[1,2,3],role:'stretch',sec:60,reps:'좌우 4회',dur:6,
   vb:VB.sit,rig:()=>rigSit(`${sg(212,120,180,148,C.sk,13)}${hd(174,154,10.5,C.sk)}${sg(212,119,196,133,C.top,17)}`,'앉아서 고개를 옆으로 기울이는 목 스트레칭',{headTilt:1}),
   cue:['천천히 · 한쪽으로 기울여요','반대쪽도 · 같은 시간만큼'],
   tags:['목·어깨'],pains:['neck','wrist'],load:['floor'],
@@ -1304,7 +1339,7 @@ const EX=[
     '15초 유지하고 반대쪽도 해요.','좌우 4회씩 반복해요.'],
   caution:'손으로 머리를 세게 당기지 마세요. 팔이 저리면 즉시 멈추고 의사와 상담하세요.'},
 
- {id:'ankle',name:'발목 펌프',en:'Ankle Pump',phase:[1,2,3],role:'warmup',min:2,reps:'20회',dur:4,
+ {id:'ankle',name:'발목 펌프',en:'Ankle Pump',phase:[1,2,3],role:'warmup',sec:60,reps:'20회',dur:4,
   rig:rigLongSit,
   cue:['발끝을 · 몸쪽으로 당겨요','발끝을 · 멀리 뻗어요'],
   tags:['부종 완화'],pains:['swell'],load:[],
@@ -1313,7 +1348,7 @@ const EX=[
     '발끝을 멀리 밀어요.','20회 반복해요. 하루 여러 번 해도 좋아요.'],
   caution:'한쪽 종아리만 아프고 부으면 혈전일 수 있어요. 운동하지 말고 바로 병원에 가세요.'},
 
- {id:'calf',name:'카프 레이즈',en:'Calf Raise',phase:[1,2,3],role:'main',min:2,reps:'15회',dur:4,
+ {id:'calf',name:'카프 레이즈',en:'Calf Raise',phase:[1,2,3],role:'main',sec:50,reps:'15회',dur:4,
   rig:rigCalf,cue:['숨을 내쉬며 · 발뒤꿈치를 들어요','천천히 · 내려요'],
   tags:['부종 완화','하체 근력'],pains:['swell'],load:['balance'],
   effects:['종아리 근력 강화, 부종 완화','다리 쥐 예방','발목 안정성 향상'],
@@ -1321,7 +1356,7 @@ const EX=[
     '2초 유지 후 천천히 내려요.','15회 반복해요.'],
   caution:'반드시 잡을 곳을 두고 하세요. 배가 무거워 균형이 흔들리기 쉬워요.'},
 
- {id:'wallpush',name:'벽 푸시업',en:'Wall Push-up',phase:[1,2,3],role:'main',min:3,reps:'12회',dur:5,
+ {id:'wallpush',name:'벽 푸시업',en:'Wall Push-up',phase:[1,2,3],role:'main',sec:45,reps:'12회',dur:5,
   rig:rigWall,cue:['숨을 마시며 · 벽으로 다가가요','숨을 내쉬며 · 밀어내요'],
   tags:['상체 근력','자세 교정'],pains:['neck'],load:['wrist'],
   effects:['가슴·팔 근력 유지 (수유 시 필요한 근력)','어깨 자세 개선','배에 부담 없는 상체 운동'],
@@ -1329,7 +1364,7 @@ const EX=[
     '숨을 내쉬며 벽을 밀어 돌아와요.','12회 반복해요.'],
   caution:'배가 벽에 닿지 않도록 거리를 넉넉히 두세요.'},
 
- {id:'shoulder',name:'어깨 돌리기',en:'Shoulder Roll',phase:[1,2,3],role:'warmup',min:2,reps:'앞뒤 10회',dur:5,
+ {id:'shoulder',name:'어깨 돌리기',en:'Shoulder Roll',phase:[1,2,3],role:'warmup',sec:60,reps:'앞뒤 10회',dur:5,
   rig:rigShoulder,cue:['어깨를 · 크게 뒤로 돌려요','반대로 · 앞으로 돌려요'],
   tags:['목·어깨','자세 교정'],pains:['neck','wrist','rib'],load:[],
   effects:['목·어깨 결림 완화','굽은 등 자세 교정','손목 저림 완화에 도움'],
@@ -1337,7 +1372,7 @@ const EX=[
     '반대 방향으로 10회 돌려요.','이어서 손목도 양방향으로 10회씩 돌려요.'],
   caution:'통증이 있는 범위까지 무리해서 돌리지 마세요.'},
 
- {id:'legraise',name:'사이드 레그 리프트',en:'Standing Side Leg Raise',phase:[1,2,3],role:'main',min:2,reps:'좌우 10회',dur:5,
+ {id:'legraise',name:'사이드 레그 리프트',en:'Standing Side Leg Raise',phase:[1,2,3],role:'main',sec:60,reps:'좌우 10회',dur:5,
   rig:rigLegLift,cue:['숨을 내쉬며 · 다리를 옆으로','천천히 · 내려요'],
   tags:['골반','환도선다'],pains:['sacro'],load:['balance','wideleg'],
   effects:['골반 안정근 강화','환도선다·골반통 예방','균형 감각 유지'],
@@ -1345,7 +1380,7 @@ const EX=[
     '천천히 내려요. 10회 후 반대쪽도 해요.'],
   caution:'몸이 반대로 기울면 범위를 줄이세요. 치골통이 심하면 건너뛰세요.'},
 
- {id:'child',name:'아기 자세',en:'Child\'s Pose',phase:[1,2,3],role:'stretch',min:3,reps:'2분 유지',dur:6,
+ {id:'child',name:'아기 자세',en:'Child\'s Pose',phase:[1,2,3],role:'stretch',sec:100,reps:'2분 유지',dur:6,
   rig:rigChild,cue:['숨을 마시며 · 등을 넓게','숨을 내쉬며 · 몸을 내려놔요'],
   tags:['요통 완화','이완'],pains:['sacro','back','round'],load:['knee','floor'],
   effects:['허리·엉덩이 깊은 이완','천장관절(환도선다) 압박 해소','긴장 완화, 수면 준비'],
@@ -1353,7 +1388,7 @@ const EX=[
     '배가 눌리지 않게 무릎 사이 공간을 충분히 두고, 2분간 깊게 호흡해요.'],
   caution:'배가 눌리면 무릎을 더 벌리거나 쿠션을 받치세요. 어지러우면 천천히 일어나세요.'},
 
- {id:'psoas',name:'서서 장요근 늘리기',en:'Standing Hip Flexor Stretch',phase:[2,3],role:'stretch',min:2,reps:'좌우 30초',dur:5,
+ {id:'psoas',name:'서서 장요근 늘리기',en:'Standing Hip Flexor Stretch',phase:[2,3],role:'stretch',sec:70,reps:'좌우 30초',dur:5,
   rig:rigLunge,
   cue:['골반을 · 앞으로 밀어요','반대쪽도 · 같은 시간'],
   tags:['환도선다','골반'],pains:['sacro','round'],load:['balance'],
@@ -1362,7 +1397,7 @@ const EX=[
     '사타구니 앞쪽이 늘어나는 느낌으로 30초 유지해요.','반대쪽도 해요.'],
   caution:'허리를 뒤로 꺾지 말고 골반만 밀어요. 치골이 아프면 범위를 크게 줄이세요.'},
 
- {id:'kegel',name:'케겔 + 호흡',en:'Kegel with Breathing',phase:[1,2,3],role:'stretch',min:3,reps:'10회',dur:6,
+ {id:'kegel',name:'케겔 + 호흡',en:'Kegel with Breathing',phase:[1,2,3],role:'stretch',sec:60,reps:'10회',dur:6,
   vb:VB.sit,rig:()=>rigSit(`${sg(212,122,186,146,C.sk,13)}${hd(180,150,10.5,C.sk)}${sg(212,121,198,134,C.top,17)}`,'편하게 앉아 호흡에 맞춰 골반저근을 조였다 푸는 동작',{breathe:1}),
   cue:['숨을 마시며 · 골반저를 이완','숨을 내쉬며 · 부드럽게 조여요'],
   tags:['골반저근','출산 준비'],pains:[],load:[],
@@ -1372,7 +1407,7 @@ const EX=[
     '완전히 이완하고 10회 반복해요. 이완이 조이는 것만큼 중요해요.'],
   caution:'배·엉덩이·허벅지에 힘이 들어가면 잘못하는 거예요. 숨을 참지 마세요.'},
 
- {id:'pelvicclock',name:'골반 시계',en:'Pelvic Clock',phase:[1,2,3],role:'warmup',min:2,reps:'양방향 5회',dur:7,
+ {id:'pelvicclock',name:'골반 시계',en:'Pelvic Clock',phase:[1,2,3],role:'warmup',sec:60,reps:'양방향 5회',dur:7,
   rig:()=>rigCatCow({clock:1}),cue:['골반으로 · 천천히 원을 그려요','반대 방향으로 · 다시 한 바퀴'],
   tags:['골반','환도선다'],pains:['sacro','round','back'],load:['wrist','knee','floor'],
   effects:['천장관절 이완 (환도선다 완화)','골반 주변 순환 개선','아기 자세 잡기에 도움'],
@@ -1380,7 +1415,7 @@ const EX=[
     '5바퀴 후 반대 방향으로 5바퀴 돌려요.'],
   caution:'손목이 아프면 주먹을 쥐거나 팔꿈치를 대고 하세요.'},
 
- {id:'march',name:'제자리 걷기',en:'Marching in Place',phase:[1,2,3],role:'main',min:3,reps:'좌우 20회',dur:4,
+ {id:'march',name:'제자리 걷기',en:'Marching in Place',phase:[1,2,3],role:'main',sec:90,reps:'좌우 20회',dur:4,
   rig:rigMarch,cue:['무릎을 · 배 앞까지 들어요','팔은 · 반대로 흔들어요'],
   tags:['부종 완화','하체 근력'],pains:['swell'],load:['balance'],
   effects:['식후 소화와 혈당 조절에 도움 (가볍게 걷는 효과)','다리 순환 개선, 부종 완화','바닥에 앉지 않고 할 수 있는 가장 부담 없는 유산소'],
@@ -1390,7 +1425,7 @@ const EX=[
     '좌우 합쳐 20회, 숨이 차지 않는 속도로 해요.'],
   caution:'무릎을 배까지 올리지 마세요. 어지럽거나 균형이 흔들리면 의자를 잡거나 멈추세요.'},
 
- {id:'breathe',name:'서서 깊은 호흡',en:'Standing Deep Breathing',phase:[1,2,3],role:'stretch',min:3,reps:'10회',dur:6,
+ {id:'breathe',name:'서서 깊은 호흡',en:'Standing Deep Breathing',phase:[1,2,3],role:'stretch',sec:60,reps:'10회',dur:6,
   rig:rigBreathe,cue:['숨을 마시며 · 팔을 위로','숨을 내쉬며 · 천천히 내려요'],
   tags:['갈비 통증','이완'],pains:['rib','neck'],load:[],
   effects:['자궁이 밀어올린 횡격막을 펴줘 갈비뼈 답답함 완화','위가 눌리는 느낌·속쓰림 완화에 도움','굽은 등을 펴고 긴장을 내려놓게 해요'],
@@ -1400,7 +1435,7 @@ const EX=[
   caution:'팔을 올릴 때 허리를 뒤로 꺾지 마세요. 어지러우면 앉아서 팔만 올리세요.'}
 ,
 
- {id:'wriststr',name:'손목 스트레칭',en:'Wrist Stretch',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 4회',dur:5,
+ {id:'wriststr',name:'손목 스트레칭',en:'Wrist Stretch',phase:[1,2,3],role:'stretch',sec:60,reps:'좌우 4회',dur:5,
   vb:VB.sit,rig:()=>rigSit(`${sg(208,132,154,140,C.sk,13)}
     <g><animateTransform attributeName="transform" type="rotate" dur="5s" repeatCount="indefinite"
       keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1"
@@ -1416,7 +1451,7 @@ const EX=[
   caution:'저림이 심해지거나 손가락 감각이 없어지면 멈추고 병원에서 확인하세요. 통증이 오는 지점까지 당기지 마세요.'},
 
 
- {id:'chairsqueeze',name:'의자 무릎 조이기',en:'Seated Adductor Squeeze',phase:[1,2,3],role:'main',min:2,reps:'10회',dur:5,
+ {id:'chairsqueeze',name:'의자 무릎 조이기',en:'Seated Adductor Squeeze',phase:[1,2,3],role:'main',sec:45,reps:'10회',dur:5,
   rig:()=>rigChair(null,'의자에 앉아 무릎 사이를 안쪽으로 조이는 동작',{kneeSq:1}),
   cue:['숨을 내쉬며 · 무릎을 조여요','숨을 마시며 · 힘을 풀어요'],
   tags:['골반','출산 준비'],pains:['sacro'],load:[],
@@ -1428,7 +1463,7 @@ const EX=[
   caution:'숨을 참지 마세요. 치골이 찌릿하면 힘의 세기를 절반으로 줄이세요.'},
 
 
- {id:'chairleg',name:'의자 무릎 펴기',en:'Seated Knee Extension',phase:[1,2,3],role:'main',min:2,reps:'좌우 10회',dur:5,
+ {id:'chairleg',name:'의자 무릎 펴기',en:'Seated Knee Extension',phase:[1,2,3],role:'main',sec:60,reps:'좌우 10회',dur:5,
   rig:()=>rigChair(null,'의자에 앉아 한쪽 무릎을 앞으로 펴는 동작',{legExt:1}),
   cue:['숨을 내쉬며 · 무릎을 펴요','천천히 · 내려요'],
   tags:['하체 근력','부종 완화'],pains:['swell'],load:[],
@@ -1439,7 +1474,7 @@ const EX=[
   caution:'반동으로 차올리지 마세요. 무릎이 아프면 펴는 범위를 줄이세요.'},
 
 
- {id:'sideknee',name:'옆누워 무릎 당기기',en:'Side-Lying Knee Hug',phase:[1,2,3],role:'stretch',min:3,reps:'좌우 30초',dur:6,
+ {id:'sideknee',name:'옆누워 무릎 당기기',en:'Side-Lying Knee Hug',phase:[1,2,3],role:'stretch',sec:70,reps:'좌우 30초',dur:6,
   rig:()=>rigSide({mode:'knee',dur:6,label:'옆으로 누워 위쪽 무릎을 배 쪽으로 당기는 동작'}),
   cue:['숨을 마시며 · 무릎을 당겨요','숨을 내쉬며 · 힘을 빼요'],
   tags:['요통 완화','이완'],pains:['back','sacro'],load:['floor'],
@@ -1449,7 +1484,7 @@ const EX=[
     '30초 편하게 호흡하며 유지해요.','반대쪽으로 돌아누워 반복해요.'],
   caution:'무릎을 배 위로 당기지 마세요. 배가 눌리면 각도를 줄이거나 베개를 끼우세요.'},
 
- {id:'seatedrock',name:'앉아 골반 흔들기',en:'Seated Pelvic Rock',phase:[1,2,3],role:'warmup',min:2,reps:'좌우 10회',dur:5,
+ {id:'seatedrock',name:'앉아 골반 흔들기',en:'Seated Pelvic Rock',phase:[1,2,3],role:'warmup',sec:60,reps:'좌우 10회',dur:5,
   vb:VB.sit,rig:()=>rigSit(null,'앉아서 골반을 좌우로 부드럽게 흔드는 동작',{rock:1}),
   cue:['천천히 · 한쪽으로 기울여요','반대쪽으로 · 부드럽게'],
   tags:['골반','요통 완화'],pains:['back','sacro'],load:['floor'],
@@ -1460,7 +1495,7 @@ const EX=[
   caution:'반동을 쓰지 마세요. 어지러우면 멈추고 벽에 기대세요.'}
 ,
 
- {id:'calfstr',name:'벽 짚고 종아리 늘리기',en:'Wall Calf Stretch',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 30초',dur:5,
+ {id:'calfstr',name:'벽 짚고 종아리 늘리기',en:'Wall Calf Stretch',phase:[1,2,3],role:'stretch',sec:70,reps:'좌우 30초',dur:5,
   rig:rigCalfStretch,cue:['뒤꿈치를 · 바닥으로 눌러요','반대쪽도 · 같은 시간'],
   tags:['부종 완화','이완'],pains:['swell'],load:[],
   effects:['밤에 나는 다리 쥐 예방에 가장 직접적인 스트레칭','종아리 뭉침과 발목 뻣뻣함 완화','서 있을 때 종아리 피로 감소'],
@@ -1469,7 +1504,7 @@ const EX=[
     '반대쪽도 해요. 자기 전에 하면 밤에 쥐가 덜 나요.'],
   caution:'통증이 아니라 늘어나는 느낌까지만 하세요. 한쪽 종아리만 아프고 부으면 혈전일 수 있으니 운동하지 말고 병원에 가세요.'},
 
- {id:'wallsquat',name:'벽 스쿼트',en:'Wall Squat',phase:[1,2,3],role:'main',min:3,reps:'10회',dur:5,
+ {id:'wallsquat',name:'벽 스쿼트',en:'Wall Squat',phase:[1,2,3],role:'main',sec:45,reps:'10회',dur:5,
   rig:()=>rigWallStand({squat:1,label:'벽에 등을 대고 앉았다 일어서는 동작'}),
   cue:['숨을 마시며 · 천천히 내려가요','숨을 내쉬며 · 밀고 올라와요'],
   tags:['하체 근력','요통 완화'],pains:['back'],load:['knee'],
@@ -1479,7 +1514,7 @@ const EX=[
     '2초 멈췄다가 숨을 내쉬며 발뒤꿈치로 밀고 올라와요.','10회 반복해요.'],
   caution:'무릎이 아프면 내려가는 깊이를 절반으로 줄이세요. 어지러우면 바로 멈추고 앉으세요.'},
 
- {id:'seatcurl',name:'앉아 등 말기',en:'Seated Cat Stretch',phase:[1,2,3],role:'stretch',min:2,reps:'8회',dur:5,
+ {id:'seatcurl',name:'앉아 등 말기',en:'Seated Cat Stretch',phase:[1,2,3],role:'stretch',sec:45,reps:'8회',dur:5,
   vb:VB.sit,rig:()=>rigSit(null,'앉아서 등을 둥글게 말았다 펴는 동작',{roundBack:1}),
   cue:['숨을 내쉬며 · 등을 둥글게','숨을 마시며 · 척추를 세워요'],
   tags:['요통 완화','자세 교정'],pains:['back','neck'],load:['floor'],
@@ -1489,7 +1524,7 @@ const EX=[
     '숨을 마시며 척추를 길게 세워요. 허리를 뒤로 꺾지 않아요.','8회 천천히 반복해요.'],
   caution:'배를 세게 조이지 마세요. 어지러우면 멈추고 등을 기대세요.'},
 
- {id:'chintuck',name:'친 턱 (목 당기기)',en:'Chin Tuck',phase:[1,2,3],role:'stretch',min:2,reps:'10회',dur:5,
+ {id:'chintuck',name:'친 턱 (목 당기기)',en:'Chin Tuck',phase:[1,2,3],role:'stretch',sec:45,reps:'10회',dur:5,
   vb:VB.sit,rig:()=>rigSit(null,'앉아서 턱을 뒤로 당겼다 푸는 동작',{chinTuck:1}),
   cue:['턱을 · 뒤로 당겨요','천천히 · 힘을 풀어요'],
   tags:['목·어깨','자세 교정'],pains:['neck'],load:[],
@@ -1499,7 +1534,7 @@ const EX=[
     '3초 유지하고 천천히 풀어요.','10회 반복해요. 하루 여러 번 해도 좋아요.'],
   caution:'세게 당기지 마세요. 팔 저림이 생기면 멈추고 병원에서 확인하세요.'},
 
- {id:'sitstand',name:'의자에서 일어서기',en:'Sit to Stand',phase:[1,2,3],role:'main',min:3,reps:'10회',dur:5,
+ {id:'sitstand',name:'의자에서 일어서기',en:'Sit to Stand',phase:[1,2,3],role:'main',sec:45,reps:'10회',dur:5,
   rig:()=>rigChair(null,'의자에 앉았다 일어서기를 반복하는 동작',{standUp:1}),
   cue:['숨을 내쉬며 · 일어서요','천천히 · 앉아요'],
   tags:['하체 근력','출산 준비'],pains:['back'],load:[],
@@ -1509,7 +1544,7 @@ const EX=[
     '천천히 조절하며 다시 앉아요. 털썩 앉지 않아요.','10회 반복해요.'],
   caution:'어지러우면 손으로 의자를 짚고 하세요. 바퀴 달린 의자는 쓰지 마세요.'},
 
- {id:'birthbreath',name:'출산 호흡 연습',en:'Labor Breathing',phase:[2,3],role:'stretch',min:3,reps:'10회',dur:7,
+ {id:'birthbreath',name:'출산 호흡 연습',en:'Labor Breathing',phase:[2,3],role:'stretch',sec:70,reps:'10회',dur:7,
   rig:()=>rigChair(null,'의자에 앉아 깊게 호흡하는 동작',{breathe:1,dur:7}),
   cue:['4초 마시고 · 4초 멈춰요','8초에 걸쳐 · 길게 내쉬어요'],
   tags:['출산 준비','이완'],pains:['rib'],load:[],
@@ -1518,7 +1553,7 @@ const EX=[
     '4초 멈춰요. 어지러우면 멈추는 시간을 줄여요.','입으로 8초에 걸쳐 길게 내쉬어요. 10회 반복해요.'],
   caution:'어지럽거나 손발이 저리면 과호흡이니 바로 평소 호흡으로 돌아가세요. 숨을 오래 참지 마세요.'},
 
- {id:'sideopen',name:'옆누워 가슴 열기',en:'Side-Lying Chest Opener',phase:[1,2,3],role:'stretch',min:3,reps:'좌우 5회',dur:6,
+ {id:'sideopen',name:'옆누워 가슴 열기',en:'Side-Lying Chest Opener',phase:[1,2,3],role:'stretch',sec:60,reps:'좌우 5회',dur:6,
   rig:()=>rigSide({mode:'open',dur:6,label:'옆으로 누워 위쪽 팔을 뒤로 크게 여는 동작'}),
   cue:['숨을 마시며 · 팔을 뒤로 열어요','숨을 내쉬며 · 천천히 돌아와요'],
   tags:['목·어깨','갈비 통증'],pains:['neck','rib'],load:['floor'],
@@ -1528,7 +1563,7 @@ const EX=[
     '숨을 내쉬며 천천히 돌아와요. 좌우 5회씩 해요.'],
   caution:'배를 비틀지 마세요. 골반이 같이 넘어가면 범위를 줄이세요. 20주 이후에는 등이 바닥에 완전히 닿을 만큼 넘기지 마세요.'},
 
- {id:'scapula',name:'어깨날개 조이기',en:'Scapular Squeeze',phase:[1,2,3],role:'warmup',min:2,reps:'12회',dur:5,
+ {id:'scapula',name:'어깨날개 조이기',en:'Scapular Squeeze',phase:[1,2,3],role:'warmup',sec:45,reps:'12회',dur:5,
   rig:()=>rigStand(['M228,96 L190,126','M228,96 L264,134','M228,96 L190,126'],5,'서서 두 팔을 뒤로 당겨 어깨날개를 모으는 동작'),
   cue:['숨을 내쉬며 · 어깨날개를 모아요','숨을 마시며 · 힘을 풀어요'],
   tags:['자세 교정','목·어깨'],pains:['neck','rib'],load:[],
@@ -1538,7 +1573,7 @@ const EX=[
     '어깨가 위로 솟지 않게 아래로 누른 채 3초 유지해요.','천천히 풀고 12회 반복해요.'],
   caution:'허리를 뒤로 꺾지 마세요. 목에 힘이 들어가면 세기를 줄이세요.'},
 
- {id:'kneeup',name:'다리 뻗고 한 무릎 세우기',en:'Long-Sit Knee Hug',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 30초',dur:5,
+ {id:'kneeup',name:'다리 뻗고 한 무릎 세우기',en:'Long-Sit Knee Hug',phase:[1,2,3],role:'stretch',sec:70,reps:'좌우 30초',dur:5,
   rig:()=>rigLongSit({kneeUp:1}),
   cue:['한 무릎을 · 세워 당겨요','반대쪽도 · 같은 시간'],
   tags:['요통 완화','이완'],pains:['back'],load:['floor'],
@@ -1548,7 +1583,7 @@ const EX=[
     '반대쪽도 해요.'],
   caution:'무릎을 배 위로 당기지 마세요. 치골이 아프면 벌리는 각도를 줄이세요.'},
 
- {id:'fig4',name:'피겨4 엉덩이 늘리기',en:'Seated Figure-4 Stretch',phase:[1,2,3],role:'stretch',min:3,reps:'좌우 30초',dur:6,
+ {id:'fig4',name:'피겨4 엉덩이 늘리기',en:'Seated Figure-4 Stretch',phase:[1,2,3],role:'stretch',sec:70,reps:'좌우 30초',dur:6,
   vb:VB.sit,rig:()=>rigSit(null,'앉아서 한쪽 발목을 반대쪽 무릎에 얹어 엉덩이를 늘리는 동작',{fig4:1,breathe:1}),
   cue:['숨을 마시며 · 척추를 길게','숨을 내쉬며 · 엉덩이를 늘려요'],
   tags:['환도선다'],pains:['sacro'],load:['floor','wideleg'],
@@ -1562,7 +1597,7 @@ const EX=[
  /* ── 짐볼(gear:'ball') ─────────────────────────────────────────
     gear 가 있으면 자동 생성 루틴(usable)·통증 추천에서 빠지고, 운동 탭 도구 필터로만 고른다.
     짐볼이 손에 없는 날에도 앱이 그대로 굴러가야 해서 그렇게 나눴다. */
- {id:'ballcircle',name:'짐볼 골반 돌리기',en:'Pelvic Circles on Ball',phase:[1,2,3],role:'warmup',min:3,reps:'양방향 8회',dur:7,
+ {id:'ballcircle',name:'짐볼 골반 돌리기',en:'Pelvic Circles on Ball',phase:[1,2,3],role:'warmup',sec:70,reps:'양방향 8회',dur:7,
   gear:'ball',vb:'124 14 160 246',
   rig:()=>rigChair(null,'짐볼에 앉아 골반으로 큰 원을 그리는 동작',{ball:1,circle:1,dur:7}),
   cue:['천천히 · 한 방향으로 원을 그려요','반대 방향으로 · 다시 8바퀴'],
@@ -1576,7 +1611,7 @@ const EX=[
     '한 방향으로 8바퀴, 반대 방향으로 8바퀴 돌려요.'],
   caution:'처음에는 벽이나 가구를 한 손으로 짚고 하세요. 공기를 꽉 채우면 미끄러워요 — 손으로 눌러 2~3cm 들어가는 정도가 안전해요.'},
 
- {id:'ballbounce',name:'짐볼 통통 튀기',en:'Gentle Ball Bouncing',phase:[2,3],role:'warmup',min:3,reps:'2~3분',dur:4,
+ {id:'ballbounce',name:'짐볼 통통 튀기',en:'Gentle Ball Bouncing',phase:[2,3],role:'warmup',sec:120,reps:'2~3분',dur:4,
   gear:'ball',vb:'124 14 160 246',
   rig:()=>rigChair(ARM.knee,'짐볼에 앉아 작게 위아래로 통통 움직이는 동작',{ball:1,bounce:1,dur:4}),
   cue:['작게 · 통통 내려앉아요','숨은 · 편하게 이어가요'],
@@ -1589,7 +1624,7 @@ const EX=[
     '숨을 편하게 쉬면서 2~3분 이어가요. TV를 보면서 해도 돼요.'],
   caution:'엉덩이가 공에서 뜰 정도로 크게 튀지 마세요. 배가 당기거나 어지러우면 바로 멈추고 앉으세요.'},
 
- {id:'ballroll',name:'짐볼 벽에 굴려 올리기',en:'Wall Ball Roll-Up',phase:[1,2,3],role:'main',min:3,reps:'10회',dur:5,
+ {id:'ballroll',name:'짐볼 벽에 굴려 올리기',en:'Wall Ball Roll-Up',phase:[1,2,3],role:'main',sec:45,reps:'10회',dur:5,
   gear:'ball',vb:'112 26 160 240',
   rig:()=>rigWall({ball:1}),
   cue:['숨을 내쉬며 · 볼을 굴려 올려요','숨을 마시며 · 천천히 내려요'],
@@ -1602,7 +1637,7 @@ const EX=[
     '숨을 마시며 가슴 높이까지 천천히 내려요.','10회 반복해요.'],
   caution:'허리를 뒤로 젖히지 마세요 — 배에 힘을 살짝 주고 갈비뼈만 올린다고 생각해요. 어깨가 아프면 눈높이까지만 올리세요.'},
 
- {id:'balllean',name:'짐볼 기대 등 늘리기',en:'Kneeling Ball Lean',phase:[2,3],role:'stretch',min:3,reps:'2분 유지',dur:6,
+ {id:'balllean',name:'짐볼 기대 등 늘리기',en:'Kneeling Ball Lean',phase:[2,3],role:'stretch',sec:100,reps:'2분 유지',dur:6,
   gear:'ball',rig:rigBallLean,
   cue:['숨을 마시며 · 등을 넓게','숨을 내쉬며 · 몸을 내려놔요'],
   tags:['요통 완화','목·어깨'],pains:['back','sacro','neck'],load:['knee','floor'],
@@ -1614,7 +1649,7 @@ const EX=[
     '배가 눌리지 않게 무릎 사이 공간을 충분히 두고, 2분간 깊게 호흡해요.'],
   caution:'무릎이 아프면 무릎 아래에 쿠션을 받치세요. 짐볼이 굴러가지 않게 벽 쪽에 두고 하세요. 어지러우면 천천히 일어나세요.'},
 
- {id:'ballsquat',name:'짐볼 벽 스쿼트',en:'Ball Wall Squat',phase:[1,2,3],role:'main',min:3,reps:'10회',dur:5,
+ {id:'ballsquat',name:'짐볼 벽 스쿼트',en:'Ball Wall Squat',phase:[1,2,3],role:'main',sec:45,reps:'10회',dur:5,
   gear:'ball',vb:'186 16 126 252',
   rig:()=>rigWallStand({squat:1,ball:1,label:'등과 벽 사이에 짐볼을 끼우고 앉았다 일어서는 동작'}),
   cue:['숨을 마시며 · 볼을 타고 내려가요','숨을 내쉬며 · 밀고 올라와요'],
@@ -1627,7 +1662,7 @@ const EX=[
     '2초 멈췄다가 숨을 내쉬며 발뒤꿈치로 밀고 올라와요.','10회 반복해요.'],
   caution:'무릎이 아프면 내려가는 깊이를 절반으로 줄이세요. 치골이 아프면 발 간격을 좁히세요. 어지러우면 바로 멈추고 앉으세요.'},
 
- {id:'ballpush',name:'짐볼 벽 푸시업',en:'Ball Wall Push-up',phase:[1,2,3],role:'main',min:3,reps:'12회',dur:5,
+ {id:'ballpush',name:'짐볼 벽 푸시업',en:'Ball Wall Push-up',phase:[1,2,3],role:'main',sec:45,reps:'12회',dur:5,
   gear:'ball',vb:'112 30 158 234',
   rig:()=>rigWall({ball:1,push:1}),
   cue:['숨을 마시며 · 팔을 굽혀 다가가요','숨을 내쉬며 · 밀어내요'],
@@ -1640,7 +1675,7 @@ const EX=[
     '숨을 내쉬며 볼을 밀어 제자리로 돌아와요.','12회 반복해요.'],
   caution:'허리가 아래로 꺼지지 않게 배에 힘을 살짝 줘요. 볼이 미끄러지면 발을 벽에 더 가까이 두세요. 손목이 아프면 주먹을 쥐고 하세요.'},
 
- {id:'ballside',name:'짐볼 앉아 옆구리 늘리기',en:'Seated Ball Side Reach',phase:[1,2,3],role:'stretch',min:2,reps:'좌우 30초',dur:6,
+ {id:'ballside',name:'짐볼 앉아 옆구리 늘리기',en:'Seated Ball Side Reach',phase:[1,2,3],role:'stretch',sec:70,reps:'좌우 30초',dur:6,
   gear:'ball',vb:'124 22 160 238',
   rig:()=>rigChair(ARM.up,'짐볼에 앉아 한 팔을 위로 뻗고 상체를 옆으로 기울이는 동작',{ball:1,lean:1,armFront:1,dur:6}),
   cue:['숨을 마시며 · 옆구리를 길게','반대쪽도 · 같은 시간'],
@@ -1653,7 +1688,7 @@ const EX=[
     '30초 편하게 호흡하며 유지해요.','반대쪽도 해요.'],
   caution:'반동으로 튕기지 마세요. 균형이 불안하면 벽 옆에 볼을 두고 하세요.'},
 
- {id:'ballmarch',name:'짐볼 앉아 무릎 들기',en:'Seated Ball March',phase:[1,2],role:'main',min:3,reps:'좌우 10회',dur:5,
+ {id:'ballmarch',name:'짐볼 앉아 무릎 들기',en:'Seated Ball March',phase:[1,2],role:'main',sec:60,reps:'좌우 10회',dur:5,
   gear:'ball',vb:'124 14 160 246',
   rig:()=>rigChair(null,'짐볼에 앉아 한쪽 무릎을 번갈아 들어올리는 동작',{ball:1,kneeLift:1,dur:5}),
   cue:['숨을 내쉬며 · 무릎을 들어요','천천히 · 내려요'],
@@ -1666,7 +1701,7 @@ const EX=[
     '천천히 내리고 반대쪽도 들어요.','좌우 10회씩 해요.'],
   caution:'배가 무거워지는 후기에는 균형을 잃기 쉬워요 — 이 동작은 초기·중기까지만 권해요. 어지러우면 바로 멈추세요.'},
 
- {id:'ballrock',name:'짐볼 기대 골반 흔들기',en:'Kneeling Ball Pelvic Rock',phase:[2,3],role:'warmup',min:3,reps:'앞뒤 12회',dur:5,
+ {id:'ballrock',name:'짐볼 기대 골반 흔들기',en:'Kneeling Ball Pelvic Rock',phase:[2,3],role:'warmup',sec:60,reps:'앞뒤 12회',dur:5,
   gear:'ball',vb:'92 124 228 142',
   rig:()=>rigBallLean({rock:1,dur:5,label:'무릎 꿇고 상체를 짐볼에 얹은 채 골반을 앞뒤로 미는 동작'}),
   cue:['골반을 · 앞으로 천천히','다시 · 뒤로 부드럽게'],
@@ -1677,7 +1712,84 @@ const EX=[
   steps:['매트 위에 무릎을 배 너비보다 넓게 벌리고 앉아, 상체를 짐볼 위에 편하게 얹어요.',
     '숨을 편하게 쉬면서 골반만 앞으로 천천히 밀어요. 상체와 어깨는 그대로 둬요.',
     '다시 뒤로 부드럽게 돌아와요. 반동을 쓰지 않아요.','앞뒤로 12회 천천히 해요.'],
-  caution:'무릎이 아프면 무릎 아래에 쿠션을 받치세요. 짐볼이 굴러가지 않게 벽 쪽에 두고 하세요.'}
+  caution:'무릎이 아프면 무릎 아래에 쿠션을 받치세요. 짐볼이 굴러가지 않게 벽 쪽에 두고 하세요.'},
+
+ /* ── 유산소 ─────────────────────────────────────────────────────
+    임신 중 유산소는 "숨이 살짝 차지만 옆 사람과 대화는 되는" 정도(ACOG 대화 테스트)까지다.
+    뛰거나 점프하는 동작, 넘어질 위험이 있는 동작은 넣지 않는다. */
+ {id:'kneepump',name:'무릎 높이 들기',en:'High Knee March',phase:[1,2,3],role:'main',sec:60,reps:'좌우 20회',dur:3,
+  rig:()=>rigMarch({high:1,dur:3,label:'제자리에서 무릎을 배 옆 높이까지 번갈아 들어올리는 동작'}),
+  cue:['무릎을 · 배 옆까지 들어요','팔은 · 반대로 힘차게'],
+  tags:['유산소','코어'],pains:['back'],load:['balance'],
+  effects:['제자리 걷기보다 심박이 더 올라가 식후 혈당을 빠르게 낮춰요',
+    '무릎을 들 때마다 아랫배 깊은 근육이 함께 일해요',
+    '좁은 공간에서 할 수 있는 가장 확실한 유산소예요'],
+  steps:['바르게 서서 배에 가볍게 힘을 줘요. 불안하면 벽이나 의자를 한 손으로 짚어요.',
+    '한쪽 무릎을 배를 누르지 않는 높이(배 옆)까지 들어올려요.',
+    '내리면서 반대쪽 무릎을 들어요. 팔은 반대로 힘차게 흔들어요.',
+    '숨이 살짝 차지만 대화는 되는 속도로 좌우 20회씩 해요.'],
+  caution:'무릎을 배 앞으로 올리지 말고 배 옆으로 보내세요. 숨이 차서 말이 안 나오면 속도를 줄이세요.'},
+
+ {id:'heeldig',name:'뒤꿈치 콕콕',en:'Heel Digs',phase:[1,2,3],role:'main',sec:50,reps:'좌우 24회',dur:3,
+  rig:()=>rigMarch({heel:1,dur:3,label:'한쪽 발뒤꿈치를 앞으로 콕콕 내밀었다 바꾸는 동작'}),
+  cue:['뒤꿈치를 · 앞으로 콕','바꿔서 · 콕'],
+  tags:['유산소','부종 완화'],pains:['swell'],load:[],
+  effects:['무릎을 들지 않아 배와 골반에 부담이 거의 없는 유산소예요',
+    '종아리 근육이 계속 펌프질해서 다리에 고인 물이 빠져요',
+    '균형을 크게 잃을 일이 없어 후기에도 안전해요'],
+  steps:['발을 골반 너비로 벌리고 서요.','한쪽 발뒤꿈치를 앞으로 가볍게 내밀어 바닥에 콕 찍어요.',
+    '제자리로 돌아오면서 반대쪽 뒤꿈치를 내밀어요. 팔은 가볍게 흔들어요.',
+    '리듬을 타면서 좌우 24회씩 해요.'],
+  caution:'발을 너무 멀리 내밀면 골반이 흔들려요. 반 발짝 정도면 충분해요.'},
+
+ {id:'boxjab',name:'잽 펀치',en:'Standing Jabs',phase:[1,2,3],role:'main',sec:50,reps:'좌우 20회',dur:2,
+  rig:()=>rigStand(['M228,96 L176,104','M228,96 L212,116','M228,96 L176,104'],2,
+    '서서 두 팔을 번갈아 앞으로 뻗는 잽 동작',
+    ['M232,100 L216,120','M232,100 L182,108','M232,100 L216,120']),
+  cue:['숨을 내쉬며 · 앞으로 뻗어요','바꿔서 · 반대 팔'],
+  tags:['유산소','상체 근력'],pains:['neck'],load:[],
+  effects:['다리를 거의 쓰지 않아 골반·무릎이 아픈 날에도 심박을 올릴 수 있어요',
+    '굽은 등을 펴면서 어깨·팔 힘을 함께 길러요',
+    '앉아서도 할 수 있어 배가 많이 나온 후기에 특히 쓸모 있어요'],
+  steps:['발을 골반 너비로 벌리고 무릎을 살짝 굽혀 서요. 두 주먹은 턱 옆에 둬요.',
+    '숨을 내쉬며 한 팔을 앞으로 곧게 뻗어요. 팔꿈치를 끝까지 꽉 펴지는 않아요.',
+    '빠르게 제자리로 당기면서 반대 팔을 뻗어요.','좌우 20회씩 리듬 있게 해요.'],
+  caution:'몸통을 크게 비틀지 마세요 — 팔만 뻗어요. 어깨가 아프면 뻗는 높이를 가슴 높이로 낮추세요.'},
+
+ {id:'backkick',name:'뒤꿈치 엉덩이 차기',en:'Butt Kicks',phase:[1,2],role:'main',sec:50,reps:'좌우 20회',dur:3,
+  rig:()=>rigMarch({kick:1,dur:3,label:'뒤꿈치를 번갈아 엉덩이 쪽으로 접어 올리는 동작'}),
+  cue:['뒤꿈치를 · 엉덩이 쪽으로','바꿔서 · 반대쪽'],
+  tags:['유산소','하체 근력'],pains:['back'],load:['balance'],
+  effects:['허벅지 뒤 근육을 깨워 오래 앉아 굳은 다리를 풀어요',
+    '무릎을 앞으로 들지 않아 배가 눌리지 않아요',
+    '제자리 걷기와 번갈아 하면 지루하지 않게 심박을 유지할 수 있어요'],
+  steps:['바르게 서서 벽이나 의자를 한 손으로 짚어요.',
+    '한쪽 뒤꿈치를 엉덩이 쪽으로 접어 올려요. 허벅지는 제자리에 둬요.',
+    '내리면서 반대쪽을 접어 올려요.','좌우 20회씩 해요.'],
+  caution:'허리를 젖히지 마세요. 배가 커지는 후기에는 균형이 흔들리기 쉬워 중기까지만 권해요.'},
+
+ {id:'reachup',name:'팔 올리며 뒤꿈치 들기',en:'Reach and Rise',phase:[1,2,3],role:'warmup',sec:45,reps:'12회',dur:3,
+  rig:rigReach,
+  cue:['숨을 마시며 · 팔을 위로','숨을 내쉬며 · 내려요'],
+  tags:['유산소','갈비 통증'],pains:['rib','neck'],load:['balance'],
+  effects:['몸 전체를 한 번에 늘려 운동 시작 전 체온을 올려요',
+    '갈비뼈 사이가 넓어져 숨이 깊게 들어가요',
+    '종아리를 함께 써서 다리 순환이 좋아져요'],
+  steps:['발을 골반 너비로 벌리고 서요.','숨을 마시며 두 팔을 옆으로 크게 벌려 머리 위로 올리고, 동시에 발뒤꿈치를 들어요.',
+    '숨을 내쉬며 팔과 뒤꿈치를 천천히 내려요.','12회 반복해요.'],
+  caution:'어지러우면 뒤꿈치를 들지 말고 팔만 올리세요. 팔을 올릴 때 허리를 젖히지 않아요.'},
+
+ {id:'chaircardio',name:'앉아서 팔다리 젓기',en:'Seated Cardio',phase:[1,2,3],role:'main',sec:60,reps:'좌우 20회',dur:3,
+  rig:()=>rigChair(ARM.swing,'의자에 앉아 팔과 무릎을 번갈아 움직이는 동작',{kneeLift:1,dur:3}),
+  cue:['무릎과 팔을 · 번갈아','리듬 있게 · 계속'],
+  tags:['유산소','부종 완화'],pains:['swell'],load:[],
+  effects:['서 있기 힘든 날에도 심박을 올릴 수 있어요',
+    '앉은 채로 다리를 계속 움직여 부종과 다리 저림을 덜어줘요',
+    '넘어질 위험이 전혀 없어 후기에도, 어지러운 날에도 할 수 있어요'],
+  steps:['등받이에서 등을 떼고 의자 앞쪽에 바르게 앉아요. 발은 바닥에 둬요.',
+    '한쪽 무릎을 들면서 반대쪽 팔을 앞으로 저어요.',
+    '내리면서 반대로 바꿔요. 걷는 리듬으로 이어가요.','좌우 20회씩 해요.'],
+  caution:'허리를 뒤로 젖히지 말고 배에 가볍게 힘을 준 채로 하세요. 어지러우면 멈추고 등받이에 기대세요.'}
 ];
 
 /* 효과 태그 설명 — 효과를 고르면 목록 위에 한 줄로 보여준다 */
@@ -1695,7 +1807,8 @@ const TAGD={
  '목·어깨':'자는 자세와 굽은 등으로 굳은 목·어깨를 풀어, 결림과 두통을 줄이는 데 도움이 돼요.',
  '갈비 통증':'자궁이 밀어올린 횡격막과 갈비 사이를 넓혀, 결리고 숨 얕은 느낌을 덜어줘요.',
  '원인대':'자궁을 잡아주는 인대가 갑자기 당겨 생기는 아랫배 통증을 부드럽게 풀어줘요.',
- '이완':'몸의 긴장을 내려놓고 호흡을 고르는 동작이에요. 잠들기 전에 특히 좋아요.'
+ '이완':'몸의 긴장을 내려놓고 호흡을 고르는 동작이에요. 잠들기 전에 특히 좋아요.',
+ '유산소':'숨이 살짝 차는 정도로 몸을 계속 움직이는 동작이에요. 식후 혈당과 체중 관리에 가장 직접적으로 도움이 돼요.'
 };
 
 /* 통증 (도움되는 운동 추천) */
@@ -1738,15 +1851,19 @@ const AVOIDS=[
    roles = [역할, 최대 개수] 를 앞에서부터 시간이 찰 때까지 채운다. must = 반드시 넣을 동작. */
 const WHEN={
   /* 식후: 눕거나 배를 누르거나 앞으로 굽히는 동작 제외 (역류·압박). 서서·앉아서 가볍게 */
-  meal:['pelvictilt','shoulder','calf','sidebend','psoas','legraise','neck','wallpush','kegel','butterfly','ankle','march','breathe','wriststr','scapula','chintuck','birthbreath'],
+  meal:['march','kneepump','heeldig','boxjab','backkick','reachup','chaircardio',
+        'pelvictilt','shoulder','calf','sidebend','psoas','legraise','neck','wallpush','kegel','butterfly','ankle','breathe','wriststr','scapula','chintuck','birthbreath'],
   /* 오래 앉아 있었을 때: 굳은 고관절·골반, 굽은 등, 부은 다리 */
-  sit:['psoas','catcow','pelvicclock','legraise','ankle','shoulder','child','pelvictilt','butterfly','neck','march','breathe','chairleg','wriststr','seatedrock','calfstr','seatcurl','chintuck','scapula','sitstand','kneeup','fig4'],
+  sit:['psoas','catcow','pelvicclock','legraise','ankle','shoulder','child','pelvictilt','butterfly','neck','march','breathe','chairleg','wriststr','seatedrock','calfstr','seatcurl','chintuck','scapula','sitstand','kneeup','fig4',
+       'kneepump','heeldig','reachup','chaircardio'],
   /* 아침: 밤새 굳은 목·어깨·척추 깨우기 */
-  morning:['shoulder','neck','catcow','pelvicclock','sidebend','ankle','butterfly','child','calf','pelvictilt','psoas','march','breathe','seatedrock','wriststr','sideknee','seatcurl','chintuck','scapula','sideopen','calfstr'],
+  morning:['shoulder','neck','catcow','pelvicclock','sidebend','ankle','butterfly','child','calf','pelvictilt','psoas','march','breathe','seatedrock','wriststr','sideknee','seatcurl','chintuck','scapula','sideopen','calfstr',
+           'reachup','heeldig'],
   /* 자기 전: 다리 쥐·부기 + 이완. 각성시키는 근력 동작은 최소로 */
   night:['ankle','sideleg','clam','catcow','butterfly','sidebend','neck','child','kegel','shoulder','pelvicclock','breathe','sideknee','seatedrock','calfstr','kneeup','fig4','sideopen','birthbreath','seatcurl'],
   /* 몸이 무거운 날: 앉거나 서서, 균형·근력 필요 없는 것만 */
-  light:['sidebend','neck','kegel','butterfly','ankle','shoulder','pelvictilt','breathe','wriststr','seatedrock','chintuck','seatcurl','birthbreath','scapula'],
+  light:['sidebend','neck','kegel','butterfly','ankle','shoulder','pelvictilt','breathe','wriststr','seatedrock','chintuck','seatcurl','birthbreath','scapula',
+         'chaircardio','boxjab'],
   full:null   /* 전체 */
 };
 /* 하루 시간 순(아침→식후→앉은 뒤→자기 전) 다음에 시간대와 무관한 두 가지 */
@@ -1755,11 +1872,12 @@ const WHEN={
 const POSE=[
  {id:'stand',name:'서서',            sub:'바닥에 앉지 않아도 돼요',
   ids:['pelvictilt','squat','calf','wallpush','shoulder','legraise','psoas','march','breathe',
-       'calfstr','wallsquat','scapula','ballroll','ballsquat','ballpush']},
+       'calfstr','wallsquat','scapula','ballroll','ballsquat','ballpush',
+       'kneepump','heeldig','boxjab','backkick','reachup']},
  {id:'sit',  name:'앉아서',          sub:'바닥 · 의자 · 짐볼 어디든 앉아서',
   ids:['butterfly','sidebend','neck','ankle','kegel','wriststr','seatedrock',
        'chairsqueeze','chairleg','seatcurl','chintuck','sitstand','birthbreath','kneeup','fig4',
-       'ballcircle','ballbounce','ballside','ballmarch']},
+       'ballcircle','ballbounce','ballside','ballmarch','chaircardio']},
  {id:'lie',  name:'옆으로 누워서',    sub:'왼쪽으로 누우면 순환에 더 좋아요',
   ids:['clam','sideleg','sideknee','sideopen']},
  {id:'quad', name:'네발기기 · 엎드려', sub:'매트나 이불 위에서',
@@ -1768,22 +1886,22 @@ const POSE=[
 
 const MOODS=[
  {id:'morning',name:'아침 운동',    sub:'뻣뻣한 몸 깨우기',  icon:'sun',    ci:'mn', hero:'shoulder',
-  mins:[5,10,15], roles:[['warmup',2],['stretch',3],['main',2]], must:['shoulder'],
+  mins:[5,10,15], roles:[['warmup',3],['stretch',5],['main',4]], must:['shoulder'],
   note:'일어나자마자 급하게 움직이면 어지러울 수 있어요. 천천히 시작하세요.'},
  {id:'meal',   name:'식후 운동',    sub:'소화 편하게',       icon:'meal',   ci:'cr', hero:'calf',
-  mins:[15,20,30],roles:[['warmup',3],['main',4],['stretch',6]], must:['march','calf'],
-  note:'식사하고 20~30분쯤 지나 시작하세요. 눕거나 배를 누르는 동작은 빼뒀어요.'},
+  mins:[10,15,25],roles:[['warmup',3],['main',9],['stretch',5]], must:['march','kneepump'],
+  note:'식사하고 20~30분쯤 지나 시작하세요. 숨이 살짝 차는 유산소 위주로 짰어요. 눕거나 배를 누르는 동작은 빼뒀어요.'},
  {id:'sit',    name:'오래 앉은 뒤', sub:'골반·허리 풀기',    icon:'clock',  ci:'pr', hero:'psoas',
-  mins:[5,10,15], roles:[['warmup',1],['main',3],['stretch',3]], must:['psoas'],
+  mins:[5,10,15], roles:[['warmup',2],['main',6],['stretch',6]], must:['psoas'],
   note:'한 자세로 30분 이상 있지 않는 게 가장 좋아요.'},
  {id:'night',  name:'자기 전 운동', sub:'다리 쥐·부기 완화',  icon:'moon',   ci:'mn', hero:'sideleg',
-  mins:[8,12,20], roles:[['warmup',1],['main',2],['stretch',4]], must:['ankle','sideleg'],
+  mins:[8,12,16], roles:[['warmup',2],['main',3],['stretch',7]], must:['ankle','sideleg'],
   note:'왼쪽으로 눕고 다리를 심장보다 높게 두면 부기가 더 잘 빠져요.'},
  {id:'light',  name:'힘든 날',      sub:'앉아서 최소한만',    icon:'feather',ci:'cr', hero:'kegel',
-  mins:[3,5,8],   roles:[['stretch',3],['warmup',2]], must:[],
+  mins:[3,5,8],   roles:[['stretch',5],['warmup',3],['main',2]], must:[],
   note:'힘든 날은 쉬어도 괜찮아요. 이건 "안 하는 것보다 나은" 정도면 충분해요.'},
  {id:'full',   name:'운동 부족',    sub:'근력까지 제대로',    icon:'act',    ci:'pr', hero:'squat',
-  mins:[15,20,30],roles:[['warmup',1],['main',9],['stretch',2]], must:[],
+  mins:[15,20,30],roles:[['warmup',2],['main',14],['stretch',4]], must:['kneepump'],
   note:'주 150분(하루 20~30분씩 주 5일)이 권장량이에요.'}
 ];
 
@@ -1871,8 +1989,24 @@ function streakN(){ let n=0, d=new Date();
 /* 촉각·청각 피드백 — 음원 파일 없이 합성 */
 const hap=p=>{ try{ navigator.vibrate && navigator.vibrate(p) }catch(e){} };
 let AC=null;
+/* 알림음 배율 — 원래 vol(.07)은 피크 -23dBFS 라 배경음악(RMS -17dBFS)에 묻힌다.
+   호출부 값은 그대로 두고 여기서 한 번에 올린다. */
+const CUEVOL=4;
+/* 마스터 리미터 — 알림음과 배경음악이 여기서 만난다.
+   따로 내보내면 둘이 겹칠 때 1.0 을 넘어 찌그러진다. AC 를 바꾸면 다시 만든다. */
+let MLIM=null;
+function master(){
+  if(!MLIM || MLIM.context!==AC){
+    MLIM=AC.createDynamicsCompressor();
+    MLIM.threshold.value=-8; MLIM.knee.value=6; MLIM.ratio.value=12;
+    MLIM.attack.value=.003; MLIM.release.value=.18;
+    MLIM.connect(AC.destination);
+  }
+  return MLIM;
+}
 function beep(f,dur=.14,vol=.07){
   if(S.mute) return;
+  vol=Math.min(.8,vol*CUEVOL);
   try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)();
     if(AC.state==='suspended') AC.resume();
     const o=AC.createOscillator(), g=AC.createGain(), t=AC.currentTime;
@@ -1880,7 +2014,7 @@ function beep(f,dur=.14,vol=.07){
     g.gain.setValueAtTime(.0001,t);
     g.gain.exponentialRampToValueAtTime(vol,t+.02);
     g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-    o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+dur+.03);
+    o.connect(g); g.connect(master()); o.start(t); o.stop(t+dur+.03);
   }catch(e){}
 }
 const cue=(f,d,v)=>{ beep(f,d,v); hap(v>=.08?[0,40,60,40]:14); };
@@ -1891,16 +2025,23 @@ const cue=(f,d,v)=>{ beep(f,d,v); hap(v>=.08?[0,40,60,40]:14); };
    세 곡은 진행(prog)·박자(bpm)·소리 만드는 함수(play)만 다르고 엔진은 하나를 공유한다. */
 const hz=m=>440*Math.pow(2,(m-69)/12);
 let MBUS=null, MGAIN=null, MU=null;   /* MU = {trk, step, next, iv} */
+/* 마스터 음량. 한 음 한 음의 gain 은 작게 두고(합쳐질 때 깨지지 않게) 여기서 한 번에 올린다.
+   리미터가 뒤에 있어서 이 값을 올려도 찌그러지지 않는다.
+   실측(오프라인 렌더링): 6.5 + 마스터 리미터 = RMS -16.7~-18.9dBFS, peak 0.83, 알림음이 겹쳐도 클리핑 0.
+   (예전 값 0.9 는 RMS -37dBFS 라 폰에서 거의 들리지 않았다 — 소리가 안 난다는 신고의 원인)
+   8 까지 올리면 peak 0.95 로 여유가 없어진다. 값을 바꾸면 오프라인 렌더링으로 다시 재라. */
+const MVOL=6.5;
 
 function mbus(){
-  if(MBUS) return;
+  if(MBUS && MBUS.context===AC) return;
   MGAIN=AC.createGain(); MGAIN.gain.value=0;
   /* 공간감은 리버브 파일 대신 피드백 딜레이로 만든다 */
   const dly=AC.createDelay(1), fb=AC.createGain(), wet=AC.createGain();
   dly.delayTime.value=.3; fb.gain.value=.28; wet.gain.value=.32;
   MBUS=AC.createGain(); MBUS.gain.value=1;
   MBUS.connect(MGAIN); MBUS.connect(dly); dly.connect(fb); fb.connect(dly);
-  dly.connect(wet); wet.connect(MGAIN); MGAIN.connect(AC.destination);
+  dly.connect(wet); wet.connect(MGAIN);
+  MGAIN.connect(master());
 }
 /* 한 음 — 오실레이터 + 로우패스 + 감쇠 엔벨로프 */
 function tone(t,f,dur,o){ o=o||{};
@@ -1976,14 +2117,19 @@ function playMusic(id){
   const T=mtrk(id); if(!T) return stopMusic();
   try{
     AC=AC||new (window.AudioContext||window.webkitAudioContext)();
-    if(AC.state==='suspended') AC.resume();
     mbus();
-    if(MU) { clearInterval(MU.iv); MU=null; }
-    MGAIN.gain.cancelScheduledValues(AC.currentTime);
-    MGAIN.gain.setValueAtTime(Math.max(.0001,MGAIN.gain.value),AC.currentTime);
-    MGAIN.gain.setTargetAtTime(.9,AC.currentTime+.05,.4);              /* 페이드 인 */
-    MU={trk:T,step:0,next:AC.currentTime+.15,iv:setInterval(mtick,220)};
-    mtick();
+    /* 정지 상태에서 미리 예약하면 깨어나는 사이에 첫 음들이 과거가 돼 잘린다.
+       깨운 다음에 예약한다. */
+    const go=()=>{ try{
+      if(MU){ clearInterval(MU.iv); MU=null; }
+      MGAIN.gain.cancelScheduledValues(AC.currentTime);
+      MGAIN.gain.setValueAtTime(Math.max(.0001,MGAIN.gain.value),AC.currentTime);
+      MGAIN.gain.setTargetAtTime(MVOL,AC.currentTime+.04,.35);          /* 페이드 인 */
+      MU={trk:T,step:0,next:AC.currentTime+.06,iv:setInterval(mtick,220)};
+      mtick();
+    }catch(e){ MU=null; } };
+    if(AC.state==='running') go();
+    else { const p=AC.resume(); (p&&p.then)? p.then(go,go) : go(); }
   }catch(e){ MU=null; }
 }
 /* 첫 사용자 동작이 오기 전에는 브라우저가 오디오를 막는다 —
@@ -2050,29 +2196,42 @@ const PHS={1:'초기',2:'중기',3:'후기'};
 /* 자동으로 짜주는 루틴에는 도구 없이 되는 동작만 쓴다 — 짐볼이 손에 없는 날도 있어서 */
 const usable=ph=>EX.filter(e=>e.phase.includes(ph) && !e.gear && !e.load.some(l=>S.avoid.includes(l)));
 
-const DEF_ROLES=[['warmup',1],['main',9],['stretch',2]];
+const DEF_ROLES=[['warmup',2],['main',14],['stretch',4]];
 const ROLE_ORD={warmup:0,main:1,stretch:2};
 const findPlan=id=>MOODS.find(x=>x.id===id)||PLANS.find(x=>x.id===id)||PLANS[0];
 const minsOf=id=>findPlan(id).mins||[15,20,30];
 
 function buildPlan(planId,mins){
   const p=preg(), ph=p?p.phase:1, plan=findPlan(planId);
+  /* 예산도 초로 센다. 동작 사이 쉬는 10초(REST)까지 넣어야 약속한 시간이 맞는다 */
+  const budget=mins*60;
   const pool=WHEN[planId], ok=pool? usable(ph).filter(e=>pool.includes(e.id)) : usable(ph);
   /* 부위별 루틴은 want 태그로 가점, 상황 루틴은 풀 자체가 이미 걸러져 있다 */
   const score=e=>plan.want? (e.tags.some(t=>plan.want.includes(t))?0:1) : 0;
   const seed=[...today()].reduce((a,c)=>a+c.charCodeAt(0),0);
   const out=[], cnt={warmup:0,main:0,stretch:0}; let used=0;
-  const take=e=>{ out.push(e); used+=e.min; cnt[e.role]++; };
-  (plan.must||[]).forEach(id=>{ const e=ok.find(x=>x.id===id); if(e&&!out.includes(e)&&used+e.min<=mins) take(e); });
+  const fits=e=>used+secOf(e)+(out.length?REST:0)<=budget;
+  const take=e=>{ used+=secOf(e)+(out.length?REST:0); out.push(e); cnt[e.role]++; };
+  (plan.must||[]).forEach(id=>{ const e=ok.find(x=>x.id===id); if(e&&!out.includes(e)&&fits(e)) take(e); });
   const byRole=r=>ok.filter(e=>e.role===r&&out.indexOf(e)<0)
     .map((e,i)=>({e,k:score(e)*100+((seed+i*7)%13)}))
     .sort((a,b)=>a.k-b.k).map(x=>x.e);
   for(const [r,cap] of (plan.roles||DEF_ROLES))
-    for(const e of byRole(r)){ if(cnt[r]>=cap) break; if(used+e.min<=mins) take(e); }
+    for(const e of byRole(r)){ if(cnt[r]>=cap) break; if(fits(e)) take(e); }
   if(!out.length&&ok.length) take(ok[0]);   /* 제외 설정이 심해도 빈 루틴은 안 준다 */
+  /* 풀을 다 썼는데 시간이 남으면 운동 동작을 한 바퀴 더 돈다 (영상 루틴의 2라운드).
+     이게 없으면 30분을 골라도 23분짜리가 나온다 — 고른 시간과 다른 걸 주면 안 된다. */
+  const mains=out.filter(e=>e.role==='main');
+  for(let i=0; mains.length && i<40; i++){
+    const e=mains[i%mains.length];
+    if(used+secOf(e)+REST>budget) break;
+    used+=secOf(e)+REST; out.push(e);
+  }
   return out.sort((a,b)=>ROLE_ORD[a.role]-ROLE_ORD[b.role]);
 }
-const planMeta=(id,mins)=>{const l=buildPlan(id,mins);return{list:l,min:l.reduce((a,e)=>a+e.min,0),n:l.length}};
+const planMeta=(id,mins)=>{const l=buildPlan(id,mins);
+  const sec=l.reduce((a,e)=>a+secOf(e),0)+Math.max(0,l.length-1)*REST;
+  return{list:l,sec,min:Math.max(1,Math.round(sec/60)),n:l.length}};
 
 /* ═══════════════════════ 렌더 ═══════════════════════ */
 const TABS=[['home','홈','home'],['lib','운동','act'],['care','케어','care'],['log','기록','log']];
@@ -2142,9 +2301,9 @@ function renderHome(){
 function setMin(m){ curMin=m;
   if($('#ov-routine').classList.contains('on')) drawRoutine(); else { renderHome(); kick(); } }
 
-const exCard=e=>`<button class="card" onclick="openDetail('${e.id}')" aria-label="${e.name}, ${e.min}분">
+const exCard=e=>`<button class="card" onclick="openDetail('${e.id}')" aria-label="${e.name}, ${durTxt(e)}">
   <span class="pic" aria-hidden="true">${thumb(e)}</span>
-  <span class="bd"><b>${e.name}</b><span class="mt">${e.min}분 · ${e.reps}</span>
+  <span class="bd"><b>${e.name}</b><span class="mt">${durTxt(e)} · ${e.reps}</span>
     <span class="tags">${(e.gear?'<span class="tag pri">짐볼</span>':'')
       +e.tags.slice(0,e.gear?1:2).map(t=>`<span class="tag min">${t}</span>`).join('')}</span></span>
 </button>`;
@@ -2361,7 +2520,7 @@ function drawRoutine(){
     </div>
     <div class="rlist" style="margin-top:var(--s4)">${m.list.map((e,i)=>`
       <div class="ritem"><span class="th" aria-hidden="true">${thumb(e)}</span>
-        <span class="tx"><b>${e.name}</b><span>${e.min}분 · ${e.reps}</span></span>
+        <span class="tx"><b>${e.name}</b><span>${durTxt(e)} · ${e.reps}</span></span>
         <span class="no">${i+1}</span></div>`).join('')}</div>
     <div class="cta stick">
       <button class="btn" onclick="startPlayer(${JSON.stringify(m.list.map(e=>e.id)).replace(/"/g,'&quot;')})">
@@ -2376,7 +2535,7 @@ function openDetail(id){
         <span class="tag pri">${e.phase.length===3?'전 시기 가능':e.phase.map(p=>PHS[p]).join(' · ')}</span>
         ${e.gear==='ball'?'<span class="tag pri">짐볼 필요</span>':''}
         ${e.tags.map(t=>`<span class="tag min">${t}</span>`).join('')}
-        <span class="tag cor">${e.min}분 · ${e.reps}</span></div>
+        <span class="tag cor">${durTxt(e)} · ${e.reps}</span></div>
       <h1>${e.name}</h1><p class="en">${e.en}</p>
       <div class="box"><b>이런 효과가 있어요</b>${e.effects.map(x=>`<li>${x}</li>`).join('')}</div>
       <div class="steps">${e.steps.map((s,i)=>`<div class="stp"><span class="n">${i+1}</span><span>${s}</span></div>`).join('')}</div>
@@ -2391,7 +2550,7 @@ function openPain(id){
   const all=EX.filter(e=>e.pains.includes(id) && !e.gear && !e.load.some(l=>S.avoid.includes(l)));
   const ord={stretch:0,warmup:1,main:2};
   const list=[...all].sort((a,b)=>ord[a.role]-ord[b.role]).slice(0,5);
-  const mins=list.reduce((a,e)=>a+e.min,0);
+  const mins=Math.max(1,Math.round((list.reduce((a,e)=>a+secOf(e),0)+Math.max(0,list.length-1)*REST)/60));
   $('#b-pain').innerHTML=bar('통증 케어',"closeOv('ov-pain')")+`
     <div class="dt" style="padding-top:var(--s2)">
       <h1>${p.name}</h1><p class="en">${p.desc}</p>
@@ -2404,7 +2563,7 @@ function openPain(id){
       ${list.length? `<div class="grid">${list.map(e=>`
         <button class="card" onclick="openDetail('${e.id}')" aria-label="${e.name}">
           <span class="pic" aria-hidden="true">${thumb(e)}</span>
-          <span class="bd"><b>${e.name}</b><span class="mt">${e.min}분 · ${e.reps}</span></span></button>`).join('')}</div>`
+          <span class="bd"><b>${e.name}</b><span class="mt">${durTxt(e)} · ${e.reps}</span></span></button>`).join('')}</div>`
         : `<p class="empty">부담되는 곳 설정으로 추천할 동작이 모두 제외됐어요.<br>케어 탭에서 설정을 조정해보세요.</p>`}
     </div>
     ${list.length?`<div class="cta stick">
@@ -2475,13 +2634,13 @@ function step(){
 }
 function advance(){
   if(!PL) return;
-  if(PL.rest){ PL.rest=false; PL.left=PL.tot=PL.list[PL.i].min*60; cue(940,.2,.09); drawStep(); return; }
+  if(PL.rest){ PL.rest=false; PL.left=PL.tot=secOf(PL.list[PL.i]); cue(940,.2,.09); drawStep(); return; }
   if(PL.i<PL.list.length-1){ PL.i++; PL.rest=true; PL.left=PL.tot=REST; cue(560,.18,.08); drawStep(); }
   else finishPlayer();
 }
 function skipStep(){ if(!PL) return; PL.left=0; advance(); }
 function prevStep(){ if(!PL||PL.i===0) return;
-  PL.i--; PL.rest=false; PL.left=PL.tot=PL.list[PL.i].min*60; hap(10); drawStep(); }
+  PL.i--; PL.rest=false; PL.left=PL.tot=secOf(PL.list[PL.i]); hap(10); drawStep(); }
 
 const ptop=()=>{ const {list,i,rest}=PL, prog=((i+(rest?0:.5))/list.length*100).toFixed(1);
   return `<div class="ptop">
@@ -2500,7 +2659,7 @@ function drawStep(){
       <div class="rest">
         <span class="up">${first?'곧 시작해요':`다음 동작 ${i+1}/${list.length}`}</span>
         <h1>${e.name}</h1>
-        <p class="sub">${e.min}분 · ${e.reps}</p>
+        <p class="sub">${durTxt(e)} · ${e.reps}</p>
         <span class="th" aria-hidden="true">${thumb(e)}</span>
         <div class="cd" id="tm">${PL.left}</div>
         <p class="sub">${first?'편한 자리를 잡고 준비하세요':'자세를 바꿀 시간이에요'}</p>
@@ -2556,7 +2715,8 @@ function toggleMute(){ S.mute=!S.mute; save(); if(PL) drawStep(); if(!S.mute) be
 
 function finishPlayer(){
   clearInterval(PL.iv); PL.iv=null; wake(false);
-  const min=PL.list.reduce((a,e)=>a+e.min,0), k=today(), prev=S.done[k];
+  const min=Math.max(1,Math.round((PL.list.reduce((a,e)=>a+secOf(e),0)
+    +Math.max(0,PL.list.length-1)*REST)/60)), k=today(), prev=S.done[k];
   S.done[k]={min:(prev?prev.min:0)+min, ids:[...(prev?prev.ids:[]),...PL.list.map(e=>e.id)]};
   save();
   const st=streakN(), n=PL.list.length;
